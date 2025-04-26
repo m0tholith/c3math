@@ -41,6 +41,8 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	for (usz i = 0; i < result.val.len; i++) result.val[i] = self.val[i] * scalar;
 	return result;
 }
+fn bool Matrix.eq(&self, Matrix mat) @operator(==) => (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
+fn bool Matrix.neq(&self, Matrix mat) @operator(!=) => !self.eq(mat);
 <*
  @require #self.@rows() == #self.@cols() : "Cannot compute determinant of non-square matrix"
  *>
@@ -128,4 +130,8 @@ macro @col_slice(#mat, idx)
 		result.m[i][j] = #mat.m[i][j >= idx ? j + 1 : j];
 	};
 	return result;
+}
+macro @apply(#mat, vec)
+{
+	return ($typeof(vec))maths::@mul(#mat, (Matrix{#mat.@rows(),1, $typeof(#mat.val[0])}){vec}).val;
 }
