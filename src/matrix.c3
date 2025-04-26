@@ -2,7 +2,7 @@
  @require $typeof(ROWS).kindof != FLOAT && $typeof(COLS).kindof != FLOAT
  @require ROWS > 0 && COLS > 0
  *>
-module matrix {ROWS,COLS};
+module matrix {ROWS,COLS, Type};
 import maths;
 
 import std::io;
@@ -10,8 +10,8 @@ import std::core::mem;
 
 union Matrix (Printable)
 {
-	double[COLS * ROWS] val;
-	double[COLS][ROWS] m;
+	Type[COLS * ROWS] val;
+	Type[COLS][ROWS] m;
 }
 fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
@@ -35,7 +35,7 @@ fn Matrix Matrix.negate(&self) @operator(-)
 	for (usz i = 0; i < COLS * ROWS; i++) result.val[i] = -self.val[i];
 	return result;
 }
-fn Matrix Matrix.mul(&self, double scalar) @operator(*)
+fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 {
 	Matrix result = *self;
 	for (usz i = 0; i < result.val.len; i++) result.val[i] = self.val[i] * scalar;
@@ -44,12 +44,12 @@ fn Matrix Matrix.mul(&self, double scalar) @operator(*)
 <*
  @require #self.@rows() == #self.@cols() : "Cannot compute determinant of non-square matrix"
  *>
-macro double Matrix.@determinant(#self)
+macro Type Matrix.@determinant(#self)
 {
 	$if #self.@rows() == 1 ||| #self.@cols() == 1:
 	return #self.val[0];
 	$else
-	double result;
+	Type result;
 	double mul = -1;
 	var sliced = maths::@row_slice(#self, 0);
 	for (usz i = 0; i < ROWS; i++)
@@ -72,7 +72,7 @@ macro @ij_loop(rows, cols; @body(usz i, usz j))
 }
 macro @mat_mul_sum(mat1, mat2, i, j, n)
 {
-	var result = 0.0;
+	$typeof(mat1.val[0]) result;
 	for (usz n_iter = 0; n_iter < n; n_iter++)
 	{
 		result += mat1.m[i][n_iter] * mat2.m[n_iter][j];
@@ -87,7 +87,7 @@ macro @mul(#mat1, #mat2)
 	var n = #mat1.@cols();
 	const ROWS = #mat1.@rows();
 	const COLS = #mat2.@cols();
-	Matrix{ROWS,COLS} result;
+	Matrix{ROWS,COLS, $typeof(#mat1.val[0])} result;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		result.m[i][j] = @mat_mul_sum(#mat1, #mat2, i, j, n);
@@ -98,7 +98,7 @@ macro @transpose(#mat)
 {
 	const ROWS = #mat.@cols();
 	const COLS = #mat.@rows();
-	Matrix{ROWS,COLS} result;
+	Matrix{ROWS,COLS, $typeof(#mat.val[0])} result;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		result.m[i][j] = #mat.m[j][i];
@@ -110,7 +110,7 @@ macro @transpose(#mat)
  *>
 macro @row_slice(#mat, idx)
 {
-	Matrix{#mat.@rows() - 1,#mat.@cols()} result;
+	Matrix{#mat.@rows() - 1,#mat.@cols(), $typeof(#mat.val[0])} result;
 	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
 	{
 		result.m[i][j] = #mat.m[i >= idx ? i + 1 : i][j];
@@ -122,7 +122,7 @@ macro @row_slice(#mat, idx)
  *>
 macro @col_slice(#mat, idx)
 {
-	Matrix{#mat.@rows(),#mat.@cols() - 1} result;
+	Matrix{#mat.@rows(),#mat.@cols() - 1, $typeof(#mat.val[0])} result;
 	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
 	{
 		result.m[i][j] = #mat.m[i][j >= idx ? j + 1 : j];
