@@ -1,5 +1,4 @@
-module matrix {ROWS,COLS, Type};
-import maths;
+module matrix::mat_type {ROWS,COLS, Type};
 
 import std::io;
 import std::core::mem;
@@ -13,13 +12,14 @@ fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
 	return f.printf("%s", self.m);
 }
-macro usz Matrix.@cols(#mat) => #mat.m[0].len;
-macro usz Matrix.@rows(#mat) => #mat.m.len;
+macro usz Matrix.@cols(#mat) @const => COLS;
+macro usz Matrix.@rows(#mat) @const => ROWS;
+macro Matrix.@type(#mat) @const => Type.typeid;
 
 fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
 {
 	Matrix result;
-	maths::@ij_loop(ROWS, COLS; usz i, usz j)
+	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		result.m[i][j] = self.m[i][j] + mat.m[i][j];
 	};
@@ -37,7 +37,8 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	for (usz i = 0; i < result.val.len; i++) result.val[i] = self.val[i] * scalar;
 	return result;
 }
-fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => maths::@apply(self, vec);
+fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::@apply(self, vec);
+fn Type[ROWS] Matrix.mul_list(&self, Type[ROWS] list) @operator(*) => matrix::@apply(self, ((Type[ROWS])list[:ROWS])[..]);
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
 	=> (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
 fn bool Matrix.neq(&self, Matrix mat) @operator(!=) => !self.eq(mat);
@@ -48,28 +49,30 @@ macro Type Matrix.@determinant(#self)
 	$else
 	Type result;
 	double mul = -1;
-	var sliced = maths::@row_slice(#self, 0);
+	var sliced = matrix::@row_slice(#self, 0);
 	for (usz i = 0; i < ROWS; i++)
 	{
-		result += #self.m[0][i] * mul * maths::@col_slice(sliced, i).@determinant();
+		result += #self.m[0][i] * mul * matrix::@col_slice(sliced, i).@determinant();
 		mul *= -1;
 	}
 	return result;
 	$endif
 }
 
-module maths;
-import matrix;
+macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
+{
+	for (usz i = 0; i < rows; i++) for (usz j = 0; j < cols; j++) @body(i, j);
+}
 
-import std::io;
+module matrix;
 
-macro @ij_loop(rows, cols; @body(usz i, usz j))
+macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 {
 	for (usz i = 0; i < rows; i++) for (usz j = 0; j < cols; j++) @body(i, j);
 }
 macro @mat_mul_sum(mat1, mat2, i, j, n)
 {
-	$typeof(mat1.val[0]) result;
+	$typefrom($typeof(mat1.val).inner) result;
 	for (usz n_iter = 0; n_iter < n; n_iter++)
 	{
 		result += mat1.m[i][n_iter] * mat2.m[n_iter][j];
@@ -81,7 +84,7 @@ macro @mul(#mat1, #mat2)
 	var n = #mat1.@cols();
 	const ROWS = #mat1.@rows();
 	const COLS = #mat2.@cols();
-	Matrix{ROWS,COLS, $typeof(#mat1.val[0])} result;
+	Matrix{ROWS,COLS, $typefrom(#mat1.@type())} result;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		result.m[i][j] = @mat_mul_sum(#mat1, #mat2, i, j, n);
@@ -92,7 +95,7 @@ macro @transpose(#mat)
 {
 	const ROWS = #mat.@cols();
 	const COLS = #mat.@rows();
-	Matrix{ROWS,COLS, $typeof(#mat.val[0])} result;
+	Matrix{ROWS,COLS, $typefrom(#mat.@type())} result;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		result.m[i][j] = #mat.m[j][i];
@@ -101,7 +104,7 @@ macro @transpose(#mat)
 }
 macro @row_slice(#mat, idx)
 {
-	Matrix{#mat.@rows() - 1,#mat.@cols(), $typeof(#mat.val[0])} result;
+	Matrix{#mat.@rows() - 1,#mat.@cols(), $typefrom(#mat.@type())} result;
 	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
 	{
 		result.m[i][j] = #mat.m[i >= idx ? i + 1 : i][j];
@@ -110,7 +113,7 @@ macro @row_slice(#mat, idx)
 }
 macro @col_slice(#mat, idx)
 {
-	Matrix{#mat.@rows(),#mat.@cols() - 1, $typeof(#mat.val[0])} result;
+	Matrix{#mat.@rows(),#mat.@cols() - 1, $typefrom(#mat.@type())} result;
 	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
 	{
 		result.m[i][j] = #mat.m[i][j >= idx ? j + 1 : j];
@@ -119,5 +122,12 @@ macro @col_slice(#mat, idx)
 }
 macro @apply(#mat, vec)
 {
-	return ($typeof(vec))maths::@mul(#mat, (Matrix{#mat.@rows(),1, $typeof(#mat.val[0])}){vec}).val;
+	$switch $typeof(vec).kindof:
+		$case VECTOR:
+	return ($typeof(vec))@mul(#mat, (Matrix{#mat.@rows(),1, $typefrom(#mat.@type())}){vec}).val;
+		$case ARRAY:
+	return @mul(#mat, (Matrix{#mat.@rows(),1, $typefrom(#mat.@type())}){.val=vec}).val;
+		$case SLICE:
+	return @mul(#mat, (Matrix{#mat.@rows(),1, $typefrom(#mat.@type())}){.val=($typefrom(#mat.@type())[#mat.@rows()])vec[:#mat.@rows()]}).val;
+	$endswitch
 }
