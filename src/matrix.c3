@@ -1,7 +1,3 @@
-<*
- @require $typeof(ROWS).kindof != FLOAT && $typeof(COLS).kindof != FLOAT
- @require ROWS > 0 && COLS > 0
- *>
 module matrix {ROWS,COLS, Type};
 import maths;
 
@@ -41,11 +37,10 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	for (usz i = 0; i < result.val.len; i++) result.val[i] = self.val[i] * scalar;
 	return result;
 }
-fn bool Matrix.eq(&self, Matrix mat) @operator(==) => (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
+fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => maths::@apply(self, vec);
+fn bool Matrix.eq(&self, Matrix mat) @operator(==)
+	=> (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
 fn bool Matrix.neq(&self, Matrix mat) @operator(!=) => !self.eq(mat);
-<*
- @require #self.@rows() == #self.@cols() : "Cannot compute determinant of non-square matrix"
- *>
 macro Type Matrix.@determinant(#self)
 {
 	$if #self.@rows() == 1 ||| #self.@cols() == 1:
@@ -81,9 +76,6 @@ macro @mat_mul_sum(mat1, mat2, i, j, n)
 	}
 	return result;
 }
-<*
- @require #mat1.@cols() == #mat2.@rows() : "Left matrix columns != Right matrix rows"
- *>
 macro @mul(#mat1, #mat2)
 {
 	var n = #mat1.@cols();
@@ -107,9 +99,6 @@ macro @transpose(#mat)
 	};
 	return result;
 }
-<*
- @require idx < #mat.@rows()
- *>
 macro @row_slice(#mat, idx)
 {
 	Matrix{#mat.@rows() - 1,#mat.@cols(), $typeof(#mat.val[0])} result;
@@ -119,9 +108,6 @@ macro @row_slice(#mat, idx)
 	};
 	return result;
 }
-<*
- @require idx < #mat.@cols()
- *>
 macro @col_slice(#mat, idx)
 {
 	Matrix{#mat.@rows(),#mat.@cols() - 1, $typeof(#mat.val[0])} result;

@@ -28,7 +28,7 @@ fn int main(String[] args)
 	io::printfn("mat9 determinant: %s", mat9_det);
 	double[<2>] vec1 = { 3, 5 };
 	io::printfn("vec1: %s", vec1);
-	double[<2>] vec2 = @apply(mat9, vec1);
+	double[<2>] vec2 = mat9 * vec1;
 	io::printfn("vec2: mat9 * vec1 = %s", vec2);
 	return 0;
 }
