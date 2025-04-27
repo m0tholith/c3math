@@ -54,3 +54,7 @@ fn void matrix_mul()
 {
 	assert(@mul(mat4, mat2) == (Matrix2x2){{ -103, -5, 135, 181 }});
 }
+fn void determinant()
+{
+	assert(mat1.@determinant() == 8158);
+}
