@@ -1,5 +1,7 @@
 module matrix::mat_type {ROWS,COLS, Type};
 
+import matrix @public;
+
 import std::io;
 import std::core::mem;
 
@@ -19,7 +21,7 @@ macro Matrix.@type(#mat) @const => Type.typeid;
 fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
 {
 	Matrix result;
-	@ij_loop(ROWS, COLS; usz i, usz j)
+	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		result.m[i][j] = self.m[i][j] + mat.m[i][j];
 	};
@@ -57,11 +59,6 @@ macro Type Matrix.@determinant(#self)
 	}
 	return result;
 	$endif
-}
-
-macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
-{
-	for (usz i = 0; i < rows; i++) for (usz j = 0; j < cols; j++) @body(i, j);
 }
 
 module matrix;
