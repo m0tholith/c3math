@@ -56,8 +56,15 @@ fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] list) @operator(*)
 	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])list));
 
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
-	=> (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
-fn bool Matrix.neq(&self, Matrix mat) @operator(!=) => !self.eq(mat);
+{
+	for (usz i = 0; i < COLS * ROWS; i++) if (self.val[i] != mat.val[i]) return false;
+	return true;
+}
+fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
+{
+	for (usz i = 0; i < COLS * ROWS; i++) if (self.val[i] != mat.val[i]) return true;
+	return false;
+}
 <*
  @require ROWS == COLS : "Can't compute determinant of non-square matrix"
  *>
