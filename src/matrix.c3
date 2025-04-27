@@ -87,6 +87,7 @@ macro Matrix.@comatrix(#self)
 	};
 	return result;
 }
+macro Matrix.@adjugate(#self) => matrix::@transpose(#self.@comatrix());
 
 module matrix;
 
