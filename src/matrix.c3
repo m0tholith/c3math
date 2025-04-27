@@ -4,6 +4,7 @@ import matrix @public;
 
 import std::io;
 import std::core::mem;
+import std::math;
 
 union Matrix (Printable)
 {
@@ -70,6 +71,17 @@ macro Type Matrix.@determinant(#self)
  *>
 macro Matrix.@minor(#self, i, j)
 	=> matrix::@col_slice(matrix::@row_slice(#self, i), j).@determinant();
+macro Matrix.@cofactor(#self, i, j)
+	=> math::pow(-1, (int)(i + j)) * #self.@minor(i, j);
+macro Matrix.@comatrix(#self)
+{
+	Matrix result;
+	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
+	{
+		result.m[i][j] = #self.@cofactor(i, j);
+	};
+	return result;
+}
 
 module matrix;
 

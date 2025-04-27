@@ -34,5 +34,9 @@ fn int main(String[] args)
 	io::printfn("identity_4: %s", identity_4);
 	double mat6_minor_1_1 = mat6.@minor(1, 1);
 	io::printfn("mat6_minor_1_1: %s", mat6_minor_1_1);
+	double mat9_cofactor_0_1 = mat9.@cofactor(0, 1);
+	io::printfn("mat9_cofactor_0_1: %s", mat9_cofactor_0_1);
+	Matrix{2,2, double} mat10 = mat9.@comatrix();
+	io::printfn("mat10: comatrix of mat9 = %s", mat10);
 	return 0;
 }
