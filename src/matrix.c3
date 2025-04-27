@@ -44,6 +44,7 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	for (usz i = 0; i < result.val.len; i++) result.val[i] = self.val[i] * scalar;
 	return result;
 }
+fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::@apply(self, vec);
 fn Type[ROWS] Matrix.mul_list(&self, Type[ROWS] list) @operator(*) => matrix::@apply(self, ((Type[ROWS])list[:ROWS])[..]);
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
