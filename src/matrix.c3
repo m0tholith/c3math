@@ -78,7 +78,7 @@ macro Type Matrix.@determinant(#self)
 	var sliced = matrix::@row_slice(#self, 0);
 	for (usz i = 0; i < ROWS; i++)
 	{
-		result += #self.m[0][i] * mul * matrix::@col_slice(sliced, i).@determinant();
+		result += (Type)(#self.m[0][i] * mul * matrix::@col_slice(sliced, i).@determinant());
 		mul *= -1;
 	}
 	return result;
@@ -92,7 +92,7 @@ macro Type Matrix.@determinant(#self)
 macro Matrix.@minor(#self, i, j)
 	=> matrix::@col_slice(matrix::@row_slice(#self, i), j).@determinant();
 macro Matrix.@cofactor(#self, i, j)
-	=> math::pow(-1, (int)(i + j)) * #self.@minor(i, j);
+	=> (Type)(math::pow(-1, (int)(i + j)) * #self.@minor(i, j));
 macro Matrix.@comatrix(#self)
 {
 	Matrix result;
