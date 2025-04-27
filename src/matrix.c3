@@ -38,6 +38,7 @@ fn Matrix Matrix.negate(&self) @operator(-)
 	for (usz i = 0; i < COLS * ROWS; i++) result.val[i] = -self.val[i];
 	return result;
 }
+fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-) => *self + -mat;
 fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 {
 	Matrix result = *self;
