@@ -1,3 +1,7 @@
+<*
+ @require types::is_int($typeof(ROWS)) && types::is_int($typeof(COLS)) : "Can't create non-integer-sized matrix"
+ @require ROWS > 0 && COLS > 0 : "Can't create 0-row or 0-column matrix"
+ *>
 module matrix::mat_type {ROWS,COLS, Type};
 
 import matrix @public;
