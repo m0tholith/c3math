@@ -38,5 +38,7 @@ fn int main(String[] args)
 	io::printfn("mat9_cofactor_0_1: %s", mat9_cofactor_0_1);
 	Matrix{2,2, double} mat10 = mat9.@comatrix();
 	io::printfn("mat10: comatrix of mat9 = %s", mat10);
+	Matrix{2,2, double} mat11 = matrix::inverse(mat10);
+	io::printfn("mat11: inverse of mat10 = %s", mat11);
 	return 0;
 }

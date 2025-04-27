@@ -165,3 +165,14 @@ macro @identity(#size, $Type = double)
 	$endfor
 	return result;
 }
+
+<*
+ @require mat.@rows() == mat.@cols() : "Can't invert a non-square matrix"
+ *>
+macro inverse(mat)
+{
+	$typefrom(mat.@type()) det = mat.@determinant();
+	assert(det != 0);
+	$typeof(mat) result = mat.@adjugate();
+	return result / det;
+}
