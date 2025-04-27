@@ -169,7 +169,7 @@ macro apply(mat, vec)
 
 <*
  @require $typeof(#size).kindof.is_int() : "Cannot generate non-integer-sized matrix"
- @require #size > 1 : "Cannot generate matrix with size less than 1"
+ @require #size > 0 : "Cannot generate matrix with size less than 1"
  *>
 macro @identity(#size, $Type = double)
 {
