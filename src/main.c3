@@ -30,5 +30,7 @@ fn int main(String[] args)
 	io::printfn("vec1: %s", vec1);
 	double[<2>] vec2 = mat9 * vec1;
 	io::printfn("vec2: mat9 * vec1 = %s", vec2);
+	Matrix{4,4, double} identity_4 = matrix::@identity(4);
+	io::printfn("identity_4: %s", identity_4);
 	return 0;
 }

@@ -128,3 +128,12 @@ macro @apply(#mat, vec)
 	return @mul(#mat, (Matrix{#mat.@rows(),1, $typefrom(#mat.@type())}){.val=($typefrom(#mat.@type())[#mat.@rows()])vec[:#mat.@rows()]}).val;
 	$endswitch
 }
+
+macro @identity(#size, $Type = double)
+{
+	Matrix{#size,#size, $Type} result;
+	$for var $x = 0; $x < #size; $x++:
+		result.m[$x][$x] = 1;
+	$endfor
+	return result;
+}
