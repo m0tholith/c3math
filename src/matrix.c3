@@ -66,8 +66,8 @@ macro Type Matrix.@determinant(#self)
 }
 
 <*
- @require ROWS == COLS : "Can't compute minor of non-square matrix"
  @require i < ROWS && j < COLS : "Index out of range"
+ @require ROWS > 1 && COLS > 1 : "Slicing a one-row or one-column matrix is invalid"
  *>
 macro Matrix.@minor(#self, i, j)
 	=> matrix::@col_slice(matrix::@row_slice(#self, i), j).@determinant();
