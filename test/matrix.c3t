@@ -70,3 +70,11 @@ fn void comatrix()
 {
 	assert(mat1.@comatrix() == (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
 }
+fn void adjugate()
+{
+	assert(mat1.adjugate() == (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
+}
+fn void trace()
+{
+	assert(mat1.trace() == -21);
+}
