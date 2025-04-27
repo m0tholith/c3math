@@ -1,5 +1,6 @@
 module matrix @test;
 
+alias Matrix1x1 = Matrix{1,1, double};
 alias Matrix2x2 = Matrix{2,2, double};
 alias Matrix3x3 = Matrix{3,3, double};
 alias Matrix3x2 = Matrix{3,2, double};
@@ -77,4 +78,14 @@ fn void adjugate()
 fn void trace()
 {
 	assert(mat1.trace() == -21);
+}
+fn void transpose()
+{
+	assert(@transpose(mat1) == (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
+}
+fn void identity()
+{
+	assert(@identity(1) == (Matrix1x1){{ 1 }});
+	assert(@identity(2) == (Matrix2x2){{ 1, 0, 0, 1 }});
+	assert(@identity(3) == (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
 }
