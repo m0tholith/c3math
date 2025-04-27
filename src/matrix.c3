@@ -44,13 +44,16 @@ fn Type[ROWS] Matrix.mul_list(&self, Type[ROWS] list) @operator(*) => matrix::@a
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
 	=> (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
 fn bool Matrix.neq(&self, Matrix mat) @operator(!=) => !self.eq(mat);
+<*
+ @require ROWS == COLS : "Can't compute determinant of non-square matrix"
+ *>
 macro Type Matrix.@determinant(#self)
 {
 	$if #self.@rows() == 1 ||| #self.@cols() == 1:
 	return #self.val[0];
 	$else
 	Type result;
-	double mul = -1;
+	double mul = 1;
 	var sliced = matrix::@row_slice(#self, 0);
 	for (usz i = 0; i < ROWS; i++)
 	{
