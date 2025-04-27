@@ -64,6 +64,13 @@ macro Type Matrix.@determinant(#self)
 	$endif
 }
 
+<*
+ @require ROWS == COLS : "Can't compute minor of non-square matrix"
+ @require i < ROWS && j < COLS : "Index out of range"
+ *>
+macro Matrix.@minor(#self, i, j)
+	=> matrix::@col_slice(matrix::@row_slice(#self, i), j).@determinant();
+
 module matrix;
 
 macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
