@@ -87,7 +87,7 @@ macro Matrix.@comatrix(#self)
 	};
 	return result;
 }
-macro Matrix.@adjugate(#self) => matrix::@transpose(#self.@comatrix());
+macro Matrix.adjugate(&self) => matrix::@transpose(self.@comatrix());
 
 module matrix;
 
@@ -95,7 +95,7 @@ macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 {
 	for (usz i = 0; i < rows; i++) for (usz j = 0; j < cols; j++) @body(i, j);
 }
-macro @mat_mul_sum(mat1, mat2, i, j, n)
+macro @mat_mul_sum(mat1, mat2, i, j, n) @private
 {
 	$typefrom($typeof(mat1.val).inner) result;
 	for (usz n_iter = 0; n_iter < n; n_iter++)
@@ -173,6 +173,6 @@ macro inverse(mat)
 {
 	$typefrom(mat.@type()) det = mat.@determinant();
 	assert(det != 0);
-	$typeof(mat) result = mat.@adjugate();
+	$typeof(mat) result = mat.adjugate();
 	return result / det;
 }
