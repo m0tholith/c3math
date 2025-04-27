@@ -58,3 +58,15 @@ fn void determinant()
 {
 	assert(mat1.@determinant() == 8158);
 }
+fn void minor()
+{
+	assert(mat1.@minor(1, 2) == -90);
+}
+fn void cofactor()
+{
+	assert(mat1.@cofactor(1, 2) == 90);
+}
+fn void comatrix()
+{
+	assert(mat1.@comatrix() == (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
+}
