@@ -46,8 +46,15 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	return result;
 }
 fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
+
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
-fn Type[ROWS] Matrix.mul_list(&self, Type[ROWS] list) @operator(*) => matrix::apply(self, ((Type[ROWS])list[:ROWS]));
+
+fn Type[] Matrix.mul_slice(&self, Type[] list) @operator(*)
+	=> (Type[])matrix::apply(self, ((Type[<ROWS>])list[:ROWS]))[..];
+
+fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] list) @operator(*)
+	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])list));
+
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
 	=> (Type[<ROWS * COLS>])self.val == (Type[<ROWS * COLS>])mat.val;
 fn bool Matrix.neq(&self, Matrix mat) @operator(!=) => !self.eq(mat);
@@ -157,14 +164,7 @@ macro @col_slice(#mat, idx)
 }
 macro apply(mat, vec)
 {
-	$switch $typeof(vec).kindof:
-		$case VECTOR:
 	return ($typeof(vec))@mul(mat, (Matrix{mat.@rows(),1, $typefrom(mat.@type())}){vec}).val;
-		$case ARRAY:
-	return @mul(mat, (Matrix{mat.@rows(),1, $typefrom(mat.@type())}){.val=vec}).val;
-		$case SLICE:
-	return @mul(mat, (Matrix{mat.@rows(),1, $typefrom(mat.@type())}){.val=($typefrom(mat.@type())[mat.@rows()])vec[:mat.@rows()]}).val;
-	$endswitch
 }
 
 <*
