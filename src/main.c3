@@ -40,5 +40,7 @@ fn int main(String[] args)
 	io::printfn("mat10: comatrix of mat9 = %s", mat10);
 	Matrix{2,2, double} mat11 = matrix::inverse(mat10);
 	io::printfn("mat11: inverse of mat10 = %s", mat11);
+	double mat10_trace = mat10.trace();
+	io::printfn("mat10 trace: %s", mat10_trace);
 	return 0;
 }

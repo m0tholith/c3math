@@ -88,6 +88,15 @@ macro Matrix.@comatrix(#self)
 	return result;
 }
 macro Matrix.adjugate(&self) => matrix::@transpose(self.@comatrix());
+<*
+ @require ROWS == COLS : "Trace of a non-square matrix is undefined"
+ *>
+macro Type Matrix.trace(&self)
+{
+	Type result;
+	for (usz i = 0; i < ROWS; i++) result += self.m[i][i];
+	return result;
+}
 
 module matrix;
 
