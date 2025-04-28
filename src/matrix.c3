@@ -46,9 +46,21 @@ fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
  *>
 macro Type Matrix.@determinant(self)
 {
-	$if self.@rows() == 1 ||| self.@cols() == 1:
+	$switch self.@cols():
+		$case 1:
 	return self.val[0];
-	$else
+		$case 2:
+	return self.m[0][0] * self.m[1][1] - self.m[1][0] * self.m[0][1];
+		$case 3:
+	return
+			self.m[0][0] * self.m[1][1] * self.m[2][2] *
+			self.m[0][1] * self.m[1][2] * self.m[2][0] *
+			self.m[0][2] * self.m[1][0] * self.m[2][1]
+			-
+			self.m[0][2] * self.m[1][1] * self.m[2][0] *
+			self.m[0][1] * self.m[1][0] * self.m[2][2] *
+			self.m[0][0] * self.m[1][2] * self.m[2][1];
+		$default:
 	Type result;
 	double mul = 1;
 	var sliced = matrix::@row_slice(self, 0);
@@ -58,7 +70,7 @@ macro Type Matrix.@determinant(self)
 		mul *= -1;
 	}
 	return result;
-	$endif
+	$endswitch
 }
 
 <*
