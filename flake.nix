@@ -17,8 +17,11 @@
     in
     {
       devShells.${system}.default = pkgs.mkShell {
-        packages = [
+        packages = with pkgs; [
           (c3c.outputs.packages.${system}.default)
+
+					# debugging
+          hyperfine
         ];
       };
     };
