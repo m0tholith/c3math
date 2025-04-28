@@ -12,6 +12,14 @@ Matrix3x3 mat3 = {{  -2,  20,  -1,  -6, -18,  12, -11,  -4,   0, }};
 Matrix2x3 mat4 = {{   8,  -8,   7, -11,  14,  15,                }};
 Matrix3x3 mat5 = {{   4,   6,   1,   3,   2,   5,   8,   5,   9, }};
 
+import std::io;
+macro @assert_print(mat1, mat2, #msg = "")
+{
+	io::printn(mat1);
+	io::printn(mat2);
+	assert(mat1 == mat2, #msg);
+}
+
 fn void equality()
 {
 	assert(mat1 == mat1);
@@ -22,73 +30,73 @@ fn void unequality()
 }
 fn void addition()
 {
-	assert(mat1 + mat3 == (Matrix3x3){{ -22,  13, -18,  -2,  -3,  32,  -1,   4, -16 }});
+	@assert_print(mat1 + mat3, (Matrix3x3){{ -22,  13, -18,  -2,  -3,  32,  -1,   4, -16 }});
 }
 fn void negation()
 {
-	assert(-mat1 == (Matrix3x3){{  20,   7,  17,  -4, -15, -20, -10,  -8,  16, }});
+	@assert_print(-mat1, (Matrix3x3){{  20,   7,  17,  -4, -15, -20, -10,  -8,  16, }});
 }
 fn void subtraction()
 {
-	assert(mat1 - mat3 == (Matrix3x3){{ -18, -27, -16,  10,  33,   8,  21,  12, -16 }});
+	@assert_print(mat1 - mat3, (Matrix3x3){{ -18, -27, -16,  10,  33,   8,  21,  12, -16 }});
 }
 fn void scalar_mul()
 {
-	assert(mat1 * 2 == (Matrix3x3){{ -40, -14, -34,   8,  30,  40,  20,  16, -32, }});
+	@assert_print(mat1 * 2, (Matrix3x3){{ -40, -14, -34,   8,  30,  40,  20,  16, -32, }});
 }
 fn void scalar_div()
 {
-	assert(mat1 / 2 == (Matrix3x3){{ -10,-3.5,-8.5,   2, 7.5,  10,   5,   4,  -8, }});
+	@assert_print(mat1 / 2, (Matrix3x3){{ -10,-3.5,-8.5,   2, 7.5,  10,   5,   4,  -8, }});
 }
 fn void vector_mul()
 {
-	assert(mat1 * (double[<3>]){ 2, 3, 4 } == (double[<3>]){ -129, 133, -20 });
+	@assert_print(mat1 * (double[<3>]){ 2, 3, 4 }, (double[<3>]){ -129, 133, -20 });
 }
 fn void slice_mul()
 {
-	assert(mat1 * (double[]){ 2, 3, 4 } == (double[]){ -129, 133, -20 });
+	@assert_print(mat1 * (double[]){ 2, 3, 4 }, (double[]){ -129, 133, -20 });
 }
 fn void list_mul()
 {
-	assert(mat1 * (double[3]){ 2, 3, 4 } == (double[3]){ -129, 133, -20 });
+	@assert_print(mat1 * (double[3]){ 2, 3, 4 }, (double[3]){ -129, 133, -20 });
 }
 fn void matrix_mul()
 {
-	assert(@mul(mat4, mat2) == (Matrix2x2){{ -103, -5, 135, 181 }});
+	@assert_print(@mul(mat4, mat2), (Matrix2x2){{ -103, -5, 135, 181 }});
 }
 fn void determinant()
 {
-	assert(mat1.@determinant() == 8158);
+	@assert_print(mat1.@determinant(), 8158);
 }
 fn void minor()
 {
-	assert(mat1.@minor(1, 2) == -90);
+	@assert_print(mat1.@minor(1, 2), -90);
 }
 fn void cofactor()
 {
-	assert(mat1.@cofactor(1, 2) == 90);
+	@assert_print(mat1.@cofactor(1, 2), 90);
 }
 fn void comatrix()
 {
-	assert(mat1.@comatrix() == (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
+	@assert_print(mat1.@comatrix(), (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
 }
 fn void adjugate()
 {
-	assert(mat1.adjugate() == (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
+	@assert_print(mat1.adjugate(), (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
 }
 fn void trace()
 {
-	assert(mat1.trace() == -21);
+	@assert_print(mat1.trace(), -21);
 }
 fn void transpose()
 {
-	assert(@transpose(mat1) == (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
+	@assert_print(@transpose(mat1), (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
 }
 fn void identity()
 {
-	assert(@identity(1) == (Matrix1x1){{ 1 }});
-	assert(@identity(2) == (Matrix2x2){{ 1, 0, 0, 1 }});
-	assert(@identity(3) == (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
+	@assert_print(@identity(1), (Matrix1x1){{ 1 }});
+	@assert_print(@identity(2), (Matrix2x2){{ 1, 0, 0, 1 }});
+	@assert_print(@identity(3), (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
 }
 fn void inverted()
 {
@@ -102,5 +110,5 @@ fn void inverted()
 		((double[<9>])
 		{ -1.0/7.0, -1.0, 4.0/7.0, 13.0/49.0, 4.0/7.0, -17.0/49.0, -1.0/49.0, 4.0/7.0, -10.0/49.0 }
 		* 1000).round() / 1000};
-	assert(source == result);
+	@assert_print(source, result);
 }
