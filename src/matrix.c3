@@ -44,21 +44,21 @@ fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
 <*
  @require ROWS == COLS : "Can't compute determinant of non-square matrix"
  *>
-macro Type Matrix.@determinant(self)
+macro Type Matrix.@determinant(&self)
 {
-	$switch self.@cols():
+	$switch COLS:
 		$case 1:
 	return self.val[0];
 		$case 2:
 	return self.m[0][0] * self.m[1][1] - self.m[1][0] * self.m[0][1];
 		$case 3:
 	return
-			self.m[0][0] * self.m[1][1] * self.m[2][2] *
-			self.m[0][1] * self.m[1][2] * self.m[2][0] *
+			self.m[0][0] * self.m[1][1] * self.m[2][2] +
+			self.m[0][1] * self.m[1][2] * self.m[2][0] +
 			self.m[0][2] * self.m[1][0] * self.m[2][1]
 			-
-			self.m[0][2] * self.m[1][1] * self.m[2][0] *
-			self.m[0][1] * self.m[1][0] * self.m[2][2] *
+			self.m[0][2] * self.m[1][1] * self.m[2][0] -
+			self.m[0][1] * self.m[1][0] * self.m[2][2] -
 			self.m[0][0] * self.m[1][2] * self.m[2][1];
 		$default:
 	Type result;
