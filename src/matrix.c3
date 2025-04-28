@@ -142,9 +142,9 @@ macro @transpose(mat)
 macro @row_slice(mat, idx)
 {
 	Matrix{mat.@rows() - 1,mat.@cols(), $typefrom(mat.@type())} result;
-	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
+	for (usz i = 0; i < result.@rows(); i++)
 	{
-		result.m[i][j] = mat.m[i >= idx ? i + 1 : i][j];
+		mem::copy(&result.m[i], &mat.m[i >= idx ? i + 1 : i], $typefrom(mat.@type()).sizeof * mat.@cols());
 	};
 	return result;
 }
