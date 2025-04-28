@@ -34,9 +34,6 @@ fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
 
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
 
-fn Type[] Matrix.mul_slice(&self, Type[] list) @operator(*)
-	=> (Type[])matrix::apply(self, ((Type[<ROWS>])list[:ROWS]))[..];
-
 fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] list) @operator(*)
 	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])list));
 

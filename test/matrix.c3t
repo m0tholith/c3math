@@ -52,10 +52,6 @@ fn void vector_mul()
 {
 	@assert_print(mat1 * (double[<3>]){ 2, 3, 4 }, (double[<3>]){ -129, 133, -20 });
 }
-fn void slice_mul()
-{
-	@assert_print(mat1 * (double[]){ 2, 3, 4 }, (double[]){ -129, 133, -20 });
-}
 fn void list_mul()
 {
 	@assert_print(mat1 * (double[3]){ 2, 3, 4 }, (double[3]){ -129, 133, -20 });
