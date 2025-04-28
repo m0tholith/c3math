@@ -32,10 +32,10 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	=> { .val = (Type[<COLS * ROWS>])self.val * scalar };
 fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
 
-fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
+fn Type[<COLS>] Matrix.mul_vec(&self, Type[<COLS>] vec) @operator(*) => matrix::apply(self, vec);
 
-fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] list) @operator(*)
-	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])list));
+fn Type[COLS] Matrix.mul_array(&self, Type[COLS] array) @operator(*)
+	=> (Type[COLS])matrix::apply(self, ((Type[<COLS>])array));
 
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
 	=> (Type[<COLS * ROWS>])self.val == (Type[<COLS * ROWS>])mat.val;
@@ -147,7 +147,10 @@ macro @col_slice(mat, idx)
 }
 macro apply(mat, vec)
 {
-	return ($typeof(vec))@mul(mat, (Matrix{mat.@rows(),1, $typefrom(mat.@type())}){vec}).val;
+	$typeof(vec) result;
+	for (usz i = 0; i < vec.len; i++) result[i] =
+		(($typefrom(mat.@type())[<mat.@cols()>])mat.m[i] * ($typefrom(mat.@type())[<mat.@cols()>])vec).sum();
+	return result;
 }
 
 <*
