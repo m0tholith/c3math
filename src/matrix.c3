@@ -60,6 +60,20 @@ macro Type Matrix.@determinant(&self)
 			self.m[0][2] * self.m[1][1] * self.m[2][0] -
 			self.m[0][1] * self.m[1][0] * self.m[2][2] -
 			self.m[0][0] * self.m[1][2] * self.m[2][1];
+		$case 4:
+	return
+		self.m[0][0] * (self.m[1][1] * (self.m[2][2] * self.m[3][3] - self.m[3][2] * self.m[2][3]) -
+				   self.m[1][2] * (self.m[2][1] * self.m[3][3] - self.m[3][1] * self.m[2][3]) +
+				   self.m[1][3] * (self.m[2][1] * self.m[3][2] - self.m[3][1] * self.m[2][2]) ) -
+		self.m[0][1] * (self.m[1][0] * (self.m[2][2] * self.m[3][3] - self.m[3][2] * self.m[2][3]) -
+				   self.m[1][2] * (self.m[2][0] * self.m[3][3] - self.m[3][0] * self.m[2][3]) +
+				   self.m[1][3] * (self.m[2][0] * self.m[3][2] - self.m[3][0] * self.m[2][2]) ) +
+		self.m[0][2] * (self.m[1][0] * (self.m[2][1] * self.m[3][3] - self.m[3][1] * self.m[2][3]) -
+				   self.m[1][1] * (self.m[2][0] * self.m[3][3] - self.m[3][0] * self.m[2][3]) +
+				   self.m[1][3] * (self.m[2][0] * self.m[3][1] - self.m[3][0] * self.m[2][1]) ) -
+		self.m[0][3] * (self.m[1][0] * (self.m[2][1] * self.m[3][2] - self.m[3][1] * self.m[2][2]) -
+				   self.m[1][1] * (self.m[2][0] * self.m[3][2] - self.m[3][0] * self.m[2][2]) +
+				   self.m[1][2] * (self.m[2][0] * self.m[3][1] - self.m[3][0] * self.m[2][1]) );
 		$default:
 	Type result;
 	double mul = 1;
