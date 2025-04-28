@@ -77,11 +77,11 @@ macro Type Matrix.@determinant(self)
  @require i < ROWS && j < COLS : "Index out of range"
  @require ROWS > 1 && COLS > 1 : "Slicing a one-row or one-column matrix is invalid"
  *>
-macro Matrix.@minor(self, i, j)
+macro Matrix.@minor(&self, i, j)
 	=> matrix::@col_slice(matrix::@row_slice(self, i), j).@determinant();
-macro Matrix.@cofactor(self, i, j)
+macro Matrix.@cofactor(&self, i, j)
 	=> (Type)(math::pow(-1, (int)(i + j)) * self.@minor(i, j));
-macro Matrix.@comatrix(self)
+macro Matrix.@comatrix(&self)
 {
 	Matrix result;
 	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
@@ -128,7 +128,7 @@ macro @mul(mat1, mat2)
 	};
 	return result;
 }
-macro @transpose(mat)
+macro @transpose(&mat)
 {
 	const ROWS = mat.@cols();
 	const COLS = mat.@rows();
@@ -139,7 +139,7 @@ macro @transpose(mat)
 	};
 	return result;
 }
-macro @row_slice(mat, idx)
+macro @row_slice(&mat, idx)
 {
 	Matrix{mat.@rows() - 1,mat.@cols(), $typefrom(mat.@type())} result;
 	for (usz i = 0; i < result.@rows(); i++)
@@ -148,7 +148,7 @@ macro @row_slice(mat, idx)
 	};
 	return result;
 }
-macro @col_slice(mat, idx)
+macro @col_slice(&mat, idx)
 {
 	Matrix{mat.@rows(),mat.@cols() - 1, $typefrom(mat.@type())} result;
 	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
@@ -157,7 +157,7 @@ macro @col_slice(mat, idx)
 	};
 	return result;
 }
-macro apply(mat, vec)
+macro apply(&mat, vec)
 {
 	$typeof(vec) result;
 	for (usz i = 0; i < vec.len; i++) result[i] =
@@ -181,7 +181,7 @@ macro @identity($size, $Type = double)
 <*
  @require mat.@rows() == mat.@cols() : "Can't invert a non-square matrix"
  *>
-macro inverse(mat)
+macro inverse(&mat)
 {
 	$typefrom(mat.@type()) det = mat.@determinant();
 	assert(det != 0);
