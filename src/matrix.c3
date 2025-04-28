@@ -24,27 +24,12 @@ macro usz Matrix.@rows(#mat) @const => ROWS;
 macro Matrix.@type(#mat) @const => Type.typeid;
 
 fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
-{
-	Matrix result;
-	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
-	{
-		result.m[i][j] = self.m[i][j] + mat.m[i][j];
-	};
-	return result;
-}
+	=> { .val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val };
 fn Matrix Matrix.negate(&self) @operator(-)
-{
-	Matrix result;
-	for (usz i = 0; i < COLS * ROWS; i++) result.val[i] = -self.val[i];
-	return result;
-}
+	=> { .val = -(Type[<COLS * ROWS>])self.val };
 fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-) => *self + -mat;
 fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
-{
-	Matrix result = *self;
-	for (usz i = 0; i < result.val.len; i++) result.val[i] = self.val[i] * scalar;
-	return result;
-}
+	=> { .val = (Type[<COLS * ROWS>])self.val * scalar };
 fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
 
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
@@ -56,15 +41,9 @@ fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] list) @operator(*)
 	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])list));
 
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
-{
-	for (usz i = 0; i < COLS * ROWS; i++) if (self.val[i] != mat.val[i]) return false;
-	return true;
-}
+	=> (Type[<COLS * ROWS>])self.val == (Type[<COLS * ROWS>])mat.val;
 fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
-{
-	for (usz i = 0; i < COLS * ROWS; i++) if (self.val[i] != mat.val[i]) return true;
-	return false;
-}
+	=> (Type[<COLS * ROWS>])self.val != (Type[<COLS * ROWS>])mat.val;
 <*
  @require ROWS == COLS : "Can't compute determinant of non-square matrix"
  *>
