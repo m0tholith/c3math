@@ -1,0 +1,39 @@
+module matrix @test;
+
+import std::math;
+
+alias Matrix4x4 = Matrix{4,4, double};
+
+fn void scaled_matrix()
+{
+	@assert_print(scaled((double[<2>]){1, 2}), (Matrix3x3){{ 1,0,0,0,2,0,0,0,0 }});
+	@assert_print(scaled((double[<3>]){1, 2, 3}), (Matrix4x4){{ 1,0,0,0,0,2,0,0,0,0,3,0,0,0,0,0 }});
+}
+fn void translated_matrix()
+{
+	@assert_print(translated((double[<2>]){1, 2}), (Matrix3x3){{ 0,0,0,0,0,0,1,2,0 }});
+	@assert_print(translated((double[<3>]){1, 2, 3}), (Matrix4x4){{ 0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,0 }});
+}
+fn void rotated_matrix_2d()
+{
+	@assert_print(rounded(rotated_2d(math::PI / 2)), (Matrix2x2){{ 0, 1, -1, 0 }});
+}
+fn void rotated_matrix_x()
+{
+	@assert_print(rounded(rotated_x(math::PI / 2)), (Matrix3x3){{ 1, 0, 0, 0, 0, 1, 0, -1, 0 }});
+}                         
+fn void rotated_matrix_y()
+{                         
+	@assert_print(rounded(rotated_y(math::PI / 2)), (Matrix3x3){{ 0, 0, -1, 0, 1, 0, 1, 0, 0 }});
+}                         
+fn void rotated_matrix_z()
+{                         
+	@assert_print(rounded(rotated_z(math::PI / 2)), (Matrix3x3){{ 0, 1, 0, -1, 0, 0, 0, 0, 1 }});
+}
+
+
+macro rounded(mat)
+{
+	foreach (&i : mat.val) *i = math::round(10000 * *i) / 10000;
+	return mat;
+}

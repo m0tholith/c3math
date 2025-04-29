@@ -115,6 +115,13 @@ macro Type Matrix.trace(&self)
 	return result;
 }
 
+macro Matrix.scale(&self, scale_vec) => self * scaled(scale_vec);
+macro Matrix.translate(&self, scale_vec) => self * translated(scale_vec);
+macro Matrix.rotate_2d(&self, scale_vec) => self * rotated_2d(scale_vec);
+macro Matrix.rotate_x(&self, scale_vec) => self * rotated_x(scale_vec);
+macro Matrix.rotate_y(&self, scale_vec) => self * rotated_y(scale_vec);
+macro Matrix.rotate_z(&self, scale_vec) => self * rotated_z(scale_vec);
+
 module matrix;
 
 macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
