@@ -163,7 +163,7 @@ macro @row_slice(&mat, idx)
 			result.m[i][..idx-1] = mat.m[i][..idx-1];
 		}
 	}
-	if (idx < mat.@cols() - 1)
+	if (idx < mat.@rows() - 1)
 	{
 		for (usz i = 0; i < result.@cols(); i++)
 		{
@@ -176,12 +176,12 @@ macro @col_slice(&mat, idx)
 {
 	Matrix{mat.@rows(),mat.@cols() - 1, $typefrom(mat.@type())} result;
 	mem::copy(
-		&result.val[0],
-		&mat.val[0],
+		&result.m[0],
+		&mat.m[0],
 		$typefrom(mat.@type()).sizeof * mat.@rows() * idx);
-	if (idx < mat.@rows() - 1) mem::copy(
-		&result.val[mat.@rows() * idx],
-		&mat.val[mat.@rows() * (long)(idx + 1)],
+	if (idx < mat.@cols() - 1) mem::copy(
+		&result.m[idx],
+		&mat.m[idx + 1],
 		$typefrom(mat.@type()).sizeof * mat.@rows() * (result.@cols() - idx));
 	return result;
 }
