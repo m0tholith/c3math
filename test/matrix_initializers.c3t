@@ -2,8 +2,6 @@ module matrix @test;
 
 import std::math;
 
-alias Matrix4x4 = Matrix{4,4, double};
-
 fn void scaled_matrix()
 {
 	@assert_print(scaled((double[<2>]){1, 2}), (Matrix3x3){{ 1,0,0,0,2,0,0,0,0 }});
