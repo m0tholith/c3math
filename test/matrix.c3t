@@ -53,8 +53,8 @@ fn void list_mul()
 }
 fn void matrix_mul()
 {
-	@assert_print(@mul(mat4, mat2), (Matrix2x2){{ 120, 199, 6, -50 }});
-	@assert_print(@mul(mat6, mat4), (Matrix3x3){{ 40, 79, -249, -8, 49, -420, -192, -216, 12 }});
+	@assert_print(mat4 * mat2, (Matrix2x2){{ 120, 199, 6, -50 }});
+	@assert_print(mat6 * mat4, (Matrix3x3){{ 40, 79, -249, -8, 49, -420, -192, -216, 12 }});
 }
 fn void determinant()
 {
@@ -82,7 +82,7 @@ fn void trace()
 }
 fn void transpose()
 {
-	@assert_print(@transpose(mat1), (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
+	@assert_print(mat1.transposed(), (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
 }
 fn void row_slice()
 {

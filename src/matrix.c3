@@ -28,9 +28,9 @@ fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
 fn Matrix Matrix.negate(&self) @operator(-)
 	=> { .val = -(Type[<COLS * ROWS>])self.val };
 fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-) => *self + -mat;
-fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
+fn Matrix Matrix.mul_scalar(&self, Type scalar) @operator(*)
 	=> { .val = (Type[<COLS * ROWS>])self.val * scalar };
-fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
+fn Matrix Matrix.div_scalar(&self, Type scalar) @operator(/) => self.mul_scalar(1 / scalar);
 
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
 
