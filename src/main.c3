@@ -3,18 +3,25 @@ import matrix;
 
 import std::io;
 import std::math::random;
+import std::time::clock;
 
 usz num;
+Clock c;
+
+const OPS = 1_000_000;
+const SIZE = 3;
 
 fn int main(String[] args)
 {
 	rndIndex = rand(char.max);
 	if (args.len <= 1)
 	{
+		io::printfn("General benchmarks (per %d operations)", OPS);
 		general();
 		return 0;
 	}
-	specialized(4);
+	io::printfn("Matrix%dx%d benchmarks (per %d operations)\n", SIZE, SIZE, OPS);
+	specialized(SIZE);
 	return 0;
 }
 
@@ -27,20 +34,36 @@ fn void general()
 	Matrix2x3 mat3 = {{ r(), r(), r(), r(), r(), r() }};
 	double scalar1 = r();
 	double[<2>] vec1 = { r(), r() };
+
+	c = clock::now();
 	@execute() { Matrix3x2 mat4 = mat1 + mat2; num++; };
+	@mark("Addition");
 	@execute() { Matrix2x3 mat5 = -mat3; num++; };
+	@mark("Negation");
 	@execute() { Matrix3x3 mat6 = mat1 * mat3; num++; };
+	@mark("Matrix Multiplication");
 	@execute() { Matrix3x2 mat7 = mat2 * scalar1; num++; };
+	@mark("Scalar Multiplication");
 	@execute() { Matrix2x3 mat8 = mat1.transposed(); num++; };
+	@mark("Transposition");
 	@execute() { Matrix2x2 mat9 = matrix::@col_slice(matrix::@row_slice(mat0, 0), 0); num++; num++; };
+	@mark("Slicing");
 	@execute() { double mat9_det = mat0.@determinant(); num++; };
+	@mark("Determinant");
 	@execute() { double[<2>] vec2 = mat * vec1; num++; };
+	@mark("Vector Multiplication");
 	@execute() { Matrix4x4 identity_4 = matrix::@identity(4); num++; };
+	@mark("Identity");
 	@execute() { double mat6_minor_1_1 = mat0.@minor(1, 1); num++; };
+	@mark("Minor");
 	@execute() { double mat9_cofactor_0_1 = mat0.@cofactor(0, 1); num++; };
+	@mark("Cofactor");
 	@execute() { Matrix2x2 mat10 = mat.@comatrix(); num++; };
+	@mark("Comatrix");
 	@execute() { Matrix2x2 mat11 = matrix::inverse(mat); num++; };
+	@mark("Inverse");
 	@execute() { double mat10_trace = mat0.trace(); num++; };
+	@mark("Trace");
 	io::printn(num);
 }
 macro specialized($size)
@@ -50,20 +73,36 @@ macro specialized($size)
 	Matrix{$size,$size, double} mat3 = rand_mat($size);
 	double scalar1 = r();
 	double[<$size>] vec1 = rand_vec($size);
+
+	c = clock::now();
 	@execute() { Matrix{$size,$size, double} mat4 = mat1 + mat2; num++; };
+	@mark("Addition");
 	@execute() { Matrix{$size,$size, double} mat5 = -mat3; num++; };
+	@mark("Negation");
 	@execute() { Matrix{$size,$size, double} mat6 = mat1 * mat2; num++; };
+	@mark("Matrix Multiplication");
 	@execute() { Matrix{$size,$size, double} mat7 = mat2 * scalar1; num++; };
+	@mark("Scalar Multiplication");
 	@execute() { Matrix{$size,$size, double} mat8 = matrix::@transpose(mat1); num++; };
+	@mark("Transposition");
 	@execute() { Matrix{$size-1,$size-1, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat1, 0), 0); num++; num++; };
+	@mark("Slicing");
 	@execute() { double mat9_det = mat3.@determinant(); num++; };
+	@mark("Determinant");
 	@execute() { double[<$size>] vec2 = mat1 * vec1; num++; };
+	@mark("Vector Multiplication");
 	@execute() { Matrix{$size,$size, double} identity_4 = matrix::@identity($size); num++; };
+	@mark("Identity");
 	@execute() { double mat6_minor_1_1 = mat2.@minor(1, 1); num++; };
+	@mark("Minor");
 	@execute() { double mat9_cofactor_0_1 = mat1.@cofactor(0, 1); num++; };
+	@mark("Cofactor");
 	@execute() { Matrix{$size,$size, double} mat10 = mat3.@comatrix(); num++; };
+	@mark("Comatrix");
 	@execute() { Matrix{$size,$size, double} mat11 = matrix::inverse(mat1); num++; };
+	@mark("Inverse");
 	@execute() { double mat10_trace = mat2.trace(); num++; };
+	@mark("Trace");
 	io::printn(num);
 }
 macro rand_mat($size)
@@ -106,7 +145,17 @@ macro double random_range(min, max) => min + (double)(max - min) * random();
 
 macro r(min = -20, max = 20) => min + (double)(max - min) * (double)random_range(min, max);
 
-macro @execute(loops = 1_000_000; @body())
+macro @execute(loops = OPS; @body())
 {
 	for (usz i = 0; i < loops; i++) @body();
+}
+
+macro @mark($msg)
+{
+	$for var $i = 0; $i < 32; $i++:
+		$if $msg.len < $i:
+			$msg = $msg +++ " ";
+		$endif
+	$endfor
+	io::printfn($msg +++ "%0.2fms", c.mark().to_sec() * 1_000);
 }
