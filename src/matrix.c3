@@ -227,6 +227,30 @@ macro apply(&mat, vec) @private
  *>
 macro @identity($size, $Type = double)
 {
+	$switch $Type:
+		$case double:
+		$switch $size:
+			$case 1:
+	return MATRIX1X1_IDENTITY;
+			$case 2:
+	return MATRIX2X2_IDENTITY;
+			$case 3:
+	return MATRIX3X3_IDENTITY;
+			$case 4:
+	return MATRIX4X4_IDENTITY;
+		$endswitch
+		$case float:
+		$switch $size:
+			$case 1:
+	return MATRIX1X1_IDENTITYF;
+			$case 2:
+	return MATRIX2X2_IDENTITYF;
+			$case 3:
+	return MATRIX3X3_IDENTITYF;
+			$case 4:
+	return MATRIX4X4_IDENTITYF;
+		$endswitch
+	$endswitch
 	Matrix{$size,$size, $Type} result;
 	$for var $x = 0; $x < $size; $x++:
 		result.m[$x][$x] = 1;

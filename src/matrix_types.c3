@@ -9,6 +9,15 @@ alias Matrix3x3f = Matrix{3,3, float};
 alias Matrix4x4 = Matrix{4,4, double};
 alias Matrix4x4f = Matrix{4,4, float};
 
+const MATRIX1X1_IDENTITY  = (Matrix1x1 ){{ 1 }};
+const MATRIX1X1_IDENTITYF = (Matrix1x1f){{ 1 }};
+const MATRIX2X2_IDENTITY  = (Matrix2x2 ){{ 1, 0, 0, 1 }};
+const MATRIX2X2_IDENTITYF = (Matrix2x2f){{ 1, 0, 0, 1 }};
+const MATRIX3X3_IDENTITY  = (Matrix3x3 ){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }};
+const MATRIX3X3_IDENTITYF = (Matrix3x3f){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }};
+const MATRIX4X4_IDENTITY  = (Matrix4x4 ){{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }};
+const MATRIX4X4_IDENTITYF = (Matrix4x4f){{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }};
+
 alias Matrix3x2 = Matrix{3,2, double};
 alias Matrix3x2f = Matrix{3,2, float};
 alias Matrix2x3 = Matrix{2,3, double};
