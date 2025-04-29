@@ -171,7 +171,7 @@ macro @transpose(&mat)
 	Matrix{ROWS,COLS, $typefrom(mat.@type())} result;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		result.m[i][j] = mat.m[j][i];
+		result.m[j][i] = mat.m[i][j];
 	};
 	return result;
 }
