@@ -83,6 +83,8 @@ fn void trace()
 fn void transpose()
 {
 	@assert_print(mat1.transposed(), (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
+	@assert_print(mat4.transposed(), (Matrix3x2){{ 8, 7, 14, -8, -11, 15 }});
+	@assert_print(mat6.transposed(), (Matrix2x3){{ -6, -11, -15, -14, -12, 12 }});
 }
 fn void row_slice()
 {
