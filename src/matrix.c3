@@ -13,7 +13,7 @@ import std::math;
 union Matrix (Printable)
 {
 	Type[COLS * ROWS] val;
-	Type[COLS][ROWS] m;
+	Type[ROWS][COLS] m;
 }
 fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
@@ -32,10 +32,10 @@ fn Matrix Matrix.mul(&self, Type scalar) @operator(*)
 	=> { .val = (Type[<COLS * ROWS>])self.val * scalar };
 fn Matrix Matrix.div(&self, Type scalar) @operator(/) => self.mul(1 / scalar);
 
-fn Type[<COLS>] Matrix.mul_vec(&self, Type[<COLS>] vec) @operator(*) => matrix::apply(self, vec);
+fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
 
-fn Type[COLS] Matrix.mul_array(&self, Type[COLS] array) @operator(*)
-	=> (Type[COLS])matrix::apply(self, ((Type[<COLS>])array));
+fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] array) @operator(*)
+	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])array));
 
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
 	=> (Type[<COLS * ROWS>])self.val == (Type[<COLS * ROWS>])mat.val;
@@ -175,7 +175,7 @@ macro apply(&mat, vec)
 {
 	$typeof(vec) result;
 	for (usz i = 0; i < vec.len; i++) result[i] =
-		(($typefrom(mat.@type())[<mat.@cols()>])mat.m[i] * ($typefrom(mat.@type())[<mat.@cols()>])vec).sum();
+		(($typefrom(mat.@type())[<mat.@rows()>])mat.m[i] * ($typefrom(mat.@type())[<mat.@rows()>])vec).sum();
 	return result;
 }
 
