@@ -20,30 +20,27 @@ fn int main(String[] args)
 
 fn void general()
 {
-	Matrix{2,2, double} mat  = {{ r(), r(), r(), r() }};
-	Matrix{3,3, double} mat0 = {{ r(), r(), r(), r(), r(), r(), r(), r(), r() }};
-	Matrix{3,2, double} mat1 = {{ r(), r(), r(), r(), r(), r() }};
-	Matrix{3,2, double} mat2 = {{ r(), r(), r(), r(), r(), r() }};
-	Matrix{2,3, double} mat3 = {{ r(), r(), r(), r(), r(), r() }};
+	Matrix2x2 mat  = {{ r(), r(), r(), r() }};
+	Matrix3x3 mat0 = {{ r(), r(), r(), r(), r(), r(), r(), r(), r() }};
+	Matrix3x2 mat1 = {{ r(), r(), r(), r(), r(), r() }};
+	Matrix3x2 mat2 = {{ r(), r(), r(), r(), r(), r() }};
+	Matrix2x3 mat3 = {{ r(), r(), r(), r(), r(), r() }};
 	double scalar1 = r();
 	double[<2>] vec1 = { r(), r() };
-	for (int i = 0; i < 1000000; i++)
-	{
-		Matrix{3,2, double} mat4 = mat1 + mat2; num++;
-		Matrix{2,3, double} mat5 = -mat3; num++;
-		Matrix{3,3, double} mat6 = matrix::@mul(mat1,mat3); num++;
-		Matrix{3,2, double} mat7 = mat2 * scalar1; num++;
-		Matrix{2,3, double} mat8 = matrix::@transpose(mat1); num++;
-		Matrix{2,2, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat0, 0), 0); num++; num++;
-		double mat9_det = mat0.@determinant(); num++;
-		double[<2>] vec2 = mat9 * vec1; num++;
-		Matrix{4,4, double} identity_4 = matrix::@identity(4); num++;
-		double mat6_minor_1_1 = mat0.@minor(1, 1); num++;
-		double mat9_cofactor_0_1 = mat0.@cofactor(0, 1); num++;
-		Matrix{2,2, double} mat10 = mat.@comatrix(); num++;
-		Matrix{2,2, double} mat11 = matrix::inverse(mat); num++;
-		double mat10_trace = mat0.trace(); num++;
-	}
+	@execute() { Matrix3x2 mat4 = mat1 + mat2; num++; };
+	@execute() { Matrix2x3 mat5 = -mat3; num++; };
+	@execute() { Matrix3x3 mat6 = mat1 * mat3; num++; };
+	@execute() { Matrix3x2 mat7 = mat2 * scalar1; num++; };
+	@execute() { Matrix2x3 mat8 = mat1.transposed(); num++; };
+	@execute() { Matrix2x2 mat9 = matrix::@col_slice(matrix::@row_slice(mat0, 0), 0); num++; num++; };
+	@execute() { double mat9_det = mat0.@determinant(); num++; };
+	@execute() { double[<2>] vec2 = mat * vec1; num++; };
+	@execute() { Matrix4x4 identity_4 = matrix::@identity(4); num++; };
+	@execute() { double mat6_minor_1_1 = mat0.@minor(1, 1); num++; };
+	@execute() { double mat9_cofactor_0_1 = mat0.@cofactor(0, 1); num++; };
+	@execute() { Matrix2x2 mat10 = mat.@comatrix(); num++; };
+	@execute() { Matrix2x2 mat11 = matrix::inverse(mat); num++; };
+	@execute() { double mat10_trace = mat0.trace(); num++; };
 	io::printn(num);
 }
 macro specialized($size)
@@ -53,24 +50,20 @@ macro specialized($size)
 	Matrix{$size,$size, double} mat3 = rand_mat($size);
 	double scalar1 = r();
 	double[<$size>] vec1 = rand_vec($size);
-	for (int i = 0; i < 1000000; i++)
-	{
-		if (i % 10000 == 0) io::printfn("loop %d", i);
-		Matrix{$size,$size, double} mat4 = mat1 + mat2; num++;
-		Matrix{$size,$size, double} mat5 = -mat3; num++;
-		Matrix{$size,$size, double} mat6 = matrix::@mul(mat4,mat5); num++;
-		Matrix{$size,$size, double} mat7 = mat6 * scalar1; num++;
-		Matrix{$size,$size, double} mat8 = matrix::@transpose(mat1); num++;
-		Matrix{$size-1,$size-1, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat7, 0), 0); num++; num++;
-		double mat9_det = mat9.@determinant(); num++;
-		double[<$size>] vec2 = mat8 * vec1; num++;
-		Matrix{$size,$size, double} identity_4 = matrix::@identity($size); num++;
-		double mat6_minor_1_1 = mat6.@minor(1, 1); num++;
-		double mat9_cofactor_0_1 = mat8.@cofactor(0, 1); num++;
-		Matrix{$size,$size, double} mat10 = mat8.@comatrix(); num++;
-		Matrix{$size,$size, double} mat11 = matrix::inverse(mat10); num++;
-		double mat10_trace = mat10.trace(); num++;
-	}
+	@execute() { Matrix{$size,$size, double} mat4 = mat1 + mat2; num++; };
+	@execute() { Matrix{$size,$size, double} mat5 = -mat3; num++; };
+	@execute() { Matrix{$size,$size, double} mat6 = mat1 * mat2; num++; };
+	@execute() { Matrix{$size,$size, double} mat7 = mat2 * scalar1; num++; };
+	@execute() { Matrix{$size,$size, double} mat8 = matrix::@transpose(mat1); num++; };
+	@execute() { Matrix{$size-1,$size-1, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat1, 0), 0); num++; num++; };
+	@execute() { double mat9_det = mat3.@determinant(); num++; };
+	@execute() { double[<$size>] vec2 = mat1 * vec1; num++; };
+	@execute() { Matrix{$size,$size, double} identity_4 = matrix::@identity($size); num++; };
+	@execute() { double mat6_minor_1_1 = mat2.@minor(1, 1); num++; };
+	@execute() { double mat9_cofactor_0_1 = mat1.@cofactor(0, 1); num++; };
+	@execute() { Matrix{$size,$size, double} mat10 = mat3.@comatrix(); num++; };
+	@execute() { Matrix{$size,$size, double} mat11 = matrix::inverse(mat1); num++; };
+	@execute() { double mat10_trace = mat2.trace(); num++; };
 	io::printn(num);
 }
 macro rand_mat($size)
@@ -112,3 +105,8 @@ fn double random() => (double)rndTable[(rndIndex++) % 0xFF] / (double)char.max;
 macro double random_range(min, max) => min + (double)(max - min) * random();
 
 macro r(min = -20, max = 20) => min + (double)(max - min) * (double)random_range(min, max);
+
+macro @execute(loops = 1_000_000; @body())
+{
+	for (usz i = 0; i < loops; i++) @body();
+}
