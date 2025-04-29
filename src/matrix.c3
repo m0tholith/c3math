@@ -110,6 +110,16 @@ macro Matrix.adjugate(&self) => matrix::@transpose(self.@comatrix());
  *>
 macro Type Matrix.trace(&self)
 {
+	$switch ROWS:
+		$case 1:
+	return self.val[0];
+		$case 2:
+	return self.m[0][0] + self.m[1][1];
+		$case 3:
+	return self.m[0][0] + self.m[1][1] + self.m[2][2];
+		$case 4:
+	return self.m[0][0] + self.m[1][1] + self.m[2][2] + self.m[3][3];
+	$endswitch
 	Type result;
 	for (usz i = 0; i < ROWS; i++) result += self.m[i][i];
 	return result;
