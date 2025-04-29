@@ -92,7 +92,7 @@ macro Type Matrix.@determinant(&self)
  @require ROWS > 1 && COLS > 1 : "Slicing a one-row or one-column matrix is invalid"
  *>
 macro Matrix.@minor(&self, i, j)
-	=> matrix::@col_slice(matrix::@row_slice(self, i), j).@determinant();
+	=> matrix::@row_slice(matrix::@col_slice(self, i), j).@determinant();
 macro Matrix.@cofactor(&self, i, j)
 	=> (Type)(math::pow(-1, (int)(i + j)) * self.@minor(i, j));
 macro Matrix.@comatrix(&self)
@@ -156,19 +156,33 @@ macro @transpose(&mat)
 macro @row_slice(&mat, idx)
 {
 	Matrix{mat.@rows() - 1,mat.@cols(), $typefrom(mat.@type())} result;
-	for (usz i = 0; i < result.@rows(); i++)
+	if (idx > 0)
 	{
-		mem::copy(&result.m[i], &mat.m[i >= idx ? i + 1 : i], $typefrom(mat.@type()).sizeof * mat.@cols());
-	};
+		for (usz i = 0; i < result.@cols(); i++)
+		{
+			result.m[i][..idx-1] = mat.m[i][..idx-1];
+		}
+	}
+	if (idx < mat.@cols() - 1)
+	{
+		for (usz i = 0; i < result.@cols(); i++)
+		{
+			result.m[i][idx..] = mat.m[i][idx+1..];
+		}
+	}
 	return result;
 }
 macro @col_slice(&mat, idx)
 {
 	Matrix{mat.@rows(),mat.@cols() - 1, $typefrom(mat.@type())} result;
-	@ij_loop(result.@rows(), result.@cols(); usz i, usz j)
-	{
-		result.m[i][j] = mat.m[i][j >= idx ? j + 1 : j];
-	};
+	mem::copy(
+		&result.val[0],
+		&mat.val[0],
+		$typefrom(mat.@type()).sizeof * mat.@rows() * idx);
+	if (idx < mat.@rows() - 1) mem::copy(
+		&result.val[mat.@rows() * idx],
+		&mat.val[mat.@rows() * (long)(idx + 1)],
+		$typefrom(mat.@type()).sizeof * mat.@rows() * (result.@cols() - idx));
 	return result;
 }
 macro apply(&mat, vec)
