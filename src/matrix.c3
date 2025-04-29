@@ -121,24 +121,29 @@ macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 {
 	for (usz i = 0; i < rows; i++) for (usz j = 0; j < cols; j++) @body(i, j);
 }
-macro @mat_mul_sum(mat1, mat2, i, j, n) @private
+macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
 {
-	$typefrom($typeof(mat1.val).inner) result;
-	for (usz n_iter = 0; n_iter < n; n_iter++)
+	$typefrom(mat1.@type())[<$n>] row;
+	var col = mat2.m[j];
+	for (usz n_iter = 0; n_iter < $n; n_iter++)
 	{
-		result += mat1.m[i][n_iter] * mat2.m[n_iter][j];
+		row[n_iter] = mat1.m[n_iter][i];
 	}
-	return result;
+	return row.dot(col);
 }
+<*
+ @require mat1.@cols() == mat2.@rows() : "Incompatible multiplication"
+ @require mat1.@type() == mat2.@type() : "Incompatible multiplication"
+ *>
 macro @mul(mat1, mat2)
 {
-	var n = mat1.@cols();
+	const N = mat1.@cols();
 	const ROWS = mat1.@rows();
 	const COLS = mat2.@cols();
 	Matrix{ROWS,COLS, $typefrom(mat1.@type())} result;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		result.m[i][j] = @mat_mul_sum(mat1, mat2, i, j, n);
+		result.m[i][j] = @mat_mul_sum(mat1, mat2, i, j, N);
 	};
 	return result;
 }
