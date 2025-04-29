@@ -18,11 +18,10 @@ fn int main(String[] args)
 	return 0;
 }
 
-	return 0;
-}
-
 fn void general()
 {
+	Matrix{2,2, double} mat  = {{ r(), r(), r(), r() }};
+	Matrix{3,3, double} mat0 = {{ r(), r(), r(), r(), r(), r(), r(), r(), r() }};
 	Matrix{3,2, double} mat1 = {{ r(), r(), r(), r(), r(), r() }};
 	Matrix{3,2, double} mat2 = {{ r(), r(), r(), r(), r(), r() }};
 	Matrix{2,3, double} mat3 = {{ r(), r(), r(), r(), r(), r() }};
@@ -32,18 +31,18 @@ fn void general()
 	{
 		Matrix{3,2, double} mat4 = mat1 + mat2; num++;
 		Matrix{2,3, double} mat5 = -mat3; num++;
-		Matrix{3,3, double} mat6 = matrix::@mul(mat4,mat5); num++;
-		Matrix{3,3, double} mat7 = mat6 * scalar1; num++;
+		Matrix{3,3, double} mat6 = matrix::@mul(mat1,mat3); num++;
+		Matrix{3,2, double} mat7 = mat2 * scalar1; num++;
 		Matrix{2,3, double} mat8 = matrix::@transpose(mat1); num++;
-		Matrix{2,2, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat7, 0), 0); num++; num++;
-		double mat9_det = mat9.@determinant(); num++;
+		Matrix{2,2, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat0, 0), 0); num++; num++;
+		double mat9_det = mat0.@determinant(); num++;
 		double[<2>] vec2 = mat9 * vec1; num++;
 		Matrix{4,4, double} identity_4 = matrix::@identity(4); num++;
-		double mat6_minor_1_1 = mat6.@minor(1, 1); num++;
-		double mat9_cofactor_0_1 = mat9.@cofactor(0, 1); num++;
-		Matrix{2,2, double} mat10 = mat9.@comatrix(); num++;
-		Matrix{2,2, double} mat11 = matrix::inverse(mat10); num++;
-		double mat10_trace = mat10.trace(); num++;
+		double mat6_minor_1_1 = mat0.@minor(1, 1); num++;
+		double mat9_cofactor_0_1 = mat0.@cofactor(0, 1); num++;
+		Matrix{2,2, double} mat10 = mat.@comatrix(); num++;
+		Matrix{2,2, double} mat11 = matrix::inverse(mat); num++;
+		double mat10_trace = mat0.trace(); num++;
 	}
 	io::printn(num);
 }
