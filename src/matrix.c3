@@ -158,6 +158,9 @@ macro @transpose(&mat)
 	};
 	return result;
 }
+<*
+ @require mat.@rows() > 1 : "Can't row-slice a one-row matrix"
+ *>
 macro @row_slice(&mat, idx)
 {
 	Matrix{mat.@rows() - 1,mat.@cols(), $typefrom(mat.@type())} result;
@@ -177,6 +180,9 @@ macro @row_slice(&mat, idx)
 	}
 	return result;
 }
+<*
+ @require mat.@cols() > 1 : "Can't column-slice a one-column matrix"
+ *>
 macro @col_slice(&mat, idx)
 {
 	Matrix{mat.@rows(),mat.@cols() - 1, $typefrom(mat.@type())} result;
@@ -190,7 +196,7 @@ macro @col_slice(&mat, idx)
 		$typefrom(mat.@type()).sizeof * mat.@rows() * (result.@cols() - idx));
 	return result;
 }
-macro apply(&mat, vec)
+macro apply(&mat, vec) @private
 {
 	$typeof(vec) result;
 	for (usz i = 0; i < vec.len; i++) result[i] =
