@@ -177,8 +177,8 @@ macro @mul(mat1, mat2)
 }
 macro @transpose(&mat)
 {
-	$if $defined(mat.transposed()):
-	return mat.transposed();
+	$if mat.@rows() == 1 ||| mat.@cols() == 1:
+	return (Matrix{mat.@cols(),mat.@rows(), mat.@type()}){ mat.val };
 	$else
 	const ROWS = mat.@cols();
 	const COLS = mat.@rows();
