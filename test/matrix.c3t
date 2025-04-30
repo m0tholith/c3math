@@ -13,6 +13,8 @@ Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 
 Matrix1x3 mat9  = {{ 6, -2, 1 }};
 Matrix3x1 mat10 = {{ 4, -6, 3 }};
 
+Matrix2x2 mat11 = {{ 1, 5, 3, -2 }};
+
 import std::io;
 macro @assert_print(mat1, mat2, $msg = "Not equal")
 {
@@ -83,6 +85,7 @@ fn void comatrix()
 }
 fn void adjugate()
 {
+	@assert_print(mat11.adjugate(), (Matrix2x2){{ -2, -5, -3, 1 }});
 	@assert_print(mat1.adjugate(), (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
 }
 fn void trace()
