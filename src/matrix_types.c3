@@ -171,14 +171,67 @@ fn Matrix4x4f Matrix4x4f.mul(&a, Matrix4x4f b) @operator(*) => {{
 	b.m[2].dot((float[<4>]){ a.m[0][3], a.m[1][3], a.m[2][3], a.m[3][3] }),
 	b.m[3].dot((float[<4>]){ a.m[0][3], a.m[1][3], a.m[2][3], a.m[3][3] }),
 }};
-fn Matrix3x3f Matrix3x2f.mul(&self, Matrix2x3f mat) @operator(*) => @mul(self, mat);
-fn Matrix2x2f Matrix2x3f.mul(&self, Matrix3x2f mat) @operator(*) => @mul(self, mat);
-fn Matrix1x1f Matrix1x2f.mul(&self, Matrix2x1f mat) @operator(*) => @mul(self, mat);
-fn Matrix1x1f Matrix1x3f.mul(&self, Matrix3x1f mat) @operator(*) => @mul(self, mat);
-fn Matrix1x1f Matrix1x4f.mul(&self, Matrix4x1f mat) @operator(*) => @mul(self, mat);
-fn Matrix2x2f Matrix2x1f.mul(&self, Matrix1x2f mat) @operator(*) => @mul(self, mat);
-fn Matrix3x3f Matrix3x1f.mul(&self, Matrix1x3f mat) @operator(*) => @mul(self, mat);
-fn Matrix4x4f Matrix4x1f.mul(&self, Matrix1x4f mat) @operator(*) => @mul(self, mat);
+fn Matrix3x3f Matrix3x2f.mul(&a, Matrix2x3f b) @operator(*) => {{
+	b.m[0].dot((float[<2>]){ a.m[0][0], a.m[1][0] }),
+	b.m[1].dot((float[<2>]){ a.m[0][0], a.m[1][0] }),
+	b.m[2].dot((float[<2>]){ a.m[0][0], a.m[1][0] }),
+	b.m[0].dot((float[<2>]){ a.m[0][1], a.m[1][1] }),
+	b.m[1].dot((float[<2>]){ a.m[0][1], a.m[1][1] }),
+	b.m[2].dot((float[<2>]){ a.m[0][1], a.m[1][1] }),
+	b.m[0].dot((float[<2>]){ a.m[0][2], a.m[1][2] }),
+	b.m[1].dot((float[<2>]){ a.m[0][2], a.m[1][2] }),
+	b.m[2].dot((float[<2>]){ a.m[0][2], a.m[1][2] }),
+}};
+fn Matrix2x2f Matrix2x3f.mul(&a, Matrix3x2f b) @operator(*) => {{
+	((float[<3>])b.m[0]).dot((float[<3>]){ a.m[0][0], a.m[1][0], a.m[2][0] }),
+	((float[<3>])b.m[1]).dot((float[<3>]){ a.m[0][0], a.m[1][0], a.m[2][0] }),
+	((float[<3>])b.m[0]).dot((float[<3>]){ a.m[0][1], a.m[1][1], a.m[2][1] }),
+	((float[<3>])b.m[1]).dot((float[<3>]){ a.m[0][1], a.m[1][1], a.m[2][1] }),
+}};
+fn Matrix1x1f Matrix1x2f.mul(&a, Matrix2x1f b) @operator(*) => {{
+	b.m[0].dot((float[<2>])a.val),
+}};
+fn Matrix1x1f Matrix1x3f.mul(&a, Matrix3x1f b) @operator(*) => {{
+	((float[<3>])b.m[0]).dot((float[<3>])a.val),
+}};
+fn Matrix1x1f Matrix1x4f.mul(&a, Matrix4x1f b) @operator(*) => {{
+	b.m[0].dot((float[<4>])a.val),
+}};
+fn Matrix2x2f Matrix2x1f.mul(&a, Matrix1x2f b) @operator(*) => {{
+	a.val[0] * b.val[0],
+	a.val[1] * b.val[0],
+	a.val[0] * b.val[1],
+	a.val[1] * b.val[1],
+}};
+fn Matrix3x3f Matrix3x1f.mul(&a, Matrix1x3f b) @operator(*) => {{
+	a.val[0] * b.val[0],
+	a.val[1] * b.val[0],
+	a.val[2] * b.val[0],
+	a.val[0] * b.val[1],
+	a.val[1] * b.val[1],
+	a.val[2] * b.val[1],
+	a.val[0] * b.val[2],
+	a.val[1] * b.val[2],
+	a.val[2] * b.val[2],
+}};
+fn Matrix4x4f Matrix4x1f.mul(&a, Matrix1x4f b) @operator(*) => {{
+	a.val[0] * b.val[0],
+	a.val[1] * b.val[0],
+	a.val[2] * b.val[0],
+	a.val[3] * b.val[0],
+	a.val[0] * b.val[1],
+	a.val[1] * b.val[1],
+	a.val[2] * b.val[1],
+	a.val[3] * b.val[1],
+	a.val[0] * b.val[2],
+	a.val[1] * b.val[2],
+	a.val[2] * b.val[2],
+	a.val[3] * b.val[2],
+	a.val[0] * b.val[3],
+	a.val[1] * b.val[3],
+	a.val[2] * b.val[3],
+	a.val[3] * b.val[3],
+}};
 
 fn Matrix1x1 Matrix1x1.transposed(&self) => *self;
 fn Matrix2x2 Matrix2x2.transposed(&self) => {{
@@ -211,3 +264,35 @@ fn Matrix4x1 Matrix1x4.transposed(&self) => { self.val };
 fn Matrix1x2 Matrix2x1.transposed(&self) => { self.val };
 fn Matrix1x3 Matrix3x1.transposed(&self) => { self.val };
 fn Matrix1x4 Matrix4x1.transposed(&self) => { self.val };
+
+fn Matrix1x1f Matrix1x1f.transposed(&self) => *self;
+fn Matrix2x2f Matrix2x2f.transposed(&self) => {{
+	self.val[0], self.val[2],
+	self.val[1], self.val[3],
+}};
+fn Matrix3x3f Matrix3x3f.transposed(&self) => {{
+	self.val[0], self.val[3], self.val[6],
+	self.val[1], self.val[4], self.val[7],
+	self.val[2], self.val[5], self.val[8],
+}};
+fn Matrix4x4f Matrix4x4f.transposed(&self) => {{
+	self.val[0], self.val[4], self.val[8],  self.val[12],
+	self.val[1], self.val[5], self.val[9],  self.val[13],
+	self.val[2], self.val[6], self.val[10], self.val[14],
+	self.val[3], self.val[7], self.val[11], self.val[15],
+}};
+fn Matrix2x3f Matrix3x2f.transposed(&self) => {{
+	self.val[0], self.val[3],
+	self.val[1], self.val[4],
+	self.val[2], self.val[5],
+}};
+fn Matrix3x2f Matrix2x3f.transposed(&self) => {{
+	self.val[0], self.val[2], self.val[4],
+	self.val[1], self.val[3], self.val[5],
+}};
+fn Matrix2x1f Matrix1x2f.transposed(&self) => { self.val };
+fn Matrix3x1f Matrix1x3f.transposed(&self) => { self.val };
+fn Matrix4x1f Matrix1x4f.transposed(&self) => { self.val };
+fn Matrix1x2f Matrix2x1f.transposed(&self) => { self.val };
+fn Matrix1x3f Matrix3x1f.transposed(&self) => { self.val };
+fn Matrix1x4f Matrix4x1f.transposed(&self) => { self.val };
