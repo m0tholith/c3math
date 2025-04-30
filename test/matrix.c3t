@@ -87,6 +87,7 @@ fn void adjugate()
 {
 	@assert_print(mat11.adjugate(), (Matrix2x2){{ -2, -5, -3, 1 }});
 	@assert_print(mat1.adjugate(), (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
+	@assert_print(mat7.adjugate(), (Matrix4x4){{ -2436, -315, 3816, -11934, 960, 130, -1485, 4675, -150, -15, 240, -765, 1377, 170, -2142, 6698 }});
 }
 fn void trace()
 {
