@@ -106,8 +106,89 @@ macro Matrix.@minor(&self, i, j)
 	=> matrix::@row_slice(matrix::@col_slice(self, i), j).@determinant();
 macro Matrix.@cofactor(&self, i, j)
 	=> (Type)(math::pow(-1, (int)(i + j)) * self.@minor(i, j));
+
+<*
+ @require ROWS > 1 && COLS > 1 : "Comatrix of a one-row or one-column matrix is invalid"
+ *>
 macro Matrix.@comatrix(&self)
 {
+	$if ROWS == COLS:
+		$switch ROWS:
+			$case 2:
+	return (Matrix){{
+		self.m[1][1],
+		-self.m[1][0],
+		-self.m[0][1],
+		self.m[0][0],
+	}};
+			$case 3:
+	return (Matrix){{
+		self.m[1][1] * self.m[2][2] - self.m[2][1] * self.m[1][2],
+		self.m[2][0] * self.m[1][2] - self.m[1][0] * self.m[2][2],
+		self.m[1][0] * self.m[2][1] - self.m[2][0] * self.m[1][1],
+		self.m[2][1] * self.m[0][2] - self.m[0][1] * self.m[2][2],
+		self.m[0][0] * self.m[2][2] - self.m[2][0] * self.m[0][2],
+		self.m[2][0] * self.m[0][1] - self.m[0][0] * self.m[2][1],
+		self.m[0][1] * self.m[1][2] - self.m[1][1] * self.m[0][2],
+		self.m[1][0] * self.m[0][2] - self.m[0][0] * self.m[1][2],
+		self.m[0][0] * self.m[1][1] - self.m[1][0] * self.m[0][1],
+	}};
+			$case 4:
+	return (Matrix){{
+		(self.m[1][1] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
+		 self.m[2][1] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) +
+		 self.m[3][1] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2])),
+		-(self.m[0][1] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
+		  self.m[2][1] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
+		  self.m[3][1] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2])),
+		(self.m[0][1] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) -
+		 self.m[1][1] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
+		 self.m[3][1] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
+		-(self.m[0][1] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2]) -
+		  self.m[1][1] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2]) +
+		  self.m[2][1] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
+			
+		-(self.m[1][0] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
+		  self.m[2][0] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) +
+		  self.m[3][0] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2])),
+		(self.m[0][0] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
+		 self.m[2][0] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
+		 self.m[3][0] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2])),
+		-(self.m[0][0] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) -
+		  self.m[1][0] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
+		  self.m[3][0] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
+		(self.m[0][0] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2]) -
+		 self.m[1][0] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2]) +
+		 self.m[2][0] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
+			
+		(self.m[1][0] * (self.m[2][1] * self.m[3][3] - self.m[2][3] * self.m[3][1]) -
+		 self.m[2][0] * (self.m[1][1] * self.m[3][3] - self.m[1][3] * self.m[3][1]) +
+		 self.m[3][0] * (self.m[1][1] * self.m[2][3] - self.m[1][3] * self.m[2][1])),
+		-(self.m[0][0] * (self.m[2][1] * self.m[3][3] - self.m[2][3] * self.m[3][1]) -
+		  self.m[2][0] * (self.m[0][1] * self.m[3][3] - self.m[0][3] * self.m[3][1]) +
+		  self.m[3][0] * (self.m[0][1] * self.m[2][3] - self.m[0][3] * self.m[2][1])),
+		(self.m[0][0] * (self.m[1][1] * self.m[3][3] - self.m[1][3] * self.m[3][1]) -
+		 self.m[1][0] * (self.m[0][1] * self.m[3][3] - self.m[0][3] * self.m[3][1]) +
+		 self.m[3][0] * (self.m[0][1] * self.m[1][3] - self.m[0][3] * self.m[1][1])),
+		-(self.m[0][0] * (self.m[1][1] * self.m[2][3] - self.m[1][3] * self.m[2][1]) -
+		  self.m[1][0] * (self.m[0][1] * self.m[2][3] - self.m[0][3] * self.m[2][1]) +
+		  self.m[2][0] * (self.m[0][1] * self.m[1][3] - self.m[0][3] * self.m[1][1])),
+			
+		-(self.m[1][0] * (self.m[2][1] * self.m[3][2] - self.m[2][2] * self.m[3][1]) -
+		  self.m[2][0] * (self.m[1][1] * self.m[3][2] - self.m[1][2] * self.m[3][1]) +
+		  self.m[3][0] * (self.m[1][1] * self.m[2][2] - self.m[1][2] * self.m[2][1])),
+		(self.m[0][0] * (self.m[2][1] * self.m[3][2] - self.m[2][2] * self.m[3][1]) -
+		 self.m[2][0] * (self.m[0][1] * self.m[3][2] - self.m[0][2] * self.m[3][1]) +
+		 self.m[3][0] * (self.m[0][1] * self.m[2][2] - self.m[0][2] * self.m[2][1])),
+		-(self.m[0][0] * (self.m[1][1] * self.m[3][2] - self.m[1][2] * self.m[3][1]) -
+		  self.m[1][0] * (self.m[0][1] * self.m[3][2] - self.m[0][2] * self.m[3][1]) +
+		  self.m[3][0] * (self.m[0][1] * self.m[1][2] - self.m[0][2] * self.m[1][1])),
+		(self.m[0][0] * (self.m[1][1] * self.m[2][2] - self.m[1][2] * self.m[2][1]) -
+		 self.m[1][0] * (self.m[0][1] * self.m[2][2] - self.m[0][2] * self.m[2][1]) +
+		 self.m[2][0] * (self.m[0][1] * self.m[1][2] - self.m[0][2] * self.m[1][1])),
+	}};
+		$endswitch
+	$endif
 	Matrix result;
 	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
 	{
@@ -290,3 +371,8 @@ macro inverse(&mat)
 	$typeof(mat) result = mat.adjugate();
 	return result / det;
 }
+
+macro @det_3x3_const(#a, #b, #c, #d, #e, #f, #g, #h, #i) @private =>
+	#a * (#e * #i - #f * #h) -
+	#b * (#d * #i - #f * #g) +
+	#c * (#d * #h - #e * #g);
