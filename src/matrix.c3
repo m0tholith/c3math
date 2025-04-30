@@ -177,6 +177,9 @@ macro @mul(mat1, mat2)
 }
 macro @transpose(&mat)
 {
+	$if $defined(mat.transposed()):
+	return mat.transposed();
+	$else
 	const ROWS = mat.@cols();
 	const COLS = mat.@rows();
 	Matrix{ROWS,COLS, $typefrom(mat.@type())} result;
@@ -185,6 +188,7 @@ macro @transpose(&mat)
 		result.m[j][i] = mat.m[i][j];
 	};
 	return result;
+	$endif
 }
 <*
  @require mat.@rows() > 1 : "Can't row-slice a one-row matrix"
