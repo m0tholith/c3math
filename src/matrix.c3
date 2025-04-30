@@ -10,10 +10,21 @@ import std::io;
 import std::core::mem;
 import std::math;
 
+macro @is_pow_2() @const
+{
+	$for var $x = ROWS; $x % 2 == 0; $x /= 2:
+		$if $x == 2:
+			return true;
+		$endif
+	$endfor
+	return false;
+}
+
 union Matrix (Printable)
 {
 	Type[COLS * ROWS] val;
-	Type[ROWS][COLS] m;
+	Type[<ROWS>][COLS] m @if(@is_pow_2());
+	Type[ROWS][COLS] m @if(!@is_pow_2());
 }
 fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
