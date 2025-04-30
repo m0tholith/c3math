@@ -115,7 +115,14 @@ macro Matrix.@comatrix(&self)
 	};
 	return result;
 }
-macro Matrix.adjugate(&self) => matrix::@transpose(self.@comatrix());
+macro Matrix.adjugate(&self)
+{
+	$if $defined(self.transposed()):
+	return self.@comatrix().transposed();
+	$else
+	return matrix::@transpose(self.@comatrix());
+	$endif
+}
 <*
  @require ROWS == COLS : "Trace of a non-square matrix is undefined"
  *>
