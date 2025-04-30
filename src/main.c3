@@ -83,7 +83,7 @@ macro specialized($size)
 	@mark("Matrix Multiplication");
 	@execute() { Matrix{$size,$size, double} mat7 = mat2 * scalar1; num++; };
 	@mark("Scalar Multiplication");
-	@execute() { Matrix{$size,$size, double} mat8 = matrix::@transpose(mat1); num++; };
+	@execute() { Matrix{$size,$size, double} mat8 = mat1.transposed(); num++; };
 	@mark("Transposition");
 	@execute() { Matrix{$size-1,$size-1, double} mat9 = matrix::@col_slice(matrix::@row_slice(mat1, 0), 0); num++; num++; };
 	@mark("Slicing");
