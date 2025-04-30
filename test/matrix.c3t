@@ -10,6 +10,9 @@ Matrix3x2 mat6 = {{  -6, -15, -12, -11, -14,  12,                }};
 Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -2, 2 }};
 Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
 
+Matrix1x3 mat9  = {{ 6, -2, 1 }};
+Matrix3x1 mat10 = {{ 4, -6, 3 }};
+
 import std::io;
 macro @assert_print(mat1, mat2, $msg = "Not equal")
 {
@@ -59,6 +62,8 @@ fn void matrix_mul()
 	@assert_print(mat4 * mat2, (Matrix2x2){{ 120, 199, 6, -50 }});
 	@assert_print(mat6 * mat4, (Matrix3x3){{ 40, 79, -249, -8, 49, -420, -192, -216, 12 }});
 	@assert_print(mat8 * mat7, (Matrix4x4){{ 144, 133, 197, 187, -30, 19, 415, -20, -331, -493, 202, -223, 3, -162, 97, 129 }});
+	@assert_print(mat9 * mat10, (Matrix1x1){{ 39 }});
+	@assert_print(mat10 * mat9, (Matrix3x3){{ 24, -36, 18, -8, 12, -6, 4, -6, 3 }});
 }
 fn void determinant()
 {
