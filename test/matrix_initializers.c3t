@@ -1,6 +1,7 @@
 module matrix @test;
 
 import std::math;
+import std::math::matrix;
 
 fn void scaled_matrix()
 {
@@ -28,7 +29,14 @@ fn void rotated_matrix_z()
 {                         
 	@assert_print(rounded(rotated_z(math::PI / 2)), (Matrix3x3){{ 0, 1, 0, -1, 0, 0, 0, 0, 1 }});
 }
-
+fn void ortho_matrix()
+{
+	@assert_print(ortho(0, 20, 20, 0, 0.1, 100).val, std::math::matrix::ortho{double}(0, 20, 20, 0, 0.1, 100).m);
+}
+fn void perspective_matrix()
+{
+	@assert_print(perspective(math::PI / 2, 1, 0.1, 100).val, std::math::matrix::perspective{double}(math::PI / 2, 1, 0.1, 100).m);
+}
 
 macro rounded(mat)
 {
