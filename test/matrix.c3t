@@ -126,7 +126,7 @@ fn void inverted()
 	// mitigate floating point precision problems
 	Matrix3x3 source = {
 		((double[<9>])
-		matrix::inverse(mat5).val
+		matrix::inverse(mat5)!!.val
 		* 1000).round() / 1000};
 	Matrix3x3 result = {
 		((double[<9>])

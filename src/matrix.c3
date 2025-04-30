@@ -273,13 +273,14 @@ macro @identity($size, $Type = double)
 	return result;
 }
 
+faultdef MATRIX_INVERSE_DOESNT_EXIST;
 <*
  @require mat.@rows() == mat.@cols() : "Can't invert a non-square matrix"
  *>
 macro inverse(&mat)
 {
 	$typefrom(mat.@type()) det = mat.@determinant();
-	assert(det != 0);
+	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
 	$typeof(mat) result = mat.adjugate();
 	return result / det;
 }

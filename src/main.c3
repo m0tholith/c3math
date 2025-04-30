@@ -60,7 +60,7 @@ fn void general()
 	@mark("Cofactor");
 	@execute() { Matrix2x2 mat10 = mat.@comatrix(); num++; };
 	@mark("Comatrix");
-	@execute() { Matrix2x2 mat11 = matrix::inverse(mat); num++; };
+	@execute() { Matrix2x2 mat11 = matrix::inverse(mat)!!; num++; };
 	@mark("Inverse");
 	@execute() { double mat10_trace = mat0.trace(); num++; };
 	@mark("Trace");
@@ -99,7 +99,7 @@ macro specialized($size)
 	@mark("Cofactor");
 	@execute() { Matrix{$size,$size, double} mat10 = mat3.@comatrix(); num++; };
 	@mark("Comatrix");
-	@execute() { Matrix{$size,$size, double} mat11 = matrix::inverse(mat1); num++; };
+	@execute() { Matrix{$size,$size, double} mat11 = matrix::inverse(mat1)!!; num++; };
 	@mark("Inverse");
 	@execute() { double mat10_trace = mat2.trace(); num++; };
 	@mark("Trace");
