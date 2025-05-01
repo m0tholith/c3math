@@ -109,6 +109,9 @@ fn void resize()
 {
 	@assert_print(@resize(mat1, 4,4), (Matrix4x4){{ -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0, 0, 0, 0, 0 }});
 	@assert_print(@resize(mat1, 2,2), (Matrix2x2){{ -20, -7, 4, 15 }});
+	@assert_print(@resize(mat4, 2,2), (Matrix2x2){{ 8, -8, 7, -11 }});
+	@assert_print(@resize(mat6, 3,3), (Matrix3x3){{ -6, -15, -12, -11, -14, 12, 0, 0, 0 }});
+	@assert_print(@resize(mat3, 3,1), (Matrix3x1){{ -2, 20, -1 }});
 }
 fn void transpose()
 {
