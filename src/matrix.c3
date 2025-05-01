@@ -224,6 +224,22 @@ macro Type Matrix.trace(&self)
 	return result;
 }
 
+<*
+ @require col1 < COLS && col2 < COLS : "Index out of range"
+ *>
+fn void Matrix.swap_col(&self, usz col1, usz col2)
+	=> @swap(self.m[col1], self.m[col2]);
+<*
+ @require row1 < ROWS && row2 < ROWS : "Index out of range"
+ *>
+fn void Matrix.swap_row(&self, usz row1, usz row2)
+{
+	for (usz i = 0; i < COLS; i++)
+	{
+		@swap(self.m[i][row1], self.m[i][row2]);
+	}
+}
+
 macro Matrix.translate(&self, scale_vec) => self * translated(scale_vec);
 macro Matrix.rotate_2d(&self, scale_vec) => self * rotated_2d(scale_vec);
 macro Matrix.rotate_x(&self, scale_vec) => self * rotated_x(scale_vec);

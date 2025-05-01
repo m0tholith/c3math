@@ -93,6 +93,18 @@ fn void trace()
 {
 	@assert_print(mat1.trace(), -21);
 }
+fn void swap_col()
+{
+	Matrix3x3 test_mat = mat1;
+	test_mat.swap_col(0, 1);
+	@assert_print(test_mat, (Matrix3x3){{ 4, 15, 20, -20, -7, -17, 10, 8, -16 }});
+}
+fn void swap_row()
+{
+	Matrix3x3 test_mat = mat1;
+	test_mat.swap_row(0, 1);
+	@assert_print(test_mat, (Matrix3x3){{ -7, -20, -17, 15, 4, 20, 8, 10, -16 }});
+}
 fn void transpose()
 {
 	@assert_print(mat1.transposed(), (Matrix3x3){{ -20, 4, 10, -7, 15, 8, -17, 20, -16 }});
