@@ -412,8 +412,3 @@ macro @resize(&mat, usz $new_rows, usz $new_cols)
 	$endif
 	return result;
 }
-
-macro @det_3x3_const(#a, #b, #c, #d, #e, #f, #g, #h, #i) @private =>
-	#a * (#e * #i - #f * #h) -
-	#b * (#d * #i - #f * #g) +
-	#c * (#d * #h - #e * #g);
