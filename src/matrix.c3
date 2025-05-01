@@ -116,10 +116,8 @@ macro Matrix.@comatrix(&self)
 		$switch ROWS:
 			$case 2:
 	return (Matrix){{
-		self.m[1][1],
-		-self.m[1][0],
-		-self.m[0][1],
-		self.m[0][0],
+		[0] = self.m[1][1], [2] = -self.m[0][1],
+		[1] = -self.m[1][0], [3] = self.m[0][0],
 	}};
 			$case 3:
 	return (Matrix){{
