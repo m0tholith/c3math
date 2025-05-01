@@ -388,6 +388,31 @@ macro inverse(&mat)
 	return result / det;
 }
 
+macro @resize(&mat, usz $new_rows, usz $new_cols)
+{
+	Matrix{$new_rows,$new_cols, $typefrom(mat.@type())} result;
+	$if $new_cols < mat.@cols():
+	for (usz i = 0; i < $new_cols; i++)
+	{
+		$if $new_rows < mat.@rows():
+		result.m[i][..] = mat.m[i][:$new_rows];
+		$else
+		result.m[i][:mat.@rows()] = mat.m[i][..];
+		$endif
+	}
+	$else
+	for (usz i = 0; i < mat.@cols(); i++)
+	{
+		$if $new_rows < mat.@rows():
+		result.m[i][..] = mat.m[i][:$new_rows];
+		$else
+		result.m[i][:mat.@rows()] = mat.m[i][..];
+		$endif
+	}
+	$endif
+	return result;
+}
+
 macro @det_3x3_const(#a, #b, #c, #d, #e, #f, #g, #h, #i) @private =>
 	#a * (#e * #i - #f * #h) -
 	#b * (#d * #i - #f * #g) +
