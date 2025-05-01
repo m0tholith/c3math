@@ -390,6 +390,20 @@ macro inverse(&mat)
 
 macro @resize(&mat, usz $new_rows, usz $new_cols)
 {
+	$if $new_cols == mat.@cols() &&& $new_rows == mat.@rows():
+	return mat;
+	$endif
+
+	$if $new_rows == mat.@rows():
+		$if $new_cols < mat.@cols():
+	return (Matrix{$new_rows,$new_cols, $typefrom(mat.@type())}){ .m = mat.m[:$new_cols] };
+		$else
+	Matrix{$new_rows,$new_cols, $typefrom(mat.@type())} _result;
+	_result.val[:mat.@cols() * mat.@rows()] = mat.val[..];
+	return _result;
+		$endif
+	$endif
+
 	Matrix{$new_rows,$new_cols, $typefrom(mat.@type())} result;
 	$if $new_cols < mat.@cols():
 	for (usz i = 0; i < $new_cols; i++)
