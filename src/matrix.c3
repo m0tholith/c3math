@@ -36,12 +36,22 @@ macro Matrix.@type(#mat) @const => Type.typeid;
 
 fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
 	=> { .val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val };
+fn void Matrix.add_assign(&self, Matrix mat) @operator(+=)
+	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val);
 fn Matrix Matrix.negate(&self) @operator(-)
 	=> { .val = -(Type[<COLS * ROWS>])self.val };
-fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-) => *self + -mat;
+fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-)
+	=> { .val = (Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val };
+fn void Matrix.subtract_assign(&self, Matrix mat) @operator(-=)
+	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val);
 fn Matrix Matrix.mul_scalar(&self, Type scalar) @operator(*)
 	=> { .val = (Type[<COLS * ROWS>])self.val * scalar };
-fn Matrix Matrix.div_scalar(&self, Type scalar) @operator(/) => self.mul_scalar(1 / scalar);
+fn void Matrix.mul_scalar_assign(&self, Type scalar) @operator(*=)
+	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val * scalar);
+fn Matrix Matrix.div_scalar(&self, Type scalar) @operator(/)
+	=> { .val = (Type[<COLS * ROWS>])self.val / scalar };
+fn void Matrix.div_scalar_assign(&self, Type scalar) @operator(/=)
+	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val / scalar);
 
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
 
