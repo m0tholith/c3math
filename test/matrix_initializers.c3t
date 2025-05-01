@@ -48,6 +48,6 @@ fn void look_at_matrix()
 
 macro rounded(mat)
 {
-	foreach (&i : mat.val) *i = math::round(10000 * *i) / 10000;
+	foreach (&i : mat.val) *i = math::round(1000000 * *i) / 1000000;
 	return mat;
 }
