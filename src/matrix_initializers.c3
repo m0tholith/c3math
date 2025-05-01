@@ -48,20 +48,20 @@ macro ortho(left, right, top, bottom, near, far, $Type = double)
 
 	return (Matrix{4,4, $Type}){{
 		2 / ($Type)width, 0, 0, 0,
-		0, 2 / ($Type)height, 0, 0,
+		0, -2 / ($Type)height, 0, 0,
 		0, 0, -2 / ($Type)depth, 0,
-		-($Type)(right + left) / ($Type)width, -($Type)(top + bottom) / ($Type)height, -($Type)(far + near) / ($Type)depth, 1
+		-($Type)(right + left) / ($Type)width, ($Type)(top + bottom) / ($Type)height, -($Type)(far + near) / ($Type)depth, 1
 	}};
 }
 macro perspective(fov, aspect_ratio, near, far, $Type = double)
 {
-	var f = ($Type)math::tan(math::PI * 0.5 - 0.5 * fov);
+	var f = ($Type)math::cotan(fov / 2.0);
 	var range_inv = 1.0 / ($Type)(near - far);
 
 	return (Matrix{4,4, $Type}){{
 		f / ($Type)aspect_ratio, 0, 0, 0,
 		0, f, 0, 0,
-		0, 0, (near + far) * range_inv,  near * far * range_inv * 2,
-		0, 0, -1, 0,
+		0, 0, (near + far) * range_inv, -1,
+		0, 0, near * far * range_inv * 2, 0,
 	}};
 }

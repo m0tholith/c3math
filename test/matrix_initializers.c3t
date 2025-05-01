@@ -31,11 +31,11 @@ fn void rotated_matrix_z()
 }
 fn void ortho_matrix()
 {
-	@assert_print(ortho(0, 20, 20, 0, 0.1, 100).val, std::math::matrix::ortho{double}(0, 20, 20, 0, 0.1, 100).m);
+	@assert_print(rounded(ortho(0, 20, 20, 0, 0.1, 100)), rounded((Matrix4x4){{ 0.100000001, 0, 0, 0, 0, -0.100000001, 0, 0, 0, 0, -0.0200200193, 0, -1, 1, -1.002002, 1 }}));
 }
 fn void perspective_matrix()
 {
-	@assert_print(perspective(math::PI / 2, 1, 0.1, 100).val, std::math::matrix::perspective{double}(math::PI / 2, 1, 0.1, 100).m);
+	@assert_print(rounded(perspective(math::PI / 2, 1, 0.1, 100)), rounded((Matrix4x4){{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1.002002, -1, 0, 0, -0.2002002, 0 }}));
 }
 
 macro rounded(mat)
