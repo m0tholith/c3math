@@ -67,6 +67,23 @@ macro perspective(fov, aspect_ratio, near, far, $Type = double)
 }
 <*
  @require $typeof(eye).kindof == VECTOR && eye.len == 3
+ @require $typeof(forward).kindof == VECTOR && forward.len == 3
+ @require $typeof(world_up).kindof == VECTOR && world_up.len == 3
+ *>
+macro look(eye, forward, world_up, $Type = double)
+{
+	var right = (forward.cross(world_up)).normalize();
+	var up = right.cross(forward);
+
+	return (Matrix{4,4, $Type}){{
+		right.x, up.x, -forward.x, 0,
+		right.y, up.y, -forward.y, 0,
+		right.z, up.z, -forward.z, 0,
+		-eye.dot(right), -eye.dot(up), eye.dot(forward), 1,
+	}};
+}
+<*
+ @require $typeof(eye).kindof == VECTOR && eye.len == 3
  @require $typeof(target).kindof == VECTOR && target.len == 3
  @require $typeof(world_up).kindof == VECTOR && world_up.len == 3
  *>
