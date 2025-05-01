@@ -37,6 +37,10 @@ fn void perspective_matrix()
 {
 	@assert_print(rounded(perspective(math::PI / 2, 1, 0.1, 100)), rounded((Matrix4x4){{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1.002002, -1, 0, 0, -0.2002002, 0 }}));
 }
+fn void look_at_matrix()
+{
+	@assert_print(rounded(look_at((double[<3>]){ 1, -1, 1 }, (double[<3>]){ 2, 4, 6 }, (double[<3>]){ 0, 1, 0 })), rounded((Matrix4x4){{-0.980580688, -0.137308761, -0.140028015, 0, 0, 0.714005589, -0.700140059, 0, 0.196116135, -0.686543822, -0.700140059, 0, 0.784464538, 1.53785825, 0.140028, 1}}));
+}
 
 macro rounded(mat)
 {
