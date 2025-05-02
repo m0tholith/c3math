@@ -97,14 +97,9 @@ macro Type Matrix.@determinant(&self)
 				   self.m[1][1] * (self.m[2][0] * self.m[3][2] - self.m[3][0] * self.m[2][2]) +
 				   self.m[1][2] * (self.m[2][0] * self.m[3][1] - self.m[3][0] * self.m[2][1]) );
 		$default:
-	Type result;
-	double mul = 1;
-	var sliced = matrix::@row_slice(self, 0);
-	for (usz i = 0; i < ROWS; i++)
-	{
-		result += (Type)(self.m[0][i] * mul * matrix::@col_slice(sliced, i).@determinant());
-		mul *= -1;
-	}
+	Type result = 1;
+	Matrix upper = self.lu_decomp().second;
+	for (usz i = 0; i < COLS; i++) result *= upper.m[i][i];
 	return result;
 	$endswitch
 }
