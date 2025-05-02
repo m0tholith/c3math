@@ -157,5 +157,5 @@ macro @mark($msg)
 			$msg = $msg +++ " ";
 		$endif
 	$endfor
-	io::printfn($msg +++ "%0.2fms", c.mark().to_sec() * 1_000);
+	io::printfn($msg +++ "%s", c.mark());
 }
