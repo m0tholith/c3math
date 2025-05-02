@@ -14,8 +14,11 @@ Matrix1x3 mat9  = {{ 6, -2, 1 }};
 Matrix3x1 mat10 = {{ 4, -6, 3 }};
 
 Matrix2x2 mat11 = {{ 1, 5, 3, -2 }};
+Matrix3x3 mat12 = {{ 2, 4, -2, 3, 7, 4, 1, 7, 5 }};
+Matrix3x3 mat13 = {{ 2, -4, -4, -1, 6, -2, -2, 3, 8 }};
 
 import std::io;
+import std::collections::tuple;
 macro @assert_print(mat1, mat2, $msg = "Not equal")
 {
 	io::printfn("actual:   %s", mat1);
@@ -104,6 +107,16 @@ fn void swap_row()
 	Matrix3x3 test_mat = mat1;
 	test_mat.swap_row(0, 1);
 	@assert_print(test_mat, (Matrix3x3){{ -7, -20, -17, 15, 4, 20, 8, 10, -16 }});
+}
+fn void lu_decomp()
+{
+	Tuple{Matrix3x3, Matrix3x3} lu = mat12.lu_decomp();
+	@assert_print(lu.first, (Matrix3x3){{ 1, 2, -1, 0, 1, 7, 0, 0, 1 }});
+	@assert_print(lu.second, (Matrix3x3){{ 2, 0, 0, 3, 1, 0, 1, 5, -29 }});
+
+	lu = mat13.lu_decomp();
+	@assert_print(lu.first, (Matrix3x3){{ 1, -2, -2, 0, 1, -1, 0, 0, 1 }});
+	@assert_print(lu.second, (Matrix3x3){{ 2, 0, 0, -1, 4, 0, -2, -1, 3 }});
 }
 fn void resize()
 {

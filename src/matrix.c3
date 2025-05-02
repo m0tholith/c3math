@@ -9,6 +9,7 @@ import matrix @public;
 import std::io;
 import std::core::mem;
 import std::math;
+import std::collections::tuple;
 
 macro @is_pow_2() @const
 {
@@ -246,6 +247,39 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 	{
 		@swap(self.m[i][row1], self.m[i][row2]);
 	}
+}
+
+<*
+ @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
+ *>
+macro Tuple{Matrix,Matrix} Matrix.lu_decomp(&self)
+{
+	Tuple{Matrix,Matrix} lu = { matrix::@identity(COLS), {{}} };
+	Matrix* lower = &lu.first;
+	Matrix* upper = &lu.second;
+	for (usz i = 0; i < COLS; i++)
+	{
+		// compute upper, row by row
+		for (usz j = i; j < COLS; j++)
+		{
+			upper.m[j][i] = self.m[j][i];
+			for (usz k = 0; k < i; k++)
+			{
+				upper.m[j][i] -= upper.m[j][k] * lower.m[k][i];
+			}
+		}
+		// compute lower, column by column
+		if (i + 1 < COLS) lower.m[i][i + 1..] = self.m[i][i + 1..];
+		for (usz j = i + 1; j < COLS; j++)
+		{
+			for (usz k = 0; k < i; k++)
+			{
+				lower.m[i][j] -= upper.m[i][k] * lower.m[k][j];
+			}
+			lower.m[i][j] /= upper.m[i][i];
+		}
+	}
+	return lu;
 }
 
 macro Matrix.translate(&self, scale_vec) => self * translated(scale_vec);
