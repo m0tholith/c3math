@@ -70,7 +70,7 @@ fn void comatrix()
 }
 fn void adjugate()
 {
-	mat1.adjugate();
+	matrix::adjugate(mat1);
 }
 fn void trace()
 {

@@ -400,3 +400,11 @@ fn Matrix4x1f Matrix1x4f.transposed(&self) => { self.val };
 fn Matrix1x2f Matrix2x1f.transposed(&self) => { self.val };
 fn Matrix1x3f Matrix3x1f.transposed(&self) => { self.val };
 fn Matrix1x4f Matrix4x1f.transposed(&self) => { self.val };
+
+fn Matrix2x2 Matrix2x2.adjugate(&self) => self.@comatrix().transposed();
+fn Matrix3x3 Matrix3x3.adjugate(&self) => self.@comatrix().transposed();
+fn Matrix4x4 Matrix4x4.adjugate(&self) => self.@comatrix().transposed();
+
+fn Matrix2x2f Matrix2x2f.adjugate(&self) => self.@comatrix().transposed();
+fn Matrix3x3f Matrix3x3f.adjugate(&self) => self.@comatrix().transposed();
+fn Matrix4x4f Matrix4x4f.adjugate(&self) => self.@comatrix().transposed();

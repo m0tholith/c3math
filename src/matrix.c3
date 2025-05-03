@@ -200,14 +200,6 @@ macro Matrix.@comatrix(&self)
 	};
 	return result;
 }
-macro Matrix.adjugate(&self)
-{
-	$if COLS <= 4:
-	return self.@comatrix().transposed();
-	$else
-	return matrix::@transpose(self.@comatrix());
-	$endif
-}
 <*
  @require ROWS == COLS : "Trace of a non-square matrix is undefined"
  *>
@@ -413,6 +405,8 @@ macro @identity($size, $Type = double)
 	return result;
 }
 
+macro adjugate(&mat) => matrix::@transpose(mat.@comatrix());
+
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
 <*
  @require mat.@rows() == mat.@cols() : "Can't invert a non-square matrix"
@@ -421,8 +415,11 @@ macro inverse(&mat)
 {
 	$typefrom(mat.@type()) det = mat.@determinant();
 	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
-	$typeof(mat) result = mat.adjugate();
-	return result / det;
+	$if $defined(mat.adjugate):
+	return mat.adjugate() / det;
+	$else
+	return adjugate(mat) / det;
+	$endif
 }
 
 macro @resize(&mat, usz $new_rows, usz $new_cols)
