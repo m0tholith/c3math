@@ -108,10 +108,3 @@ fn void inverted()
 {
 	matrix::inverse(mat7)!!;
 }
-
-module matrix::benchmarks;
-fn void initialize() @init
-{
-	set_benchmark_warmup_iterations(1_000);
-	set_benchmark_max_iterations(1_000_000);
-}
