@@ -202,7 +202,7 @@ macro Matrix.@comatrix(&self)
 }
 macro Matrix.adjugate(&self)
 {
-	$if $defined(self.transposed()):
+	$if COLS <= 4:
 	return self.@comatrix().transposed();
 	$else
 	return matrix::@transpose(self.@comatrix());
