@@ -5,7 +5,7 @@
   "dependencies": [ ],
   "authors": [ "m0tholith" ],
   "version": "0.1.0",
-  "sources": [ "src/**" ],
+  "sources": [ "src/**", "bench/**" ],
   "test-sources": [ "test/**" ],
   "output": "build",
   "targets": {
