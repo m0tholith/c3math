@@ -1,4 +1,4 @@
-module matrix::benchmarks::matrix8x8 @benchmark;
+module matrix::benchmarks::matrix8x8 @benchmark @if($$BENCHMARKING);
 import matrix::mat_type;
 
 alias Matrix8x8 = Matrix{8,8, double};
@@ -115,7 +115,7 @@ fn void inverted()
 	matrix::inverse(mat1)!!;
 }
 
-module matrix::benchmarks::matrix8x8;
+module matrix::benchmarks::matrix8x8 @if($$BENCHMARKING);
 fn void init_mats() @init
 {
 	mat1 = benchmarks::@rand_mat(8);
