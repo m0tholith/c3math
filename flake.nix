@@ -22,6 +22,7 @@
 
 					# debugging
           hyperfine
+          gdb
         ];
       };
     };
