@@ -350,24 +350,24 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 <*
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  *>
-macro Tuple{Matrix,Matrix} Matrix.lu_decomp(&self)
+macro Tuple{Matrix, Matrix}.lu_decomp(&self, Matrix* source)
 {
-	Tuple{Matrix,Matrix} lu = { matrix::@identity(COLS), {{}} };
-	Matrix* lower = &lu.first;
-	Matrix* upper = &lu.second;
+	Matrix* lower = &self.first;
+	Matrix* upper = &self.second;
+	*lower = matrix::@identity(COLS);
 	for (usz i = 0; i < COLS; i++)
 	{
 		// compute upper, row by row
 		for (usz j = i; j < COLS; j++)
 		{
-			upper.m[j][i] = self.m[j][i];
+			upper.m[j][i] = source.m[j][i];
 			for (usz k = 0; k < i; k++)
 			{
 				upper.m[j][i] -= upper.m[j][k] * lower.m[k][i];
 			}
 		}
 		// compute lower, column by column
-		if (i + 1 < COLS) lower.m[i][i + 1..] = self.m[i][i + 1..];
+		if (i + 1 < COLS) lower.m[i][i + 1..] = source.m[i][i + 1..];
 		for (usz j = i + 1; j < COLS; j++)
 		{
 			for (usz k = 0; k < i; k++)
@@ -377,7 +377,6 @@ macro Tuple{Matrix,Matrix} Matrix.lu_decomp(&self)
 			lower.m[i][j] /= upper.m[i][i];
 		}
 	}
-	return lu;
 }
 
 macro Matrix.translate(&self, scale_vec) => self * translated(scale_vec);
