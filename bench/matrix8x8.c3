@@ -7,6 +7,7 @@ Matrix8x8 mat1;
 Matrix8x8 mat2;
 
 Matrix8x8 result8x8;
+Tuple{Matrix8x8, Matrix8x8} lu8;
 
 double[<8>] vec1;
 double[8] array1;
@@ -88,7 +89,7 @@ fn void swap_row()
 }
 fn void lu_decomp()
 {
-	mat1.lu_decomp();
+	lu8.lu_decomp(&mat1);
 }
 fn void resize()
 {
