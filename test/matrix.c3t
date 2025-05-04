@@ -180,6 +180,18 @@ fn void identity()
 	@assert_print(@identity(2), (Matrix2x2){{ 1, 0, 0, 1 }});
 	@assert_print(@identity(3), (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
 }
+fn void identity_assign()
+{
+	Matrix1x1 t1;
+	matrix::@identity_assign(&t1);
+	@assert_print(t1, (Matrix1x1){{ 1 }});
+	Matrix2x2 t2;
+	matrix::@identity_assign(&t2);
+	@assert_print(t2, (Matrix2x2){{ 1, 0, 0, 1 }});
+	Matrix3x3 t3;
+	matrix::@identity_assign(&t3);
+	@assert_print(t3, (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
+}
 fn void inverted()
 {
 	// round up source and result matrices to nearest 1000th to

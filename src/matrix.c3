@@ -538,6 +538,13 @@ macro @identity($size, $Type = double)
 	$endfor
 	return result;
 }
+<*
+ @require self.@cols() == self.@rows() : "Cannot create non-square identity matrix"
+ *>
+macro @identity_assign(&self)
+{
+	for (usz x = 0; x < self.@cols(); x++) self.m[x][x] = 1;
+}
 
 <*
  @require $typeof(source).kindof == POINTER
