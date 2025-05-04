@@ -4,7 +4,6 @@ Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -
 Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
 
 Matrix4x4 result4x4;
-Tuple{Matrix4x4, Matrix4x4} lu4;
 
 import std::io;
 import std::collections::tuple;
@@ -83,7 +82,7 @@ fn void swap_row()
 }
 fn void lu_decomp()
 {
-	lu4.lu_decomp(&mat8);
+	result4x4.lu_decomp(&mat8);
 }
 fn void resize()
 {

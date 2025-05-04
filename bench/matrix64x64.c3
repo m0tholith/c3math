@@ -6,6 +6,8 @@ alias Matrix64x64 = Matrix{64,64, double};
 Matrix64x64 mat64_1;
 Matrix64x64 mat64_2;
 
+Matrix64x64 result64;
+
 double[<64>] vec64;
 double[64] array64;
 
@@ -50,7 +52,7 @@ fn void list_mul()
 }
 fn void matrix_mul()
 {
-	matrix::@mul(mat64_1, mat64_2);
+	matrix::@mul(result64, &mat64_1, &mat64_2);
 }
 fn void determinant()
 {
@@ -66,11 +68,11 @@ fn void cofactor()
 }
 fn void comatrix()
 {
-	mat64_1.@comatrix();
+	result64.@comatrix(&mat64_1);
 }
 fn void adjugate()
 {
-	matrix::adjugate(mat64_1);
+	matrix::adjugate(&result64, &mat64_1);
 }
 fn void trace()
 {
@@ -88,7 +90,7 @@ fn void swap_row()
 }
 fn void lu_decomp()
 {
-	mat64_1.lu_decomp();
+	result64.lu_decomp(&mat64_1);
 }
 fn void resize()
 {
@@ -96,7 +98,7 @@ fn void resize()
 }
 fn void transpose()
 {
-	matrix::@set_transpose(mat64_1);
+	matrix::@set_transpose(&result64, &mat64_1);
 }
 fn void row_slice()
 {
@@ -112,7 +114,7 @@ fn void identity()
 }
 fn void inverted()
 {
-	matrix::inverse(mat64_1)!!;
+	matrix::inverse(&result64, &mat64_1)!!;
 }
 
 module matrix::benchmarks::matrix64x64 @if($feature(BENCHMARK_64));
