@@ -219,15 +219,8 @@ macro Type Matrix.@determinant(&self)
 	return result;
 	$endswitch
 }
-
-<*
- @require i < ROWS && j < COLS : "Index out of range"
- @require ROWS > 1 && COLS > 1 : "Slicing a one-row or one-column matrix is invalid"
- *>
-macro Matrix.@minor(&self, i, j)
-	=> matrix::@row_slice(matrix::@col_slice(self, i), j).@determinant();
 macro Matrix.@cofactor(&self, i, j)
-	=> (Type)(math::pow(-1, (int)(i + j)) * self.@minor(i, j));
+	=> (Type)(math::pow(-1, (int)(i + j)) * matrix::@minor(self, i, j));
 
 <*
  @require ROWS > 1 && COLS > 1 : "Comatrix of a one-row or one-column matrix is invalid"
@@ -448,42 +441,41 @@ macro @transpose(&mat)
 	}
 }
 <*
- @require mat.@rows() > 1 : "Can't row-slice a one-row matrix"
+ @require $typeof(source).kindof == POINTER
+ @require mat.@rows() == source.@rows() - 1 && mat.@cols() == source.@cols()
  *>
-macro @row_slice(&mat, idx)
+macro @row_slice(&mat, source, idx)
 {
-	Matrix{mat.@rows() - 1,mat.@cols(), $typefrom(mat.@type())} result;
 	if (idx > 0)
 	{
-		for (usz i = 0; i < result.@cols(); i++)
+		for (usz i = 0; i < source.@cols(); i++)
 		{
-			result.m[i][..idx-1] = mat.m[i][..idx-1];
+			mat.m[i][..idx-1] = source.m[i][..idx-1];
 		}
 	}
-	if (idx < mat.@rows() - 1)
+	if (idx < source.@rows() - 1)
 	{
-		for (usz i = 0; i < result.@cols(); i++)
+		for (usz i = 0; i < source.@cols(); i++)
 		{
-			result.m[i][idx..] = mat.m[i][idx+1..];
+			mat.m[i][idx..] = source.m[i][idx+1..];
 		}
 	}
-	return result;
 }
 <*
- @require mat.@cols() > 1 : "Can't column-slice a one-column matrix"
+ @require $typeof(mat).kindof == POINTER
+ @require $typeof(source).kindof == POINTER
+ @require mat.@cols() == (*source).@cols() - 1 && mat.@rows() == (*source).@rows()
  *>
-macro @col_slice(&mat, idx)
+macro @col_slice(&mat, source, idx)
 {
-	Matrix{mat.@rows(),mat.@cols() - 1, $typefrom(mat.@type())} result;
 	mem::copy(
-		&result.m[0],
 		&mat.m[0],
-		$typefrom(mat.@type()).sizeof * mat.@rows() * idx);
-	if (idx < mat.@cols() - 1) mem::copy(
-		&result.m[idx],
-		&mat.m[idx + 1],
-		$typefrom(mat.@type()).sizeof * mat.@rows() * (result.@cols() - idx));
-	return result;
+		&source.m[0],
+		$typefrom(source.@type()).sizeof * source.@rows() * idx);
+	if (idx < source.@cols() - 1) mem::copy(
+		&mat.m[idx],
+		&source.m[idx + 1],
+		$typefrom(source.@type()).sizeof * source.@rows() * (source.@cols() - idx));
 }
 macro apply(&mat, vec) @private
 {
@@ -491,6 +483,23 @@ macro apply(&mat, vec) @private
 	for (usz i = 0; i < vec.len; i++) result[i] =
 		(($typefrom(mat.@type())[<mat.@rows()>])mat.m[i] * ($typefrom(mat.@type())[<mat.@rows()>])vec).sum();
 	return result;
+}
+
+<*
+ @require i < self.@rows() && j < self.@cols() : "Index out of range"
+ @require self.@rows() > 1 && self.@cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
+ @require $typeof(self).kindof == POINTER
+ *>
+macro @minor(&self, i, j)
+{
+	@pool()
+	{
+		Matrix{self.@rows(),self.@cols()-1, $typefrom(self.@type())}* tmp1 = allocator::new_aligned(tmem, Matrix{self.@rows(),self.@cols()-1, $typefrom(self.@type())})!!;
+		matrix::@col_slice(tmp1, self, i);
+		Matrix{self.@rows()-1,self.@cols()-1, $typefrom(self.@type())}* tmp2 = allocator::new_aligned(tmem, Matrix{self.@rows()-1,self.@cols()-1, $typefrom(self.@type())})!!;
+		matrix::@row_slice(tmp2, tmp1, j);
+		return tmp2.@determinant();
+	};
 }
 
 <*
