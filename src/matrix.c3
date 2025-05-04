@@ -350,10 +350,10 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 <*
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  *>
-macro Tuple{Matrix, Matrix}.lu_decomp(&self, Matrix* source)
+macro Matrix.lu_decomp(&self, Matrix* source)
 {
-	Matrix* lower = &self.first;
-	Matrix* upper = &self.second;
+	Matrix* lower = self;
+	Matrix* upper = self;
 	*lower = matrix::@identity(COLS);
 	for (usz i = 0; i < COLS; i++)
 	{
