@@ -52,7 +52,7 @@ fn void list_mul()
 }
 fn void matrix_mul()
 {
-	matrix::@mul(mat1, mat2);
+	matrix::@mul(&result8x8, &mat1, &mat2);
 }
 fn void determinant()
 {
