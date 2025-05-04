@@ -84,13 +84,21 @@ fn void cofactor()
 }
 fn void comatrix()
 {
-	@assert_print(mat1.@comatrix(), (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
+	Matrix3x3 co;
+	co.@comatrix(&mat1);
+	@assert_print(co, (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
 }
-fn void adjugate()
+fn void adjugate_matrix()
 {
-	@assert_print(mat11.adjugate(), (Matrix2x2){{ -2, -5, -3, 1 }});
-	@assert_print(mat1.adjugate(), (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
-	@assert_print(mat7.adjugate(), (Matrix4x4){{ -2436, -315, 3816, -11934, 960, 130, -1485, 4675, -150, -15, 240, -765, 1377, 170, -2142, 6698 }});
+	Matrix2x2 adj2;
+	adj2.adjugate(&mat11);
+	Matrix3x3 adj3;
+	adj3.adjugate(&mat1);
+	Matrix4x4 adj4;
+	adj4.adjugate(&mat7);
+	@assert_print(adj2, (Matrix2x2){{ -2, -5, -3, 1 }});
+	@assert_print(adj3, (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
+	@assert_print(adj4, (Matrix4x4){{ -2436, -315, 3816, -11934, 960, 130, -1485, 4675, -150, -15, 240, -765, 1377, 170, -2142, 6698 }});
 }
 fn void trace()
 {
@@ -110,11 +118,12 @@ fn void swap_row()
 }
 fn void lu_decomp()
 {
-	Tuple{Matrix3x3, Matrix3x3} lu = mat12.lu_decomp();
+	Tuple{Matrix3x3, Matrix3x3} lu;
+	lu.lu_decomp(&mat12);
 	@assert_print(lu.first, (Matrix3x3){{ 1, 2, -1, 0, 1, 7, 0, 0, 1 }});
 	@assert_print(lu.second, (Matrix3x3){{ 2, 0, 0, 3, 1, 0, 1, 5, -29 }});
 
-	lu = mat13.lu_decomp();
+	lu.lu_decomp(&mat13);
 	@assert_print(lu.first, (Matrix3x3){{ 1, -2, -2, 0, 1, -1, 0, 0, 1 }});
 	@assert_print(lu.second, (Matrix3x3){{ 2, 0, 0, -1, 4, 0, -2, -1, 3 }});
 }
@@ -162,10 +171,9 @@ fn void inverted()
 {
 	// round up source and result matrices to nearest 1000th to
 	// mitigate floating point precision problems
-	Matrix3x3 source = {
-		((double[<9>])
-		matrix::inverse(mat5)!!.val
-		* 1000).round() / 1000};
+	Matrix3x3 source;
+	matrix::inverse(&source, &mat5)!!;
+	source.val = ((double[<9>]) source.val * 1000).round() / 1000;
 	Matrix3x3 result = {
 		((double[<9>])
 		{ -1.0/7.0, -1.0, 4.0/7.0, 13.0/49.0, 4.0/7.0, -17.0/49.0, -1.0/49.0, 4.0/7.0, -10.0/49.0 }
