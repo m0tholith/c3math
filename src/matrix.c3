@@ -210,8 +210,12 @@ macro Type Matrix.@determinant(&self)
 				   self.m[1][2] * (self.m[2][0] * self.m[3][1] - self.m[3][0] * self.m[2][1]) );
 		$default:
 	Type result = 1;
-	Matrix upper = self.lu_decomp().second;
-	for (usz i = 0; i < COLS; i++) result *= upper.m[i][i];
+	@pool()
+	{
+		Matrix* lu = allocator::new(tmem, Matrix);
+		lu.lu_decomp(self);
+		for (usz i = 0; i < COLS; i++) result *= lu.m[i][i];
+	};
 	return result;
 	$endswitch
 }
