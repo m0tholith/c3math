@@ -85,7 +85,7 @@ fn void cofactor()
 fn void comatrix()
 {
 	Matrix3x3 co;
-	co.@comatrix(&mat1);
+	co.@comatrix_assign(&mat1);
 	@assert_print(co, (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
 }
 fn void adjugate_matrix()

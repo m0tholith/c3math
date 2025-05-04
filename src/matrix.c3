@@ -233,7 +233,7 @@ macro Matrix.@cofactor(&self, i, j)
  @require ROWS > 1 && COLS > 1 : "Comatrix of a one-row or one-column matrix is invalid"
  @require source != null && source != self
  *>
-macro void Matrix.@comatrix(&self, Matrix* source)
+macro void Matrix.@comatrix_assign(&self, Matrix* source)
 {
 	$if ROWS == COLS:
 		$switch ROWS:
@@ -536,7 +536,7 @@ macro @identity($size, $Type = double)
  *>
 macro adjugate(&mat, source)
 {
-	mat.@comatrix(source);
+	mat.@comatrix_assign(source);
 	matrix::@transpose(mat);
 }
 

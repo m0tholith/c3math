@@ -68,7 +68,7 @@ fn void cofactor()
 }
 fn void comatrix()
 {
-	result8x8.@comatrix(&mat1);
+	result8x8.@comatrix_assign(&mat1);
 }
 fn void adjugate()
 {
