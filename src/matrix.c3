@@ -11,6 +11,7 @@ import std::core::mem;
 import std::math;
 import std::collections::tuple;
 
+macro @is_big_matrix() @const => ROWS * COLS > 65536;
 macro @is_pow_2() @const
 {
 	$for var $x = ROWS; $x % 2 == 0; $x /= 2:
@@ -24,8 +25,8 @@ macro @is_pow_2() @const
 union Matrix (Printable)
 {
 	Type[COLS * ROWS] val;
-	Type[<ROWS>][COLS] m @if(@is_pow_2());
-	Type[ROWS][COLS] m @if(!@is_pow_2());
+	Type[<ROWS>][COLS] m @if(@is_pow_2() && !@is_big_matrix());
+	Type[ROWS][COLS] m @if(!@is_pow_2() || @is_big_matrix());
 }
 fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
@@ -36,23 +37,114 @@ macro usz Matrix.@rows(#mat) @const => ROWS;
 macro Matrix.@type(#mat) @const => Type.typeid;
 
 fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
-	=> { .val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val };
+{
+	$if !@is_big_matrix():
+	return { .val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val };
+	$else
+	Matrix result = *self;
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		result.val[i] += mat.val[i];
+	}
+	return result;
+	$endif
+}
 fn void Matrix.add_assign(&self, Matrix mat) @operator(+=)
-	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val);
+{
+	$if !@is_big_matrix():
+	self.val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val;
+	$else
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		self.val[i] += mat.val[i];
+	}
+	$endif
+}
 fn Matrix Matrix.negate(&self) @operator(-)
-	=> { .val = -(Type[<COLS * ROWS>])self.val };
+{
+	$if !@is_big_matrix():
+	return { .val = -(Type[<COLS * ROWS>])self.val };
+	$else
+	Matrix result;
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		result.val[i] = -self.val[i];
+	}
+	return result;
+	$endif
+}
 fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-)
-	=> { .val = (Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val };
+{
+	$if !@is_big_matrix():
+	return { .val = (Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val };
+	$else
+	Matrix result = *self;
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		result.val[i] -= mat.val[i];
+	}
+	return result;
+	$endif
+}
 fn void Matrix.subtract_assign(&self, Matrix mat) @operator(-=)
-	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val);
+{
+	$if !@is_big_matrix():
+	self.val = (Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val;
+	$else
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		self.val[i] -= mat.val[i];
+	}
+	$endif
+}
 fn Matrix Matrix.mul_scalar(&self, Type scalar) @operator(*)
-	=> { .val = (Type[<COLS * ROWS>])self.val * scalar };
+{
+	$if !@is_big_matrix():
+	return { .val = (Type[<COLS * ROWS>])self.val * scalar };
+	$else
+	Matrix result = *self;
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		result.val[i] *= scalar;
+	}
+	return result;
+	$endif
+}
 fn void Matrix.mul_scalar_assign(&self, Type scalar) @operator(*=)
-	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val * scalar);
+{
+	$if !@is_big_matrix():
+	self.val = (Type[<COLS * ROWS>])self.val * scalar;
+	$else
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		self.val[i] *= scalar;
+	}
+	$endif
+}
 fn Matrix Matrix.div_scalar(&self, Type scalar) @operator(/)
-	=> { .val = (Type[<COLS * ROWS>])self.val / scalar };
+{
+	$if !@is_big_matrix():
+	return { .val = (Type[<COLS * ROWS>])self.val / scalar };
+	$else
+	Matrix result = *self;
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		result.val[i] /= scalar;
+	}
+	return result;
+	$endif
+}
 fn void Matrix.div_scalar_assign(&self, Type scalar) @operator(/=)
-	=> self.val = (Type[COLS * ROWS])((Type[<COLS * ROWS>])self.val / scalar);
+{
+	$if !@is_big_matrix():
+	self.val = (Type[<COLS * ROWS>])self.val / scalar;
+	$else
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		self.val[i] /= scalar;
+	}
+	$endif
+}
 
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
 
@@ -60,9 +152,29 @@ fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] array) @operator(*)
 	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])array));
 
 fn bool Matrix.eq(&self, Matrix mat) @operator(==)
-	=> (Type[<COLS * ROWS>])self.val == (Type[<COLS * ROWS>])mat.val;
+{
+	$if !@is_big_matrix():
+	return (Type[<COLS * ROWS>])self.val == (Type[<COLS * ROWS>])mat.val;
+	$else
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		if (self.val[i] != mat.val[i]) return false;
+	}
+	return true;
+	$endif
+}
 fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
-	=> (Type[<COLS * ROWS>])self.val != (Type[<COLS * ROWS>])mat.val;
+{
+	$if !@is_big_matrix():
+	return (Type[<COLS * ROWS>])self.val != (Type[<COLS * ROWS>])mat.val;
+	$else
+	for (usz i = 0; i < COLS * ROWS; i++)
+	{
+		if (self.val[i] != mat.val[i]) return true;
+	}
+	return false;
+	$endif
+}
 <*
  @require ROWS == COLS : "Can't compute determinant of non-square matrix"
  *>
