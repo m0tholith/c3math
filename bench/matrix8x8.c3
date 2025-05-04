@@ -6,6 +6,8 @@ alias Matrix8x8 = Matrix{8,8, double};
 Matrix8x8 mat1;
 Matrix8x8 mat2;
 
+Matrix8x8 result8x8;
+
 double[<8>] vec1;
 double[8] array1;
 
@@ -66,11 +68,11 @@ fn void cofactor()
 }
 fn void comatrix()
 {
-	mat1.@comatrix();
+	result8x8.@comatrix(&mat1);
 }
 fn void adjugate()
 {
-	matrix::adjugate(mat1);
+	matrix::adjugate(&result8x8, &mat1);
 }
 fn void trace()
 {
@@ -78,13 +80,11 @@ fn void trace()
 }
 fn void swap_col()
 {
-	Matrix8x8 test_mat = mat1;
-	test_mat.swap_col(0, 1);
+	result8x8.swap_col(0, 1);
 }
 fn void swap_row()
 {
-	Matrix8x8 test_mat = mat1;
-	test_mat.swap_row(0, 1);
+	result8x8.swap_row(0, 1);
 }
 fn void lu_decomp()
 {
@@ -96,7 +96,7 @@ fn void resize()
 }
 fn void transpose()
 {
-	matrix::@transpose(mat1);
+	matrix::@transpose(&result8x8, &mat1);
 }
 fn void row_slice()
 {
@@ -112,7 +112,7 @@ fn void identity()
 }
 fn void inverted()
 {
-	matrix::inverse(mat1)!!;
+	matrix::inverse(&result8x8, &mat1)!!;
 }
 
 module matrix::benchmarks::matrix8x8 @if($$BENCHMARKING);

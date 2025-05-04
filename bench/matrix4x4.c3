@@ -3,6 +3,8 @@ module matrix::benchmarks::matrix4x4 @benchmark @if($$BENCHMARKING);
 Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -2, 2 }};
 Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
 
+Matrix4x4 result4x4;
+
 import std::io;
 import std::collections::tuple;
 
@@ -60,11 +62,11 @@ fn void cofactor()
 }
 fn void comatrix()
 {
-	mat7.@comatrix();
+	result4x4.@comatrix(&mat7);
 }
 fn void adjugate()
 {
-	mat7.adjugate();
+	result4x4.adjugate(&mat7);
 }
 fn void trace()
 {
@@ -72,13 +74,11 @@ fn void trace()
 }
 fn void swap_col()
 {
-	Matrix4x4 test_mat = mat7;
-	test_mat.swap_col(0, 1);
+	result4x4.swap_col(0, 1);
 }
 fn void swap_row()
 {
-	Matrix4x4 test_mat = mat7;
-	test_mat.swap_row(0, 1);
+	result4x4.swap_row(0, 1);
 }
 fn void lu_decomp()
 {
@@ -106,5 +106,5 @@ fn void identity()
 }
 fn void inverted()
 {
-	matrix::inverse(mat7)!!;
+	matrix::inverse(&result4x4, &mat7)!!;
 }

@@ -227,90 +227,89 @@ macro Matrix.@cofactor(&self, i, j)
 
 <*
  @require ROWS > 1 && COLS > 1 : "Comatrix of a one-row or one-column matrix is invalid"
+ @require source != null && source != self
  *>
-macro Matrix.@comatrix(&self)
+macro void Matrix.@comatrix(&self, Matrix* source)
 {
 	$if ROWS == COLS:
 		$switch ROWS:
 			$case 2:
-	return (Matrix){{
-		[0] = self.m[1][1], [2] = -self.m[0][1],
-		[1] = -self.m[1][0], [3] = self.m[0][0],
-	}};
+	self.val = {
+		[0] = source.m[1][1], [2] = -source.m[0][1],
+		[1] = -source.m[1][0], [3] = source.m[0][0],
+	};
 			$case 3:
-	return (Matrix){{
-		self.m[1][1] * self.m[2][2] - self.m[2][1] * self.m[1][2],
-		self.m[2][0] * self.m[1][2] - self.m[1][0] * self.m[2][2],
-		self.m[1][0] * self.m[2][1] - self.m[2][0] * self.m[1][1],
-		self.m[2][1] * self.m[0][2] - self.m[0][1] * self.m[2][2],
-		self.m[0][0] * self.m[2][2] - self.m[2][0] * self.m[0][2],
-		self.m[2][0] * self.m[0][1] - self.m[0][0] * self.m[2][1],
-		self.m[0][1] * self.m[1][2] - self.m[1][1] * self.m[0][2],
-		self.m[1][0] * self.m[0][2] - self.m[0][0] * self.m[1][2],
-		self.m[0][0] * self.m[1][1] - self.m[1][0] * self.m[0][1],
-	}};
+	self.val = {
+		source.m[1][1] * source.m[2][2] - source.m[2][1] * source.m[1][2],
+		source.m[2][0] * source.m[1][2] - source.m[1][0] * source.m[2][2],
+		source.m[1][0] * source.m[2][1] - source.m[2][0] * source.m[1][1],
+		source.m[2][1] * source.m[0][2] - source.m[0][1] * source.m[2][2],
+		source.m[0][0] * source.m[2][2] - source.m[2][0] * source.m[0][2],
+		source.m[2][0] * source.m[0][1] - source.m[0][0] * source.m[2][1],
+		source.m[0][1] * source.m[1][2] - source.m[1][1] * source.m[0][2],
+		source.m[1][0] * source.m[0][2] - source.m[0][0] * source.m[1][2],
+		source.m[0][0] * source.m[1][1] - source.m[1][0] * source.m[0][1],
+	};
 			$case 4:
-	return (Matrix){{
-		(self.m[1][1] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
-		 self.m[2][1] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) +
-		 self.m[3][1] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2])),
-		-(self.m[0][1] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
-		  self.m[2][1] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
-		  self.m[3][1] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2])),
-		(self.m[0][1] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) -
-		 self.m[1][1] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
-		 self.m[3][1] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
-		-(self.m[0][1] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2]) -
-		  self.m[1][1] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2]) +
-		  self.m[2][1] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
+	self.val = {
+		(source.m[1][1] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
+		 source.m[2][1] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) +
+		 source.m[3][1] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2])),
+		-(source.m[0][1] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
+		  source.m[2][1] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		  source.m[3][1] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2])),
+		(source.m[0][1] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) -
+		 source.m[1][1] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		 source.m[3][1] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
+		-(source.m[0][1] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2]) -
+		  source.m[1][1] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2]) +
+		  source.m[2][1] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
 			
-		-(self.m[1][0] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
-		  self.m[2][0] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) +
-		  self.m[3][0] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2])),
-		(self.m[0][0] * (self.m[2][2] * self.m[3][3] - self.m[2][3] * self.m[3][2]) -
-		 self.m[2][0] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
-		 self.m[3][0] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2])),
-		-(self.m[0][0] * (self.m[1][2] * self.m[3][3] - self.m[1][3] * self.m[3][2]) -
-		  self.m[1][0] * (self.m[0][2] * self.m[3][3] - self.m[0][3] * self.m[3][2]) +
-		  self.m[3][0] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
-		(self.m[0][0] * (self.m[1][2] * self.m[2][3] - self.m[1][3] * self.m[2][2]) -
-		 self.m[1][0] * (self.m[0][2] * self.m[2][3] - self.m[0][3] * self.m[2][2]) +
-		 self.m[2][0] * (self.m[0][2] * self.m[1][3] - self.m[0][3] * self.m[1][2])),
+		-(source.m[1][0] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
+		  source.m[2][0] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) +
+		  source.m[3][0] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2])),
+		(source.m[0][0] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
+		 source.m[2][0] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		 source.m[3][0] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2])),
+		-(source.m[0][0] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) -
+		  source.m[1][0] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		  source.m[3][0] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
+		(source.m[0][0] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2]) -
+		 source.m[1][0] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2]) +
+		 source.m[2][0] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
 			
-		(self.m[1][0] * (self.m[2][1] * self.m[3][3] - self.m[2][3] * self.m[3][1]) -
-		 self.m[2][0] * (self.m[1][1] * self.m[3][3] - self.m[1][3] * self.m[3][1]) +
-		 self.m[3][0] * (self.m[1][1] * self.m[2][3] - self.m[1][3] * self.m[2][1])),
-		-(self.m[0][0] * (self.m[2][1] * self.m[3][3] - self.m[2][3] * self.m[3][1]) -
-		  self.m[2][0] * (self.m[0][1] * self.m[3][3] - self.m[0][3] * self.m[3][1]) +
-		  self.m[3][0] * (self.m[0][1] * self.m[2][3] - self.m[0][3] * self.m[2][1])),
-		(self.m[0][0] * (self.m[1][1] * self.m[3][3] - self.m[1][3] * self.m[3][1]) -
-		 self.m[1][0] * (self.m[0][1] * self.m[3][3] - self.m[0][3] * self.m[3][1]) +
-		 self.m[3][0] * (self.m[0][1] * self.m[1][3] - self.m[0][3] * self.m[1][1])),
-		-(self.m[0][0] * (self.m[1][1] * self.m[2][3] - self.m[1][3] * self.m[2][1]) -
-		  self.m[1][0] * (self.m[0][1] * self.m[2][3] - self.m[0][3] * self.m[2][1]) +
-		  self.m[2][0] * (self.m[0][1] * self.m[1][3] - self.m[0][3] * self.m[1][1])),
+		(source.m[1][0] * (source.m[2][1] * source.m[3][3] - source.m[2][3] * source.m[3][1]) -
+		 source.m[2][0] * (source.m[1][1] * source.m[3][3] - source.m[1][3] * source.m[3][1]) +
+		 source.m[3][0] * (source.m[1][1] * source.m[2][3] - source.m[1][3] * source.m[2][1])),
+		-(source.m[0][0] * (source.m[2][1] * source.m[3][3] - source.m[2][3] * source.m[3][1]) -
+		  source.m[2][0] * (source.m[0][1] * source.m[3][3] - source.m[0][3] * source.m[3][1]) +
+		  source.m[3][0] * (source.m[0][1] * source.m[2][3] - source.m[0][3] * source.m[2][1])),
+		(source.m[0][0] * (source.m[1][1] * source.m[3][3] - source.m[1][3] * source.m[3][1]) -
+		 source.m[1][0] * (source.m[0][1] * source.m[3][3] - source.m[0][3] * source.m[3][1]) +
+		 source.m[3][0] * (source.m[0][1] * source.m[1][3] - source.m[0][3] * source.m[1][1])),
+		-(source.m[0][0] * (source.m[1][1] * source.m[2][3] - source.m[1][3] * source.m[2][1]) -
+		  source.m[1][0] * (source.m[0][1] * source.m[2][3] - source.m[0][3] * source.m[2][1]) +
+		  source.m[2][0] * (source.m[0][1] * source.m[1][3] - source.m[0][3] * source.m[1][1])),
 			
-		-(self.m[1][0] * (self.m[2][1] * self.m[3][2] - self.m[2][2] * self.m[3][1]) -
-		  self.m[2][0] * (self.m[1][1] * self.m[3][2] - self.m[1][2] * self.m[3][1]) +
-		  self.m[3][0] * (self.m[1][1] * self.m[2][2] - self.m[1][2] * self.m[2][1])),
-		(self.m[0][0] * (self.m[2][1] * self.m[3][2] - self.m[2][2] * self.m[3][1]) -
-		 self.m[2][0] * (self.m[0][1] * self.m[3][2] - self.m[0][2] * self.m[3][1]) +
-		 self.m[3][0] * (self.m[0][1] * self.m[2][2] - self.m[0][2] * self.m[2][1])),
-		-(self.m[0][0] * (self.m[1][1] * self.m[3][2] - self.m[1][2] * self.m[3][1]) -
-		  self.m[1][0] * (self.m[0][1] * self.m[3][2] - self.m[0][2] * self.m[3][1]) +
-		  self.m[3][0] * (self.m[0][1] * self.m[1][2] - self.m[0][2] * self.m[1][1])),
-		(self.m[0][0] * (self.m[1][1] * self.m[2][2] - self.m[1][2] * self.m[2][1]) -
-		 self.m[1][0] * (self.m[0][1] * self.m[2][2] - self.m[0][2] * self.m[2][1]) +
-		 self.m[2][0] * (self.m[0][1] * self.m[1][2] - self.m[0][2] * self.m[1][1])),
-	}};
+		-(source.m[1][0] * (source.m[2][1] * source.m[3][2] - source.m[2][2] * source.m[3][1]) -
+		  source.m[2][0] * (source.m[1][1] * source.m[3][2] - source.m[1][2] * source.m[3][1]) +
+		  source.m[3][0] * (source.m[1][1] * source.m[2][2] - source.m[1][2] * source.m[2][1])),
+		(source.m[0][0] * (source.m[2][1] * source.m[3][2] - source.m[2][2] * source.m[3][1]) -
+		 source.m[2][0] * (source.m[0][1] * source.m[3][2] - source.m[0][2] * source.m[3][1]) +
+		 source.m[3][0] * (source.m[0][1] * source.m[2][2] - source.m[0][2] * source.m[2][1])),
+		-(source.m[0][0] * (source.m[1][1] * source.m[3][2] - source.m[1][2] * source.m[3][1]) -
+		  source.m[1][0] * (source.m[0][1] * source.m[3][2] - source.m[0][2] * source.m[3][1]) +
+		  source.m[3][0] * (source.m[0][1] * source.m[1][2] - source.m[0][2] * source.m[1][1])),
+		(source.m[0][0] * (source.m[1][1] * source.m[2][2] - source.m[1][2] * source.m[2][1]) -
+		 source.m[1][0] * (source.m[0][1] * source.m[2][2] - source.m[0][2] * source.m[2][1]) +
+		 source.m[2][0] * (source.m[0][1] * source.m[1][2] - source.m[0][2] * source.m[1][1])),
+	};
 		$endswitch
 	$endif
-	Matrix result;
 	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		result.m[i][j] = self.@cofactor(i, j);
+		self.m[i][j] = source.@cofactor(i, j);
 	};
-	return result;
 }
 <*
  @require ROWS == COLS : "Trace of a non-square matrix is undefined"
@@ -419,19 +418,21 @@ macro @mul(mat1, mat2)
 	};
 	return result;
 }
-macro @transpose(&mat)
+<*
+ @require $typeof(source).kindof == POINTER
+ @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
+ *>
+macro @transpose(&mat, source)
 {
 	$if mat.@rows() == 1 ||| mat.@cols() == 1:
-	return (Matrix{mat.@cols(),mat.@rows(), mat.@type()}){ mat.val };
+	return;
 	$else
-	const ROWS = mat.@cols();
-	const COLS = mat.@rows();
-	Matrix{ROWS,COLS, $typefrom(mat.@type())} result;
+	const ROWS = source.@cols();
+	const COLS = source.@rows();
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		result.m[j][i] = mat.m[i][j];
+		mat.m[j][i] = source.m[i][j];
 	};
-	return result;
 	$endif
 }
 <*
@@ -517,21 +518,32 @@ macro @identity($size, $Type = double)
 	return result;
 }
 
-macro adjugate(&mat) => matrix::@transpose(mat.@comatrix());
+<*
+ @require $typeof(source).kindof == POINTER
+ @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
+ *>
+macro adjugate(&mat, source)
+{
+	mat.@comatrix(source);
+	matrix::@transpose(mat, source);
+}
 
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
 <*
  @require mat.@rows() == mat.@cols() : "Can't invert a non-square matrix"
+ @require $typeof(source).kindof == POINTER
+ @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
  *>
-macro inverse(&mat)
+macro inverse(&mat, source)
 {
-	$typefrom(mat.@type()) det = mat.@determinant();
+	$typefrom(source.@type()) det = source.@determinant();
 	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
 	$if $defined(mat.adjugate):
-	return mat.adjugate() / det;
+	mat.adjugate(source);
 	$else
-	return adjugate(mat) / det;
+	adjugate(mat, source);
 	$endif
+	mat.div_scalar_assign(det);
 }
 
 macro @resize(&mat, usz $new_rows, usz $new_cols)
