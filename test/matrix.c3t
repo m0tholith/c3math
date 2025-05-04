@@ -91,14 +91,14 @@ fn void comatrix()
 fn void adjugate_matrix()
 {
 	Matrix2x2 adj2;
-	adj2.adjugate(&mat11);
+	matrix::adjugate(&adj2, &mat11);
 	Matrix3x3 adj3;
-	adj3.adjugate(&mat1);
+	matrix::adjugate(&adj3, &mat1);
 	Matrix4x4 adj4;
-	adj4.adjugate(&mat7);
+	matrix::adjugate(&adj4, &mat7);
 	@assert_print(adj2, (Matrix2x2){{ -2, -5, -3, 1 }});
 	@assert_print(adj3, (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
-	@assert_print(adj4, (Matrix4x4){{ -2436, -315, 3816, -11934, 960, 130, -1485, 4675, -150, -15, 240, -765, 1377, 170, -2142, 6698 }});
+	@assert_print(adj4, (Matrix4x4){{ -2436, 960, -150, 1377, -315, 130, -15, 170, 3816, -1485, 240, -2142, -11934, 4675, -765, 6698 }});
 }
 fn void trace()
 {

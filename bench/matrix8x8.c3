@@ -97,7 +97,7 @@ fn void resize()
 }
 fn void transpose()
 {
-	matrix::@transpose(&result8x8, &mat1);
+	matrix::@set_transpose(&result8x8, &mat1);
 }
 fn void row_slice()
 {

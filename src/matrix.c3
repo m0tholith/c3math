@@ -420,7 +420,7 @@ macro @mul(dest, mat1, mat2)
  @require $typeof(source).kindof == POINTER
  @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
  *>
-macro @transpose(&mat, source)
+macro @set_transpose(&mat, source)
 {
 	$if mat.@rows() == 1 ||| mat.@cols() == 1:
 	return;
@@ -432,6 +432,16 @@ macro @transpose(&mat, source)
 		mat.m[j][i] = source.m[i][j];
 	};
 	$endif
+}
+<*
+ @require mat.@cols() == mat.@rows()
+ *>
+macro @transpose(&mat)
+{
+	for (usz i = 0; i < mat.@cols(); i++)
+	{
+		for (usz j = 0; j < i; j++) @swap(mat.m[i][j], mat.m[j][i]);
+	}
 }
 <*
  @require mat.@rows() > 1 : "Can't row-slice a one-row matrix"
@@ -523,7 +533,7 @@ macro @identity($size, $Type = double)
 macro adjugate(&mat, source)
 {
 	mat.@comatrix(source);
-	matrix::@transpose(mat, source);
+	matrix::@transpose(mat);
 }
 
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
