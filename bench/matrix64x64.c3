@@ -123,5 +123,6 @@ fn void init_mats() @init
 
 	vec64 = benchmarks::@rand_vec(64);
 	array64 = benchmarks::@rand_array(64);
+	set_benchmark_warmup_iterations(0);
 	set_benchmark_max_iterations(2);
 }
