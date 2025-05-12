@@ -60,7 +60,7 @@ fn void determinant()
 }
 fn void minor()
 {
-	mat64_1.@minor(1, 2);
+	matrix::@minor(&mat64_1, 1, 2);
 }
 fn void cofactor()
 {
@@ -100,13 +100,17 @@ fn void transpose()
 {
 	matrix::@set_transpose(&result64, &mat64_1);
 }
-fn void row_slice()
+fn void row_slice() => @pool()
 {
-	matrix::@row_slice(mat64_1, 0);
+	Matrix{63,64, double}* tmp = allocator::new_aligned(tmem, Matrix{63,64, double})!!;
+	matrix::@row_slice(tmp, &mat64_1, 0);
+	allocator::free_aligned(tmem, tmp);
 }
-fn void col_slice()
+fn void col_slice() => @pool()
 {
-	matrix::@col_slice(mat64_1, 0);
+	Matrix{64,63, double}* tmp = allocator::new_aligned(tmem, Matrix{64,63, double})!!;
+	matrix::@col_slice(tmp, &mat64_1, 0);
+	allocator::free_aligned(tmem, tmp);
 }
 fn void identity()
 {

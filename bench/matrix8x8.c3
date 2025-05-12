@@ -60,7 +60,7 @@ fn void determinant()
 }
 fn void minor()
 {
-	mat1.@minor(1, 2);
+	matrix::@minor(&mat1, 1, 2);
 }
 fn void cofactor()
 {
@@ -98,13 +98,17 @@ fn void transpose()
 {
 	matrix::@set_transpose(&result8x8, &mat1);
 }
-fn void row_slice()
+fn void row_slice() => @pool()
 {
-	matrix::@row_slice(mat1, 0);
+	Matrix{7,8, double}* tmp = allocator::new_aligned(tmem, Matrix{7,8, double})!!;
+	matrix::@row_slice(tmp, &mat1, 0);
+	allocator::free_aligned(tmem, tmp);
 }
-fn void col_slice()
+fn void col_slice() => @pool()
 {
-	matrix::@col_slice(mat1, 0);
+	Matrix{8,7, double}* tmp = allocator::new_aligned(tmem, Matrix{8,7, double})!!;
+	matrix::@col_slice(tmp, &mat1, 0);
+	allocator::free_aligned(tmem, tmp);
 }
 fn void identity()
 {

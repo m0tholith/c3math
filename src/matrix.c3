@@ -212,7 +212,7 @@ macro Type Matrix.@determinant(&self)
 	Type result = 1;
 	@pool()
 	{
-		Matrix* lu = allocator::new(tmem, Matrix);
+		Matrix* lu = allocator::new_aligned(tmem, Matrix)!!;
 		lu.lu_decomp(self);
 		for (usz i = 0; i < COLS; i++) result *= lu.m[i][i];
 	};
@@ -464,7 +464,7 @@ macro @row_slice(&mat, source, idx)
 <*
  @require $typeof(mat).kindof == POINTER
  @require $typeof(source).kindof == POINTER
- @require mat.@cols() == (*source).@cols() - 1 && mat.@rows() == (*source).@rows()
+ @require mat.@cols() == source.@cols() - 1 && mat.@rows() == source.@rows()
  *>
 macro @col_slice(&mat, source, idx)
 {

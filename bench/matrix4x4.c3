@@ -1,4 +1,5 @@
 module matrix::benchmarks::matrix4x4 @benchmark @if($$BENCHMARKING);
+import matrix::mat_type;
 
 Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -2, 2 }};
 Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
@@ -54,7 +55,7 @@ fn void determinant()
 }
 fn void minor()
 {
-	mat7.@minor(1, 2);
+	matrix::@minor(&mat7, 1, 2);
 }
 fn void cofactor()
 {
@@ -92,13 +93,17 @@ fn void transpose()
 {
 	mat7.transpose();
 }
-fn void row_slice()
+fn void row_slice() => @pool()
 {
-	matrix::@row_slice(mat7, 0);
+	Matrix{3,4, double}* tmp = allocator::new_aligned(tmem, Matrix{3,4, double})!!;
+	matrix::@row_slice(tmp, &mat7, 0);
+	allocator::free_aligned(tmem, tmp);
 }
-fn void col_slice()
+fn void col_slice() => @pool()
 {
-	matrix::@col_slice(mat7, 0);
+	Matrix{4,3, double}* tmp = allocator::new_aligned(tmem, Matrix{4,3, double})!!;
+	matrix::@col_slice(tmp, &mat7, 0);
+	allocator::free_aligned(tmem, tmp);
 }
 fn void identity()
 {
