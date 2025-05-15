@@ -214,7 +214,7 @@ macro Type Matrix.@determinant(&self)
 	@pool()
 	{
 		Matrix* lu = allocator::new_aligned(tmem, Matrix)!!;
-		lu.lu_decomp(self);
+		lu.lu_decomp(self)!!;
 		for (usz i = 0; i < COLS; i++) result *= lu.m[i][i];
 	};
 	return result;
