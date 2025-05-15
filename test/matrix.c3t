@@ -119,10 +119,10 @@ fn void swap_row()
 fn void lu_decomp()
 {
 	Matrix3x3 lu;
-	lu.lu_decomp(&mat12);
+	assert(@ok(lu.lu_decomp(&mat12)));
 	@assert_print(lu, (Matrix3x3){{ 2, 2, -1, 3, 1, 7, 1, 5, -29 }});
 
-	lu.lu_decomp(&mat13);
+	assert(@ok(lu.lu_decomp(&mat13)));
 	@assert_print(lu, (Matrix3x3){{ 2, -2, -2, -1, 4, -1, -2, -1, 3 }});
 }
 fn void resize()
