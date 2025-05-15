@@ -219,3 +219,9 @@ fn void inverted()
 		* 1000).round() / 1000};
 	@assert_print(source, result);
 }
+
+<*
+ @param [&inout] mat
+ *>
+macro round_matrix(mat, nearest = 1000.0) =>
+	mat.val = ((double[<mat.@cols() * mat.@rows()>])mat.val * nearest).round() / nearest;
