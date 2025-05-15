@@ -21,12 +21,13 @@ macro @is_pow_2() @const
 	$endfor
 	return false;
 }
+macro @use_vectors() @const => @is_pow_2() && !@is_big_matrix();
 
 union Matrix (Printable)
 {
 	Type[COLS * ROWS] val;
-	Type[<ROWS>][COLS] m @if(@is_pow_2() && !@is_big_matrix());
-	Type[ROWS][COLS] m @if(!@is_pow_2() || @is_big_matrix());
+	Type[<ROWS>][COLS] m @if(@use_vectors());
+	Type[ROWS][COLS] m @if(!@use_vectors());
 }
 fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
