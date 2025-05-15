@@ -330,6 +330,37 @@ macro Type Matrix.trace(&self)
 }
 
 <*
+ @param [out] row_output
+ @require row_output.len >= COLS
+ *>
+fn void Matrix.get_row(&self, usz row_index, Type[] row_output)
+{
+	$if ROWS == 1:
+	row_output[..] = self.val[..];
+	$else
+	for (usz i = 0; i < ROWS; i++)
+	{
+		row_output[i] = self.m[i][row_index];
+	}
+	$endif
+}
+<*
+ @param [in] new_row
+ @require new_row.len >= COLS
+ *>
+fn void Matrix.set_row(&self, usz row_index, Type[] new_row)
+{
+	$if ROWS == 1:
+	self.val[..] = new_row[..];
+	$else
+	for (usz i = 0; i < ROWS; i++)
+	{
+		self.m[i][row_index] = new_row[i];
+	}
+	$endif
+}
+
+<*
  @require col1 < COLS && col2 < COLS : "Index out of range"
  *>
 fn void Matrix.swap_col(&self, usz col1, usz col2)
