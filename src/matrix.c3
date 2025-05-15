@@ -415,6 +415,60 @@ macro void? Matrix.lu_decomp(&self, Matrix* source)
 	}
 }
 
+<*
+ @param [&inout] lower : "Pointer to lower triangluar matrix"
+ @param [&inout] upper : "Pointer to upper triangluar matrix"
+ @param [&inout] p : "Pointer to permutation matrix"
+ @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
+ *>
+macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
+{
+	*p = matrix::@identity(COLS);
+	mem::copy(lower, p, $typeof(lower.val).sizeof);
+	mem::copy(upper, self, $typeof(upper.val).sizeof);
+
+	Type[] temp_row_j = allocator::new_array_aligned(tmem, Type, COLS);
+	Type[] temp_row_i = allocator::new_array_aligned(tmem, Type, COLS);
+
+	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
+	{
+		Tuple{usz, Type} maximum = upper.col_max(i, i);
+		if (maximum.second == 0) return;
+		p.swap_row(maximum.first, i);
+		upper.swap_row(maximum.first, i);
+	}
+		
+	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
+	{
+		upper.get_row(i, temp_row_i);
+
+		Type diagonal = upper.m[i][i];
+		if (diagonal == 0) return PIVOT_IS_ZERO?;
+		for (usz j = i + 1; j < ROWS; j++) // row wise
+		{
+			Type coefficient = upper.m[i][j] / diagonal;
+			lower.m[i][j] = coefficient;
+
+			upper.get_row(j, temp_row_j);
+			defer upper.set_row(j, temp_row_j);
+
+			for (usz k = 0; k < COLS; k++) // column wise
+			{
+				temp_row_j[k] -= coefficient * temp_row_i[k];
+			}
+		}
+	}
+}
+macro Tuple{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
+{
+	Tuple{usz, Type} result = { row, self.m[col][row] };
+	for (usz i = row + 1; i < ROWS; i++)
+	{
+		if (math::abs(result.second) < math::abs(self.m[col][i])) result = { i, self.m[col][i] };
+	}
+	return result;
+}
+
 macro Matrix.translate(&self, scale_vec) => self * translated(scale_vec);
 macro Matrix.rotate_2d(&self, scale_vec) => self * rotated_2d(scale_vec);
 macro Matrix.rotate_x(&self, scale_vec) => self * rotated_x(scale_vec);
