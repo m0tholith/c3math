@@ -381,10 +381,11 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 	}
 }
 
+faultdef PIVOT_IS_ZERO;
 <*
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  *>
-macro Matrix.lu_decomp(&self, Matrix* source)
+macro void? Matrix.lu_decomp(&self, Matrix* source)
 {
 	Matrix* lower = self;
 	Matrix* upper = self;
@@ -404,6 +405,7 @@ macro Matrix.lu_decomp(&self, Matrix* source)
 		if (i + 1 < COLS) lower.m[i][i + 1..] = source.m[i][i + 1..];
 		for (usz j = i + 1; j < COLS; j++)
 		{
+			if (upper.m[i][i] == 0) return PIVOT_IS_ZERO?;
 			for (usz k = 0; k < i; k++)
 			{
 				lower.m[i][j] -= upper.m[i][k] * lower.m[k][j];
