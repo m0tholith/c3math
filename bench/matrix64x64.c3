@@ -90,7 +90,7 @@ fn void swap_row()
 }
 fn void lu_decomp()
 {
-	result64.lu_decomp(&mat64_1)!!;
+	mat64_1.lu_decomp(&result64, &result64)!!;
 }
 fn void resize()
 {

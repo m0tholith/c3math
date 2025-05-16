@@ -88,7 +88,7 @@ fn void swap_row()
 }
 fn void lu_decomp()
 {
-	result8x8.lu_decomp(&mat1)!!;
+	mat1.lu_decomp(&result8x8, &result8x8)!!;
 }
 fn void resize()
 {
