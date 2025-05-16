@@ -150,11 +150,32 @@ fn void lu_decomp_pivot()
 }
 fn void resize()
 {
-	@assert_print(@resize(mat1, 4,4), (Matrix4x4){{ -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0, 0, 0, 0, 0 }});
-	@assert_print(@resize(mat1, 2,2), (Matrix2x2){{ -20, -7, 4, 15 }});
-	@assert_print(@resize(mat4, 2,2), (Matrix2x2){{ 8, -8, 7, -11 }});
-	@assert_print(@resize(mat6, 3,3), (Matrix3x3){{ -6, -15, -12, -11, -14, 12, 0, 0, 0 }});
-	@assert_print(@resize(mat3, 3,1), (Matrix3x1){{ -2, 20, -1 }});
+	Matrix4x4 result4x4;
+	Matrix2x2 result2x2;
+	Matrix3x3 result3x3;
+	Matrix3x1 result3x1;
+	@resize(&mat1, &result4x4, 4,4);
+	@assert_print(result4x4, (Matrix4x4){{ -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0, 0, 0, 0, 0 }});
+	@resize(&mat1, &result2x2, 2,2);
+	@assert_print(result2x2, (Matrix2x2){{ -20, -7, 4, 15 }});
+	@resize(&mat4, &result2x2, 2,2);
+	@assert_print(result2x2, (Matrix2x2){{ 8, -8, 7, -11 }});
+	@resize(&mat6, &result3x3, 3,3);
+	@assert_print(result3x3, (Matrix3x3){{ -6, -15, -12, -11, -14, 12, 0, 0, 0 }});
+	@resize(&mat3, &result3x1, 3,1);
+	@assert_print(result3x1, (Matrix3x1){{ -2, 20, -1 }});
+
+	mem::clear(&result4x4, $typeof(result4x4.val).sizeof);
+	@resize(&mat1, &result4x4, 4,4, col_offset: 1);
+	@assert_print(result4x4, (Matrix4x4){{ 0, 0, 0, 0, -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0 }});
+	mem::clear(&result4x4, $typeof(result4x4.val).sizeof);
+	@resize(&mat1, &result4x4, 4,4, row_offset: 1);
+	@assert_print(result4x4, (Matrix4x4){{ 0, -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0, 0, 0, 0 }});
+
+	@resize(&mat1, &result2x2, 2,2, col_offset: 1);
+	@assert_print(result2x2, (Matrix2x2){{ 4, 15, 10, 8 }});
+	@resize(&mat1, &result2x2, 2,2, row_offset: 1);
+	@assert_print(result2x2, (Matrix2x2){{ -7, -17, 15, 20 }});
 }
 fn void transpose()
 {
