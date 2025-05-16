@@ -423,7 +423,7 @@ macro void? Matrix.lu_decomp(&self, Matrix* source)
  *>
 macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
 {
-	*p = matrix::@identity(COLS);
+	matrix::@identity_assign(p);
 	mem::copy(lower, p, $typeof(lower.val).sizeof);
 	mem::copy(upper, self, $typeof(upper.val).sizeof);
 
@@ -452,7 +452,7 @@ macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* 
 			upper.get_row(j, temp_row_j);
 			defer upper.set_row(j, temp_row_j);
 
-			for (usz k = 0; k < COLS; k++) // column wise
+			for (usz k = i; k < COLS; k++) // column wise
 			{
 				temp_row_j[k] -= coefficient * temp_row_i[k];
 			}
