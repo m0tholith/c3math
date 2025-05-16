@@ -488,10 +488,7 @@ macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
 {
 	$typefrom(mat1.@type())[<$n>] row;
 	var col = mat2.m[j];
-	for (usz n_iter = 0; n_iter < $n; n_iter++)
-	{
-		row[n_iter] = mat1.m[n_iter][i];
-	}
+	mat1.@get_row(i, row);
 	return row.dot(col);
 }
 <*
