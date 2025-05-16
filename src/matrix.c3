@@ -330,32 +330,30 @@ macro Type Matrix.trace(&self)
 }
 
 <*
- @param [out] row_output
- @require row_output.len >= COLS
+ @require #row_output.len >= COLS
  *>
-fn void Matrix.get_row(&self, usz row_index, Type[] row_output)
+macro void Matrix.@get_row(&self, usz row_index, #row_output)
 {
 	$if ROWS == 1:
-	row_output[..] = self.val[..];
+	#row_output[..] = self.val[..];
 	$else
 	for (usz i = 0; i < ROWS; i++)
 	{
-		row_output[i] = self.m[i][row_index];
+		#row_output[i] = self.m[i][row_index];
 	}
 	$endif
 }
 <*
- @param [in] new_row
- @require new_row.len >= COLS
+ @require #new_row.len >= COLS
  *>
-fn void Matrix.set_row(&self, usz row_index, Type[] new_row)
+macro void Matrix.@set_row(&self, usz row_index, #new_row)
 {
 	$if ROWS == 1:
-	self.val[..] = new_row[..];
+	self.val[..] = #new_row[..];
 	$else
 	for (usz i = 0; i < ROWS; i++)
 	{
-		self.m[i][row_index] = new_row[i];
+		self.m[i][row_index] = #new_row[i];
 	}
 	$endif
 }
@@ -400,7 +398,7 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 		
 	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
 	{
-		upper.get_row(i, temp_row_i);
+		upper.@get_row(i, temp_row_i);
 
 		Type diagonal = upper.m[i][i];
 		if (diagonal == 0) return PIVOT_IS_ZERO?;
@@ -409,8 +407,8 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 			Type coefficient = upper.m[i][j] / diagonal;
 			lower.m[i][j] = coefficient;
 
-			upper.get_row(j, temp_row_j);
-			defer upper.set_row(j, temp_row_j);
+			upper.@get_row(j, temp_row_j);
+			defer upper.@set_row(j, temp_row_j);
 
 			for (usz k = i; k < COLS; k++) // column wise
 			{
@@ -445,7 +443,7 @@ macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* 
 		
 	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
 	{
-		upper.get_row(i, temp_row_i);
+		upper.@get_row(i, temp_row_i);
 
 		Type diagonal = upper.m[i][i];
 		if (diagonal == 0) return PIVOT_IS_ZERO?;
@@ -454,8 +452,8 @@ macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* 
 			Type coefficient = upper.m[i][j] / diagonal;
 			lower.m[i][j] = coefficient;
 
-			upper.get_row(j, temp_row_j);
-			defer upper.set_row(j, temp_row_j);
+			upper.@get_row(j, temp_row_j);
+			defer upper.@set_row(j, temp_row_j);
 
 			for (usz k = i; k < COLS; k++) // column wise
 			{
