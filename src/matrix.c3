@@ -668,41 +668,43 @@ macro inverse(&mat, source)
 	mat.div_scalar_assign(det);
 }
 
-macro @resize(&mat, usz $new_rows, usz $new_cols)
+<*
+ @param [&out] result
+ *>
+macro @resize(&mat, result, usz $new_rows, usz $new_cols, usz row_offset = 0, usz col_offset = 0)
 {
 	$if $new_cols == mat.@cols() &&& $new_rows == mat.@rows():
-	return mat;
+	*result = *mat;
+	return;
 	$endif
 
 	$if $new_rows == mat.@rows():
 		$if $new_cols < mat.@cols():
-	return (Matrix{$new_rows,$new_cols, $typefrom(mat.@type())}){ .m = mat.m[:$new_cols] };
+	*result = { .m = mat.m[col_offset:$new_cols] };
+	return;
 		$else
-	Matrix{$new_rows,$new_cols, $typefrom(mat.@type())} _result;
-	_result.val[:mat.@cols() * mat.@rows()] = mat.val[..];
-	return _result;
+	result.val[col_offset:mat.@cols() * mat.@rows()] = mat.val[..];
+	return;
 		$endif
 	$endif
 
-	Matrix{$new_rows,$new_cols, $typefrom(mat.@type())} result;
 	$if $new_cols < mat.@cols():
 	for (usz i = 0; i < $new_cols; i++)
 	{
 		$if $new_rows < mat.@rows():
-		result.m[i][..] = mat.m[i][:$new_rows];
+		result.m[i][..] = mat.m[col_offset + i][row_offset:$new_rows];
 		$else
-		result.m[i][:mat.@rows()] = mat.m[i][..];
+		result.m[i][row_offset:mat.@rows()] = mat.m[col_offset + i][..];
 		$endif
 	}
 	$else
 	for (usz i = 0; i < mat.@cols(); i++)
 	{
 		$if $new_rows < mat.@rows():
-		result.m[i][..] = mat.m[i][:$new_rows];
+		result.m[col_offset + i][..] = mat.m[i][row_offset:$new_rows];
 		$else
-		result.m[i][:mat.@rows()] = mat.m[i][..];
+		result.m[col_offset + i][row_offset:mat.@rows()] = mat.m[i][..];
 		$endif
 	}
 	$endif
-	return result;
 }
