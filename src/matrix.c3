@@ -636,6 +636,7 @@ macro @identity($size, $Type = double)
  *>
 macro @identity_assign(&self)
 {
+	mem::clear(self, $typeof(self.val).sizeof);
 	for (usz x = 0; x < self.@cols(); x++) self.m[x][x] = 1;
 }
 
