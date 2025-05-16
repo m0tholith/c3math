@@ -5,6 +5,7 @@ Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -
 Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
 
 Matrix4x4 result4x4;
+Matrix3x3 result3x3;
 
 import std::io;
 import std::collections::tuple;
@@ -87,7 +88,7 @@ fn void lu_decomp()
 }
 fn void resize()
 {
-	matrix::@resize(mat7, 4,4);
+	matrix::@resize(&mat7, &result3x3, 3,3);
 }
 fn void transpose()
 {

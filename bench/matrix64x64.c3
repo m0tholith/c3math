@@ -94,7 +94,7 @@ fn void lu_decomp()
 }
 fn void resize()
 {
-	matrix::@resize(mat64_1, 4,4);
+	matrix::@resize(&mat64_1, &result64, 4,4);
 }
 fn void transpose()
 {

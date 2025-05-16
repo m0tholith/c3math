@@ -7,6 +7,7 @@ Matrix8x8 mat1;
 Matrix8x8 mat2;
 
 Matrix8x8 result8x8;
+Matrix4x4 result4x4;
 
 double[<8>] vec1;
 double[8] array1;
@@ -92,7 +93,7 @@ fn void lu_decomp()
 }
 fn void resize()
 {
-	matrix::@resize(mat1, 4,4);
+	matrix::@resize(&mat1, &result4x4, 4,4);
 }
 fn void transpose()
 {
