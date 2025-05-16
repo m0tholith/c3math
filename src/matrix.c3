@@ -214,7 +214,7 @@ macro Type Matrix.@determinant(&self)
 	@pool()
 	{
 		Matrix* lu = allocator::new_aligned(tmem, Matrix)!!;
-		lu.lu_decomp(self)!!;
+		self.lu_decomp(lu, lu)!!;
 		for (usz i = 0; i < COLS; i++) result *= lu.m[i][i];
 	};
 	return result;
@@ -383,34 +383,39 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 
 faultdef PIVOT_IS_ZERO;
 <*
+ @param [&inout] lower : "Pointer to lower triangluar matrix"
+ @param [&inout] upper : "Pointer to upper triangluar matrix"
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  *>
-macro void? Matrix.lu_decomp(&self, Matrix* source)
+macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 {
-	Matrix* lower = self;
-	Matrix* upper = self;
-	*lower = matrix::@identity(COLS);
-	for (usz i = 0; i < COLS; i++)
+	matrix::@transpose(self);
+	defer matrix::@transpose(self);
+
+	matrix::@identity_assign(lower);
+	mem::copy(upper, self, $typeof(upper.val).sizeof);
+
+	Type[] temp_row_j = allocator::new_array_aligned(tmem, Type, COLS);
+	Type[] temp_row_i = allocator::new_array_aligned(tmem, Type, COLS);
+		
+	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
 	{
-		// compute upper, row by row
-		for (usz j = i; j < COLS; j++)
+		upper.get_row(i, temp_row_i);
+
+		Type diagonal = upper.m[i][i];
+		if (diagonal == 0) return PIVOT_IS_ZERO?;
+		for (usz j = i + 1; j < ROWS; j++) // row wise
 		{
-			upper.m[j][i] = source.m[j][i];
-			for (usz k = 0; k < i; k++)
+			Type coefficient = upper.m[i][j] / diagonal;
+			lower.m[i][j] = coefficient;
+
+			upper.get_row(j, temp_row_j);
+			defer upper.set_row(j, temp_row_j);
+
+			for (usz k = i; k < COLS; k++) // column wise
 			{
-				upper.m[j][i] -= upper.m[j][k] * lower.m[k][i];
+				temp_row_j[k] -= coefficient * temp_row_i[k];
 			}
-		}
-		// compute lower, column by column
-		if (i + 1 < COLS) lower.m[i][i + 1..] = source.m[i][i + 1..];
-		for (usz j = i + 1; j < COLS; j++)
-		{
-			if (upper.m[i][i] == 0) return PIVOT_IS_ZERO?;
-			for (usz k = 0; k < i; k++)
-			{
-				lower.m[i][j] -= upper.m[i][k] * lower.m[k][j];
-			}
-			lower.m[i][j] /= upper.m[i][i];
 		}
 	}
 }
