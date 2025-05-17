@@ -204,7 +204,7 @@ macro Type Matrix.determinant(&self)
 	Type result = 1;
 	@pool()
 	{
-		Matrix* lu = allocator::new_aligned(tmem, Matrix)!!;
+		Matrix* lu = allocator::new(tmem, Matrix);
 		self.lu_decomp(lu, lu)!!;
 		for (usz i = 0; i < COLS; i++) result *= lu.m[i][i];
 	};
@@ -709,9 +709,9 @@ macro minor(&self, i, j)
 {
 	@pool()
 	{
-		Matrix{self.rows(),self.cols()-1, $typefrom(self.type())}* tmp1 = allocator::new_aligned(tmem, Matrix{self.rows(),self.cols()-1, $typefrom(self.type())})!!;
+		Matrix{self.rows(),self.cols()-1, $typefrom(self.type())}* tmp1 = allocator::new(tmem, Matrix{self.rows(),self.cols()-1, $typefrom(self.type())});
 		matrix::col_slice(tmp1, self, i);
-		Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())}* tmp2 = allocator::new_aligned(tmem, Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())})!!;
+		Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())}* tmp2 = allocator::new(tmem, Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())});
 		matrix::row_slice(tmp2, tmp1, j);
 		return tmp2.determinant();
 	};
