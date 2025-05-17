@@ -12,16 +12,7 @@ import std::math;
 import std::collections::tuple;
 
 macro @is_big_matrix() @const => ROWS * COLS > 65536;
-macro @is_pow_2() @const
-{
-	$for var $x = ROWS; $x % 2 == 0; $x /= 2:
-		$if $x == 2:
-			return true;
-		$endif
-	$endfor
-	return false;
-}
-macro @use_vectors() @const => @is_pow_2() && !@is_big_matrix();
+macro @use_vectors() @const => matrix::@is_pow_2(ROWS) && !@is_big_matrix();
 
 union Matrix (Printable) @packed @align(Type.sizeof)
 {
@@ -692,25 +683,17 @@ macro strassen_mul(r, s, o)
 	lambda(r, s, o);
 	$endif
 }
-macro @is_pow_2($n) @const
+macro @is_pow_2($n) @private @const
 {
-	$if $n == 1:
-	return true;
-	$else
 	$for var $x = $n; $x % 2 == 0; $x /= 2:
 		$if $x == 2:
 			return true;
 		$endif
 	$endfor
 	return false;
-	$endif
 }
 macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
 {
-	// for (usz i = 0; i < sub.cols(); i++)
-	// {
-	// 	mat.m[col_offset + i][row_offset:sub.rows()] = sub.m[i][..];
-	// }
 	@ij_loop(sub.rows(), sub.cols(); usz i, usz j)
 	{
 		mat.m[col_offset + i][row_offset + j] = sub.m[i][j];
