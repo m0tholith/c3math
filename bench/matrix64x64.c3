@@ -7,6 +7,7 @@ Matrix64x64 mat64_1;
 Matrix64x64 mat64_2;
 
 Matrix64x64 result64;
+Matrix4x4 result4x4;
 
 double[<64>] vec64;
 double[64] array64;
@@ -52,7 +53,7 @@ fn void list_mul()
 }
 fn void matrix_mul()
 {
-	matrix::@mul(result64, &mat64_1, &mat64_2);
+	matrix::strassen_mul(&result64, &mat64_1, &mat64_2);
 }
 fn void determinant()
 {
@@ -94,7 +95,7 @@ fn void lu_decomp()
 }
 fn void resize()
 {
-	matrix::@resize(&mat64_1, &result64, 4,4);
+	matrix::@resize(&mat64_1, &result4x4, 4,4);
 }
 fn void transpose()
 {
