@@ -33,9 +33,9 @@ fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
 	return f.printf("%s", self.m);
 }
-macro usz Matrix.@cols(#mat) @const => COLS;
-macro usz Matrix.@rows(#mat) @const => ROWS;
-macro Matrix.@type(#mat) @const => Type.typeid;
+macro usz Matrix.cols(#mat) @const @safemacro => COLS;
+macro usz Matrix.rows(#mat) @const @safemacro => ROWS;
+macro Matrix.type(#mat) @const @safemacro => Type.typeid;
 
 fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
 {
@@ -486,21 +486,21 @@ macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 }
 macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
 {
-	$typefrom(mat1.@type())[<$n>] row;
+	$typefrom(mat1.type())[<$n>] row;
 	var col = mat2.m[j];
 	mat1.@get_row(i, row);
 	return row.dot(col);
 }
 <*
  @require $typeof(mat1).kindof == POINTER && $typeof(mat2).kindof == POINTER
- @require mat1.@cols() == mat2.@rows() : "Incompatible multiplication"
- @require mat1.@type() == mat2.@type() : "Incompatible multiplication"
+ @require mat1.cols() == mat2.rows() : "Incompatible multiplication"
+ @require mat1.type() == mat2.type() : "Incompatible multiplication"
  *>
 macro @mul(dest, mat1, mat2)
 {
-	const N = mat1.@cols();
-	const ROWS = mat1.@rows();
-	const COLS = mat2.@cols();
+	const N = mat1.cols();
+	const ROWS = mat1.rows();
+	const COLS = mat2.cols();
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		dest.m[i][j] = @mat_mul_sum(mat1, mat2, i, j, N);
@@ -508,15 +508,15 @@ macro @mul(dest, mat1, mat2)
 }
 <*
  @require $typeof(source).kindof == POINTER
- @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
+ @require mat.cols() == source.rows() && mat.rows() == source.cols()
  *>
 macro @set_transpose(&mat, source)
 {
-	$if mat.@rows() == 1 ||| mat.@cols() == 1:
+	$if mat.rows() == 1 ||| mat.cols() == 1:
 	return;
 	$else
-	const ROWS = source.@cols();
-	const COLS = source.@rows();
+	const ROWS = source.cols();
+	const COLS = source.rows();
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
 		mat.m[j][i] = source.m[i][j];
@@ -524,31 +524,31 @@ macro @set_transpose(&mat, source)
 	$endif
 }
 <*
- @require mat.@cols() == mat.@rows()
+ @require mat.cols() == mat.rows()
  *>
 macro @transpose(&mat)
 {
-	for (usz i = 0; i < mat.@cols(); i++)
+	for (usz i = 0; i < mat.cols(); i++)
 	{
 		for (usz j = 0; j < i; j++) @swap(mat.m[i][j], mat.m[j][i]);
 	}
 }
 <*
  @require $typeof(source).kindof == POINTER
- @require mat.@rows() == source.@rows() - 1 && mat.@cols() == source.@cols()
+ @require mat.rows() == source.rows() - 1 && mat.cols() == source.cols()
  *>
 macro @row_slice(&mat, source, idx)
 {
 	if (idx > 0)
 	{
-		for (usz i = 0; i < source.@cols(); i++)
+		for (usz i = 0; i < source.cols(); i++)
 		{
 			mat.m[i][..idx-1] = source.m[i][..idx-1];
 		}
 	}
-	if (idx < source.@rows() - 1)
+	if (idx < source.rows() - 1)
 	{
-		for (usz i = 0; i < source.@cols(); i++)
+		for (usz i = 0; i < source.cols(); i++)
 		{
 			mat.m[i][idx..] = source.m[i][idx+1..];
 		}
@@ -557,44 +557,44 @@ macro @row_slice(&mat, source, idx)
 <*
  @require $typeof(mat).kindof == POINTER
  @require $typeof(source).kindof == POINTER
- @require mat.@cols() == source.@cols() - 1 && mat.@rows() == source.@rows()
+ @require mat.cols() == source.cols() - 1 && mat.rows() == source.rows()
  *>
 macro @col_slice(&mat, source, idx)
 {
 	mem::copy(
 		&mat.m[0],
 		&source.m[0],
-		$typefrom(source.@type()).sizeof * source.@rows() * idx);
-	if (idx < source.@cols() - 1) mem::copy(
+		$typefrom(source.type()).sizeof * source.rows() * idx);
+	if (idx < source.cols() - 1) mem::copy(
 		&mat.m[idx],
 		&source.m[idx + 1],
-		$typefrom(source.@type()).sizeof * source.@rows() * (source.@cols() - idx - 1));
+		$typefrom(source.type()).sizeof * source.rows() * (source.cols() - idx - 1));
 }
 macro apply(&mat, vec) @private
 {
 	$typeof(vec) result;
 	for (usz i = 0; i < vec.len; i++) result[i] =
-		(($typefrom(mat.@type())[<mat.@rows()>])mat.m[i] * ($typefrom(mat.@type())[<mat.@rows()>])vec).sum();
+		(($typefrom(mat.type())[<mat.rows()>])mat.m[i] * ($typefrom(mat.type())[<mat.rows()>])vec).sum();
 	return result;
 }
 
 <*
- @require s.@cols() == s.@rows(): "Can't do Strassen multiplication on non-square matrix"
- @require o.@cols() == o.@rows() : "Can't do Strassen multiplication on non-square matrix"
- @require s.@cols() == o.@cols() : "Can't do Strassen multiplication non-equal sized matrices"
- @require @is_pow_2(s.@cols()) : "Can't do Strassen multiplication on matrix whose sides aren't a power of 2"
+ @require s.cols() == s.rows(): "Can't do Strassen multiplication on non-square matrix"
+ @require o.cols() == o.rows() : "Can't do Strassen multiplication on non-square matrix"
+ @require s.cols() == o.cols() : "Can't do Strassen multiplication non-equal sized matrices"
+ @require @is_pow_2(s.cols()) : "Can't do Strassen multiplication on matrix whose sides aren't a power of 2"
  *>
 macro strassen_mul(r, s, o)
 {
-	$if s.@cols() == 1:
+	$if s.cols() == 1:
 	r.m[0][0] = s.m[0][0] * o.m[0][0];
 	$else
-	const HALF_SIZE = s.@cols() / 2;
-	var $EntryType = $typefrom(s.@type());
+	const HALF_SIZE = s.cols() / 2;
+	var $EntryType = $typefrom(s.type());
 	var $MatType = Matrix{HALF_SIZE,HALF_SIZE, $EntryType};
 	var $OriginalType = $typeof(r);
 	var lambda = fn void($OriginalType result, $OriginalType self, $OriginalType other) => @pool() {
-	const HALF_SIZE = self.@cols() / 2;
+	const HALF_SIZE = self.cols() / 2;
 	$MatType* tmp = allocator::new(tmem, $MatType);
 
 	$MatType* a11 = allocator::new(tmem, $MatType);
@@ -695,28 +695,28 @@ macro @is_pow_2($n) @const
 }
 macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
 {
-	// for (usz i = 0; i < sub.@cols(); i++)
+	// for (usz i = 0; i < sub.cols(); i++)
 	// {
-	// 	mat.m[col_offset + i][row_offset:sub.@rows()] = sub.m[i][..];
+	// 	mat.m[col_offset + i][row_offset:sub.rows()] = sub.m[i][..];
 	// }
-	@ij_loop(sub.@rows(), sub.@cols(); usz i, usz j)
+	@ij_loop(sub.rows(), sub.cols(); usz i, usz j)
 	{
 		mat.m[col_offset + i][row_offset + j] = sub.m[i][j];
 	};
 }
 
 <*
- @require i < self.@rows() && j < self.@cols() : "Index out of range"
- @require self.@rows() > 1 && self.@cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
+ @require i < self.rows() && j < self.cols() : "Index out of range"
+ @require self.rows() > 1 && self.cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
  @require $typeof(self).kindof == POINTER
  *>
 macro @minor(&self, i, j)
 {
 	@pool()
 	{
-		Matrix{self.@rows(),self.@cols()-1, $typefrom(self.@type())}* tmp1 = allocator::new_aligned(tmem, Matrix{self.@rows(),self.@cols()-1, $typefrom(self.@type())})!!;
+		Matrix{self.rows(),self.cols()-1, $typefrom(self.type())}* tmp1 = allocator::new_aligned(tmem, Matrix{self.rows(),self.cols()-1, $typefrom(self.type())})!!;
 		matrix::@col_slice(tmp1, self, i);
-		Matrix{self.@rows()-1,self.@cols()-1, $typefrom(self.@type())}* tmp2 = allocator::new_aligned(tmem, Matrix{self.@rows()-1,self.@cols()-1, $typefrom(self.@type())})!!;
+		Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())}* tmp2 = allocator::new_aligned(tmem, Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())})!!;
 		matrix::@row_slice(tmp2, tmp1, j);
 		return tmp2.@determinant();
 	};
@@ -759,17 +759,17 @@ macro @identity($size, $Type = double)
 	return result;
 }
 <*
- @require self.@cols() == self.@rows() : "Cannot create non-square identity matrix"
+ @require self.cols() == self.rows() : "Cannot create non-square identity matrix"
  *>
 macro @identity_assign(&self)
 {
 	mem::clear(self, $typeof(self.val).sizeof);
-	for (usz x = 0; x < self.@cols(); x++) self.m[x][x] = 1;
+	for (usz x = 0; x < self.cols(); x++) self.m[x][x] = 1;
 }
 
 <*
  @require $typeof(source).kindof == POINTER
- @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
+ @require mat.cols() == source.rows() && mat.rows() == source.cols()
  *>
 macro adjugate(&mat, source)
 {
@@ -779,13 +779,13 @@ macro adjugate(&mat, source)
 
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
 <*
- @require mat.@rows() == mat.@cols() : "Can't invert a non-square matrix"
+ @require mat.rows() == mat.cols() : "Can't invert a non-square matrix"
  @require $typeof(source).kindof == POINTER
- @require mat.@cols() == source.@rows() && mat.@rows() == source.@cols()
+ @require mat.cols() == source.rows() && mat.rows() == source.cols()
  *>
 macro inverse(&mat, source)
 {
-	$typefrom(source.@type()) det = source.@determinant();
+	$typefrom(source.type()) det = source.@determinant();
 	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
 	$if $defined(mat.adjugate):
 	mat.adjugate(source);
@@ -800,37 +800,37 @@ macro inverse(&mat, source)
  *>
 macro @resize(&mat, result, usz $new_rows, usz $new_cols, usz row_offset = 0, usz col_offset = 0)
 {
-	$if $new_cols == mat.@cols() &&& $new_rows == mat.@rows():
+	$if $new_cols == mat.cols() &&& $new_rows == mat.rows():
 	*result = *mat;
 	return;
 	$endif
 
-	$if $new_rows == mat.@rows():
-		$if $new_cols < mat.@cols():
+	$if $new_rows == mat.rows():
+		$if $new_cols < mat.cols():
 	*result = { .m = mat.m[col_offset:$new_cols] };
 	return;
 		$else
-	result.val[col_offset:mat.@cols() * mat.@rows()] = mat.val[..];
+	result.val[col_offset:mat.cols() * mat.rows()] = mat.val[..];
 	return;
 		$endif
 	$endif
 
-	$if $new_cols < mat.@cols():
+	$if $new_cols < mat.cols():
 	for (usz i = 0; i < $new_cols; i++)
 	{
-		$if $new_rows < mat.@rows():
+		$if $new_rows < mat.rows():
 		result.m[i][..] = mat.m[col_offset + i][row_offset:$new_rows];
 		$else
-		result.m[i][row_offset:mat.@rows()] = mat.m[col_offset + i][..];
+		result.m[i][row_offset:mat.rows()] = mat.m[col_offset + i][..];
 		$endif
 	}
 	$else
-	for (usz i = 0; i < mat.@cols(); i++)
+	for (usz i = 0; i < mat.cols(); i++)
 	{
-		$if $new_rows < mat.@rows():
+		$if $new_rows < mat.rows():
 		result.m[col_offset + i][..] = mat.m[i][row_offset:$new_rows];
 		$else
-		result.m[col_offset + i][row_offset:mat.@rows()] = mat.m[i][..];
+		result.m[col_offset + i][row_offset:mat.rows()] = mat.m[i][..];
 		$endif
 	}
 	$endif

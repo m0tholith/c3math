@@ -260,4 +260,4 @@ fn void inverted()
  @param [&inout] mat
  *>
 macro round_matrix(mat, nearest = 1000.0) =>
-	mat.val = ((double[<mat.@cols() * mat.@rows()>])mat.val * nearest).round() / nearest;
+	mat.val = ((double[<mat.cols() * mat.rows()>])mat.val * nearest).round() / nearest;
