@@ -52,19 +52,19 @@ fn void matrix_mul()
 }
 fn void determinant()
 {
-	mat7.@determinant();
+	mat7.determinant();
 }
 fn void minor()
 {
-	matrix::@minor(&mat7, 1, 2);
+	matrix::minor(&mat7, 1, 2);
 }
 fn void cofactor()
 {
-	mat7.@cofactor(1, 2);
+	mat7.cofactor(1, 2);
 }
 fn void comatrix()
 {
-	result4x4.@comatrix_assign(&mat7);
+	result4x4.comatrix_assign(&mat7);
 }
 fn void adjugate()
 {
@@ -97,13 +97,13 @@ fn void transpose()
 fn void row_slice() => @pool()
 {
 	Matrix{3,4, double}* tmp = allocator::new_aligned(tmem, Matrix{3,4, double})!!;
-	matrix::@row_slice(tmp, &mat7, 0);
+	matrix::row_slice(tmp, &mat7, 0);
 	allocator::free_aligned(tmem, tmp);
 }
 fn void col_slice() => @pool()
 {
 	Matrix{4,3, double}* tmp = allocator::new_aligned(tmem, Matrix{4,3, double})!!;
-	matrix::@col_slice(tmp, &mat7, 0);
+	matrix::col_slice(tmp, &mat7, 0);
 	allocator::free_aligned(tmem, tmp);
 }
 fn void identity()

@@ -53,23 +53,23 @@ fn void list_mul()
 }
 fn void matrix_mul()
 {
-	matrix::@mul(&result8x8, &mat1, &mat2);
+	matrix::mul(&result8x8, &mat1, &mat2);
 }
 fn void determinant()
 {
-	mat1.@determinant();
+	mat1.determinant();
 }
 fn void minor()
 {
-	matrix::@minor(&mat1, 1, 2);
+	matrix::minor(&mat1, 1, 2);
 }
 fn void cofactor()
 {
-	mat1.@cofactor(1, 2);
+	mat1.cofactor(1, 2);
 }
 fn void comatrix()
 {
-	result8x8.@comatrix_assign(&mat1);
+	result8x8.comatrix_assign(&mat1);
 }
 fn void adjugate()
 {
@@ -97,18 +97,18 @@ fn void resize()
 }
 fn void transpose()
 {
-	matrix::@set_transpose(&result8x8, &mat1);
+	matrix::transpose_assign(&result8x8, &mat1);
 }
 fn void row_slice() => @pool()
 {
 	Matrix{7,8, double}* tmp = allocator::new_aligned(tmem, Matrix{7,8, double})!!;
-	matrix::@row_slice(tmp, &mat1, 0);
+	matrix::row_slice(tmp, &mat1, 0);
 	allocator::free_aligned(tmem, tmp);
 }
 fn void col_slice() => @pool()
 {
 	Matrix{8,7, double}* tmp = allocator::new_aligned(tmem, Matrix{8,7, double})!!;
-	matrix::@col_slice(tmp, &mat1, 0);
+	matrix::col_slice(tmp, &mat1, 0);
 	allocator::free_aligned(tmem, tmp);
 }
 fn void identity()

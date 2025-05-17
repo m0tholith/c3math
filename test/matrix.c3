@@ -78,20 +78,20 @@ fn void strassen()
 }
 fn void determinant()
 {
-	@assert_print(mat1.@determinant(), 8158);
+	@assert_print(mat1.determinant(), 8158);
 }
 fn void minor()
 {
-	@assert_print(matrix::@minor(&mat1, 1, 2), -90);
+	@assert_print(matrix::minor(&mat1, 1, 2), -90);
 }
 fn void cofactor()
 {
-	@assert_print(mat1.@cofactor(1, 2), 90);
+	@assert_print(mat1.cofactor(1, 2), 90);
 }
 fn void comatrix()
 {
 	Matrix3x3 co;
-	co.@comatrix_assign(&mat1);
+	co.comatrix_assign(&mat1);
 	@assert_print(co, (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
 }
 fn void adjugate_matrix()
@@ -193,35 +193,35 @@ fn void transpose()
 fn void row_slice()
 {
 	Matrix2x3 tmp2x3;
-	@row_slice(&tmp2x3, &mat1, 0);
+	row_slice(&tmp2x3, &mat1, 0);
 	@assert_print(tmp2x3, (Matrix2x3){{ -7, -17, 15, 20, 8, -16 }});
-	@row_slice(&tmp2x3, &mat1, 1);
+	row_slice(&tmp2x3, &mat1, 1);
 	@assert_print(tmp2x3, (Matrix2x3){{ -20, -17, 4, 20, 10, -16 }});
-	@row_slice(&tmp2x3, &mat1, 2);
+	row_slice(&tmp2x3, &mat1, 2);
 	@assert_print(tmp2x3, (Matrix2x3){{ -20, -7, 4, 15, 10, 8 }});
 
 	Matrix1x3 tmp1x3;
-	@row_slice(&tmp1x3, &mat4, 0);
+	row_slice(&tmp1x3, &mat4, 0);
 	@assert_print(tmp1x3, (Matrix1x3){{  -8, -11,  15, }});
-	@row_slice(&tmp1x3, &mat4, 1);
+	row_slice(&tmp1x3, &mat4, 1);
 	@assert_print(tmp1x3, (Matrix1x3){{   8,   7,  14, }});
 }
 fn void col_slice()
 {
 	Matrix3x2 tmp3x2;
-	@col_slice(&tmp3x2, &mat1, 0);
+	col_slice(&tmp3x2, &mat1, 0);
 	@assert_print(tmp3x2, (Matrix3x2){{   4,  15,  20,  10,   8, -16 }});
-	@col_slice(&tmp3x2, &mat1, 1);
+	col_slice(&tmp3x2, &mat1, 1);
 	@assert_print(tmp3x2, (Matrix3x2){{ -20,  -7, -17,  10,   8, -16 }});
-	@col_slice(&tmp3x2, &mat1, 2);
+	col_slice(&tmp3x2, &mat1, 2);
 	@assert_print(tmp3x2, (Matrix3x2){{ -20,  -7, -17,   4,  15,  20 }});
 
 	Matrix2x2 tmp2x2;
-	@col_slice(&tmp2x2, &mat4, 0);
+	col_slice(&tmp2x2, &mat4, 0);
 	@assert_print(tmp2x2, (Matrix2x2){{   7, -11,  14,  15, }});
-	@col_slice(&tmp2x2, &mat4, 1);
+	col_slice(&tmp2x2, &mat4, 1);
 	@assert_print(tmp2x2, (Matrix2x2){{   8,  -8,  14,  15, }});
-	@col_slice(&tmp2x2, &mat4, 2);
+	col_slice(&tmp2x2, &mat4, 2);
 	@assert_print(tmp2x2, (Matrix2x2){{   8,  -8,   7, -11, }});
 }
 fn void identity()
@@ -233,13 +233,13 @@ fn void identity()
 fn void identity_assign()
 {
 	Matrix1x1 t1;
-	matrix::@identity_assign(&t1);
+	matrix::identity_assign(&t1);
 	@assert_print(t1, (Matrix1x1){{ 1 }});
 	Matrix2x2 t2;
-	matrix::@identity_assign(&t2);
+	matrix::identity_assign(&t2);
 	@assert_print(t2, (Matrix2x2){{ 1, 0, 0, 1 }});
 	Matrix3x3 t3;
-	matrix::@identity_assign(&t3);
+	matrix::identity_assign(&t3);
 	@assert_print(t3, (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
 }
 fn void inverted()

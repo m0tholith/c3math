@@ -57,19 +57,19 @@ fn void matrix_mul()
 }
 fn void determinant()
 {
-	mat64_1.@determinant();
+	mat64_1.determinant();
 }
 fn void minor()
 {
-	matrix::@minor(&mat64_1, 1, 2);
+	matrix::minor(&mat64_1, 1, 2);
 }
 fn void cofactor()
 {
-	mat64_1.@cofactor(1, 2);
+	mat64_1.cofactor(1, 2);
 }
 fn void comatrix()
 {
-	result64.@comatrix_assign(&mat64_1);
+	result64.comatrix_assign(&mat64_1);
 }
 fn void adjugate()
 {
@@ -99,18 +99,18 @@ fn void resize()
 }
 fn void transpose()
 {
-	matrix::@set_transpose(&result64, &mat64_1);
+	matrix::transpose_assign(&result64, &mat64_1);
 }
 fn void row_slice() => @pool()
 {
 	Matrix{63,64, double}* tmp = allocator::new_aligned(tmem, Matrix{63,64, double})!!;
-	matrix::@row_slice(tmp, &mat64_1, 0);
+	matrix::row_slice(tmp, &mat64_1, 0);
 	allocator::free_aligned(tmem, tmp);
 }
 fn void col_slice() => @pool()
 {
 	Matrix{64,63, double}* tmp = allocator::new_aligned(tmem, Matrix{64,63, double})!!;
-	matrix::@col_slice(tmp, &mat64_1, 0);
+	matrix::col_slice(tmp, &mat64_1, 0);
 	allocator::free_aligned(tmem, tmp);
 }
 fn void identity()

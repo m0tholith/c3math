@@ -179,7 +179,7 @@ fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
 <*
  @require ROWS == COLS : "Can't compute determinant of non-square matrix"
  *>
-macro Type Matrix.@determinant(&self)
+macro Type Matrix.determinant(&self)
 {
 	$switch COLS:
 		$case 1:
@@ -220,14 +220,14 @@ macro Type Matrix.@determinant(&self)
 	return result;
 	$endswitch
 }
-macro Matrix.@cofactor(&self, i, j)
-	=> (Type)(math::pow(-1, (int)(i + j)) * matrix::@minor(self, i, j));
+macro Matrix.cofactor(&self, i, j)
+	=> (Type)(math::pow(-1, (int)(i + j)) * matrix::minor(self, i, j));
 
 <*
  @require ROWS > 1 && COLS > 1 : "Comatrix of a one-row or one-column matrix is invalid"
  @require source != null && source != self
  *>
-macro void Matrix.@comatrix_assign(&self, Matrix* source)
+macro void Matrix.comatrix_assign(&self, Matrix* source)
 {
 	$if ROWS == COLS:
 		$switch ROWS:
@@ -306,7 +306,7 @@ macro void Matrix.@comatrix_assign(&self, Matrix* source)
 	$endif
 	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		self.m[i][j] = source.@cofactor(i, j);
+		self.m[i][j] = source.cofactor(i, j);
 	};
 }
 <*
@@ -387,10 +387,10 @@ faultdef PIVOT_IS_ZERO;
  *>
 macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 {
-	matrix::@transpose(self);
-	defer matrix::@transpose(self);
+	matrix::transpose(self);
+	defer matrix::transpose(self);
 
-	matrix::@identity_assign(lower);
+	matrix::identity_assign(lower);
 	mem::copy(upper, self, $typeof(upper.val).sizeof);
 
 	Type[] temp_row_j = allocator::new_array_aligned(tmem, Type, COLS);
@@ -426,7 +426,7 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
  *>
 macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
 {
-	matrix::@identity_assign(p);
+	matrix::identity_assign(p);
 	mem::copy(lower, p, $typeof(lower.val).sizeof);
 	mem::copy(upper, self, $typeof(upper.val).sizeof);
 
@@ -496,7 +496,7 @@ macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
  @require mat1.cols() == mat2.rows() : "Incompatible multiplication"
  @require mat1.type() == mat2.type() : "Incompatible multiplication"
  *>
-macro @mul(dest, mat1, mat2)
+macro mul(dest, mat1, mat2)
 {
 	const N = mat1.cols();
 	const ROWS = mat1.rows();
@@ -510,7 +510,7 @@ macro @mul(dest, mat1, mat2)
  @require $typeof(source).kindof == POINTER
  @require mat.cols() == source.rows() && mat.rows() == source.cols()
  *>
-macro @set_transpose(&mat, source)
+macro transpose_assign(&mat, source)
 {
 	$if mat.rows() == 1 ||| mat.cols() == 1:
 	return;
@@ -524,9 +524,11 @@ macro @set_transpose(&mat, source)
 	$endif
 }
 <*
+ Transposes matrix in-place.
+
  @require mat.cols() == mat.rows()
  *>
-macro @transpose(&mat)
+macro transpose(&mat)
 {
 	for (usz i = 0; i < mat.cols(); i++)
 	{
@@ -537,7 +539,7 @@ macro @transpose(&mat)
  @require $typeof(source).kindof == POINTER
  @require mat.rows() == source.rows() - 1 && mat.cols() == source.cols()
  *>
-macro @row_slice(&mat, source, idx)
+macro row_slice(&mat, source, idx)
 {
 	if (idx > 0)
 	{
@@ -559,7 +561,7 @@ macro @row_slice(&mat, source, idx)
  @require $typeof(source).kindof == POINTER
  @require mat.cols() == source.cols() - 1 && mat.rows() == source.rows()
  *>
-macro @col_slice(&mat, source, idx)
+macro col_slice(&mat, source, idx)
 {
 	mem::copy(
 		&mat.m[0],
@@ -720,15 +722,15 @@ macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
  @require self.rows() > 1 && self.cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
  @require $typeof(self).kindof == POINTER
  *>
-macro @minor(&self, i, j)
+macro minor(&self, i, j)
 {
 	@pool()
 	{
 		Matrix{self.rows(),self.cols()-1, $typefrom(self.type())}* tmp1 = allocator::new_aligned(tmem, Matrix{self.rows(),self.cols()-1, $typefrom(self.type())})!!;
-		matrix::@col_slice(tmp1, self, i);
+		matrix::col_slice(tmp1, self, i);
 		Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())}* tmp2 = allocator::new_aligned(tmem, Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())})!!;
-		matrix::@row_slice(tmp2, tmp1, j);
-		return tmp2.@determinant();
+		matrix::row_slice(tmp2, tmp1, j);
+		return tmp2.determinant();
 	};
 }
 
@@ -771,7 +773,7 @@ macro @identity($size, $Type = double)
 <*
  @require self.cols() == self.rows() : "Cannot create non-square identity matrix"
  *>
-macro @identity_assign(&self)
+macro identity_assign(&self)
 {
 	mem::clear(self, $typeof(self.val).sizeof);
 	for (usz x = 0; x < self.cols(); x++) self.m[x][x] = 1;
@@ -783,8 +785,8 @@ macro @identity_assign(&self)
  *>
 macro adjugate(&mat, source)
 {
-	mat.@comatrix_assign(source);
-	matrix::@transpose(mat);
+	mat.comatrix_assign(source);
+	matrix::transpose(mat);
 }
 
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
@@ -795,7 +797,7 @@ faultdef MATRIX_INVERSE_DOESNT_EXIST;
  *>
 macro inverse(&mat, source)
 {
-	$typefrom(source.type()) det = source.@determinant();
+	$typefrom(source.type()) det = source.determinant();
 	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
 	$if $defined(mat.adjugate):
 	mat.adjugate(source);
