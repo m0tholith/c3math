@@ -1,4 +1,6 @@
-module matrix @test;
+module tests::matrices @test;
+import matrix;
+import matrix::mat_type;
 
 Matrix3x3 mat1 = {{ -20,  -7, -17,   4,  15,  20,  10,   8, -16, }};
 Matrix3x2 mat2 = {{  -6,  12,   6,  17,  -1,  5,                 }};
@@ -160,27 +162,27 @@ fn void resize()
 	Matrix2x2 result2x2;
 	Matrix3x3 result3x3;
 	Matrix3x1 result3x1;
-	@resize(&mat1, &result4x4, 4,4);
+	matrix::@resize(&mat1, &result4x4, 4,4);
 	@assert_print(result4x4, (Matrix4x4){{ -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0, 0, 0, 0, 0 }});
-	@resize(&mat1, &result2x2, 2,2);
+	matrix::@resize(&mat1, &result2x2, 2,2);
 	@assert_print(result2x2, (Matrix2x2){{ -20, -7, 4, 15 }});
-	@resize(&mat4, &result2x2, 2,2);
+	matrix::@resize(&mat4, &result2x2, 2,2);
 	@assert_print(result2x2, (Matrix2x2){{ 8, -8, 7, -11 }});
-	@resize(&mat6, &result3x3, 3,3);
+	matrix::@resize(&mat6, &result3x3, 3,3);
 	@assert_print(result3x3, (Matrix3x3){{ -6, -15, -12, -11, -14, 12, 0, 0, 0 }});
-	@resize(&mat3, &result3x1, 3,1);
+	matrix::@resize(&mat3, &result3x1, 3,1);
 	@assert_print(result3x1, (Matrix3x1){{ -2, 20, -1 }});
 
 	mem::clear(&result4x4, $typeof(result4x4.val).sizeof);
-	@resize(&mat1, &result4x4, 4,4, col_offset: 1);
+	matrix::@resize(&mat1, &result4x4, 4,4, col_offset: 1);
 	@assert_print(result4x4, (Matrix4x4){{ 0, 0, 0, 0, -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0 }});
 	mem::clear(&result4x4, $typeof(result4x4.val).sizeof);
-	@resize(&mat1, &result4x4, 4,4, row_offset: 1);
+	matrix::@resize(&mat1, &result4x4, 4,4, row_offset: 1);
 	@assert_print(result4x4, (Matrix4x4){{ 0, -20, -7, -17, 0, 4, 15, 20, 0, 10, 8, -16, 0, 0, 0, 0 }});
 
-	@resize(&mat1, &result2x2, 2,2, col_offset: 1);
+	matrix::@resize(&mat1, &result2x2, 2,2, col_offset: 1);
 	@assert_print(result2x2, (Matrix2x2){{ 4, 15, 10, 8 }});
-	@resize(&mat1, &result2x2, 2,2, row_offset: 1);
+	matrix::@resize(&mat1, &result2x2, 2,2, row_offset: 1);
 	@assert_print(result2x2, (Matrix2x2){{ -7, -17, 15, 20 }});
 }
 fn void transpose()
@@ -193,42 +195,42 @@ fn void transpose()
 fn void row_slice()
 {
 	Matrix2x3 tmp2x3;
-	row_slice(&tmp2x3, &mat1, 0);
+	matrix::row_slice(&tmp2x3, &mat1, 0);
 	@assert_print(tmp2x3, (Matrix2x3){{ -7, -17, 15, 20, 8, -16 }});
-	row_slice(&tmp2x3, &mat1, 1);
+	matrix::row_slice(&tmp2x3, &mat1, 1);
 	@assert_print(tmp2x3, (Matrix2x3){{ -20, -17, 4, 20, 10, -16 }});
-	row_slice(&tmp2x3, &mat1, 2);
+	matrix::row_slice(&tmp2x3, &mat1, 2);
 	@assert_print(tmp2x3, (Matrix2x3){{ -20, -7, 4, 15, 10, 8 }});
 
 	Matrix1x3 tmp1x3;
-	row_slice(&tmp1x3, &mat4, 0);
+	matrix::row_slice(&tmp1x3, &mat4, 0);
 	@assert_print(tmp1x3, (Matrix1x3){{  -8, -11,  15, }});
-	row_slice(&tmp1x3, &mat4, 1);
+	matrix::row_slice(&tmp1x3, &mat4, 1);
 	@assert_print(tmp1x3, (Matrix1x3){{   8,   7,  14, }});
 }
 fn void col_slice()
 {
 	Matrix3x2 tmp3x2;
-	col_slice(&tmp3x2, &mat1, 0);
+	matrix::col_slice(&tmp3x2, &mat1, 0);
 	@assert_print(tmp3x2, (Matrix3x2){{   4,  15,  20,  10,   8, -16 }});
-	col_slice(&tmp3x2, &mat1, 1);
+	matrix::col_slice(&tmp3x2, &mat1, 1);
 	@assert_print(tmp3x2, (Matrix3x2){{ -20,  -7, -17,  10,   8, -16 }});
-	col_slice(&tmp3x2, &mat1, 2);
+	matrix::col_slice(&tmp3x2, &mat1, 2);
 	@assert_print(tmp3x2, (Matrix3x2){{ -20,  -7, -17,   4,  15,  20 }});
 
 	Matrix2x2 tmp2x2;
-	col_slice(&tmp2x2, &mat4, 0);
+	matrix::col_slice(&tmp2x2, &mat4, 0);
 	@assert_print(tmp2x2, (Matrix2x2){{   7, -11,  14,  15, }});
-	col_slice(&tmp2x2, &mat4, 1);
+	matrix::col_slice(&tmp2x2, &mat4, 1);
 	@assert_print(tmp2x2, (Matrix2x2){{   8,  -8,  14,  15, }});
-	col_slice(&tmp2x2, &mat4, 2);
+	matrix::col_slice(&tmp2x2, &mat4, 2);
 	@assert_print(tmp2x2, (Matrix2x2){{   8,  -8,   7, -11, }});
 }
 fn void identity()
 {
-	@assert_print(@identity(1), (Matrix1x1){{ 1 }});
-	@assert_print(@identity(2), (Matrix2x2){{ 1, 0, 0, 1 }});
-	@assert_print(@identity(3), (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
+	@assert_print(matrix::@identity(1), (Matrix1x1){{ 1 }});
+	@assert_print(matrix::@identity(2), (Matrix2x2){{ 1, 0, 0, 1 }});
+	@assert_print(matrix::@identity(3), (Matrix3x3){{ 1, 0, 0, 0, 1, 0, 0, 0, 1 }});
 }
 fn void identity_assign()
 {
