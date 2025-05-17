@@ -70,6 +70,12 @@ fn void matrix_mul()
 	@assert_print(mat9 * mat10, (Matrix1x1){{ 39 }});
 	@assert_print(mat10 * mat9, (Matrix3x3){{ 24, -36, 18, -8, 12, -6, 4, -6, 3 }});
 }
+fn void strassen()
+{
+	Matrix4x4 result;
+	matrix::strassen_mul(&result, &mat8, &mat7);
+	@assert_print(result, (Matrix4x4){{ 144, 133, 197, 187, -30, 19, 415, -20, -331, -493, 202, -223, 3, -162, 97, 129 }});
+}
 fn void determinant()
 {
 	@assert_print(mat1.@determinant(), 8158);

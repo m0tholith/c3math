@@ -579,6 +579,133 @@ macro apply(&mat, vec) @private
 }
 
 <*
+ @require s.@cols() == s.@rows(): "Can't do Strassen multiplication on non-square matrix"
+ @require o.@cols() == o.@rows() : "Can't do Strassen multiplication on non-square matrix"
+ @require s.@cols() == o.@cols() : "Can't do Strassen multiplication non-equal sized matrices"
+ @require @is_pow_2(s.@cols()) : "Can't do Strassen multiplication on matrix whose sides aren't a power of 2"
+ *>
+macro strassen_mul(r, s, o)
+{
+	$if s.@cols() == 1:
+	r.m[0][0] = s.m[0][0] * o.m[0][0];
+	$else
+	const HALF_SIZE = s.@cols() / 2;
+	var $EntryType = $typefrom(s.@type());
+	var $MatType = Matrix{HALF_SIZE,HALF_SIZE, $EntryType};
+	var $OriginalType = $typeof(r);
+	var lambda = fn void($OriginalType result, $OriginalType self, $OriginalType other) => @pool() {
+	const HALF_SIZE = self.@cols() / 2;
+	$MatType* tmp = allocator::new(tmem, $MatType);
+
+	$MatType* a11 = allocator::new(tmem, $MatType);
+	$MatType* a12 = allocator::new(tmem, $MatType);
+	$MatType* a21 = allocator::new(tmem, $MatType);
+	$MatType* a22 = allocator::new(tmem, $MatType);
+	$MatType* b11 = allocator::new(tmem, $MatType);
+	$MatType* b12 = allocator::new(tmem, $MatType);
+	$MatType* b21 = allocator::new(tmem, $MatType);
+	$MatType* b22 = allocator::new(tmem, $MatType);
+
+	@resize(self,  a11, HALF_SIZE,HALF_SIZE, 0        ,0        );
+	@resize(self,  a12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
+	@resize(self,  a21, HALF_SIZE,HALF_SIZE, HALF_SIZE,0        );
+	@resize(self,  a22, HALF_SIZE,HALF_SIZE, HALF_SIZE,HALF_SIZE);
+	@resize(other, b11, HALF_SIZE,HALF_SIZE, 0        ,0        );
+	@resize(other, b12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
+	@resize(other, b21, HALF_SIZE,HALF_SIZE, HALF_SIZE,0        );
+	@resize(other, b22, HALF_SIZE,HALF_SIZE, HALF_SIZE,HALF_SIZE);
+
+	$MatType* m1 = allocator::new(tmem, $MatType);
+	$MatType* m2 = allocator::new(tmem, $MatType);
+	$MatType* m3 = allocator::new(tmem, $MatType);
+	$MatType* m4 = allocator::new(tmem, $MatType);
+	$MatType* m5 = allocator::new(tmem, $MatType);
+	$MatType* m6 = allocator::new(tmem, $MatType);
+	$MatType* m7 = allocator::new(tmem, $MatType);
+
+	*m1 = *a11;
+	m1.add_assign(*a22);
+	*tmp = *b11;
+	tmp.add_assign(*b22);
+	strassen_mul(m1, m1, tmp);
+
+	*m2 = *a21;
+	m2.add_assign(*a22);
+	strassen_mul(m2, m2, b11);
+
+	*m3 = *b12;
+	m3.subtract_assign(*b22);
+	strassen_mul(m3, a11, m3);
+
+	*m4 = *b21;
+	m4.subtract_assign(*b11);
+	strassen_mul(m4, a22, m4);
+
+	*m5 = *a11;
+	m5.add_assign(*a12);
+	strassen_mul(m5, m5, b22);
+
+	*m6 = *a21;
+	m6.subtract_assign(*a11);
+	*tmp = *b11;
+	tmp.add_assign(*b12);
+	strassen_mul(m6, m6, tmp);
+
+	*m7 = *a12;
+	m7.subtract_assign(*a22);
+	*tmp = *b21;
+	tmp.add_assign(*b22);
+	strassen_mul(m7, m7, tmp);
+
+	*tmp = *m1;
+	tmp.add_assign(*m4);
+	tmp.subtract_assign(*m5);
+	tmp.add_assign(*m7);
+	set_submatrix(result, tmp, 0        ,0        );
+
+	*tmp = *m2;
+	tmp.add_assign(*m4);
+	set_submatrix(result, tmp, 0        ,HALF_SIZE);
+
+	*tmp = *m3;
+	tmp.add_assign(*m5);
+	set_submatrix(result, tmp, HALF_SIZE,0        );
+
+	*tmp = *m1;
+	tmp.subtract_assign(*m2);
+	tmp.add_assign(*m3);
+	tmp.add_assign(*m6);
+	set_submatrix(result, tmp, HALF_SIZE,HALF_SIZE);
+	};
+	lambda(r, s, o);
+	$endif
+}
+macro @is_pow_2($n) @const
+{
+	$if $n == 1:
+	return true;
+	$else
+	$for var $x = $n; $x % 2 == 0; $x /= 2:
+		$if $x == 2:
+			return true;
+		$endif
+	$endfor
+	return false;
+	$endif
+}
+macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
+{
+	// for (usz i = 0; i < sub.@cols(); i++)
+	// {
+	// 	mat.m[col_offset + i][row_offset:sub.@rows()] = sub.m[i][..];
+	// }
+	@ij_loop(sub.@rows(), sub.@cols(); usz i, usz j)
+	{
+		mat.m[col_offset + i][row_offset + j] = sub.m[i][j];
+	};
+}
+
+<*
  @require i < self.@rows() && j < self.@cols() : "Index out of range"
  @require self.@rows() > 1 && self.@cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
  @require $typeof(self).kindof == POINTER
