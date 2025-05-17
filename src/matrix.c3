@@ -568,7 +568,7 @@ macro @col_slice(&mat, source, idx)
 	if (idx < source.@cols() - 1) mem::copy(
 		&mat.m[idx],
 		&source.m[idx + 1],
-		$typefrom(source.@type()).sizeof * source.@rows() * (source.@cols() - idx));
+		$typefrom(source.@type()).sizeof * source.@rows() * (source.@cols() - idx - 1));
 }
 macro apply(&mat, vec) @private
 {
