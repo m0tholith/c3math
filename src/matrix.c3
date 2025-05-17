@@ -563,7 +563,7 @@ macro transpose(&mat)
  @require $typeof(source).kindof == POINTER
  @require mat.rows() == source.rows() - 1 && mat.cols() == source.cols()
  *>
-macro row_slice(&mat, source, idx)
+macro row_slice(&mat, source, usz idx)
 {
 	if (idx > 0)
 	{
@@ -581,11 +581,10 @@ macro row_slice(&mat, source, idx)
 	}
 }
 <*
- @require $typeof(mat).kindof == POINTER
  @require $typeof(source).kindof == POINTER
  @require mat.cols() == source.cols() - 1 && mat.rows() == source.rows()
  *>
-macro col_slice(&mat, source, idx)
+macro col_slice(&mat, source, usz idx)
 {
 	mem::copy(
 		&mat.m[0],
