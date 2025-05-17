@@ -481,11 +481,26 @@ macro Tuple{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
 	return result;
 }
 
-macro Matrix.translate(&self, scale_vec) => self * translated(scale_vec);
-macro Matrix.rotate_2d(&self, scale_vec) => self * rotated_2d(scale_vec);
-macro Matrix.rotate_x(&self, scale_vec) => self * rotated_x(scale_vec);
-macro Matrix.rotate_y(&self, scale_vec) => self * rotated_y(scale_vec);
-macro Matrix.rotate_z(&self, scale_vec) => self * rotated_z(scale_vec);
+<*
+ @require translate_vec.len == self.cols() : "Incompatible translation vector"
+ *>
+macro Matrix.translate(&self, translate_vec) => self *= translated(scale_vec);
+<*
+ @param theta : "Rotation degree in radians"
+ *>
+macro Matrix.rotate_2d(&self, theta) => self *= rotated_2d(scale_vec);
+<*
+ @param theta : "Rotation degree in radians"
+ *>
+macro Matrix.rotate_x(&self, theta) => self *= rotated_x(theta);
+<*
+ @param theta : "Rotation degree in radians"
+ *>
+macro Matrix.rotate_y(&self, theta) => self *= rotated_y(theta);
+<*
+ @param theta : "Rotation degree in radians"
+ *>
+macro Matrix.rotate_z(&self, theta) => self *= rotated_z(theta);
 
 module matrix;
 
