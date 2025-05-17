@@ -211,7 +211,11 @@ macro Type Matrix.determinant(&self)
 	return result;
 	$endswitch
 }
-macro Matrix.cofactor(&self, i, j)
+<*
+ @param i : "Row index"
+ @param j : "Column index"
+ *>
+macro Type Matrix.cofactor(&self, usz i, usz j)
 	=> (Type)(math::pow(-1, (int)(i + j)) * matrix::minor(self, i, j));
 
 <*
@@ -701,18 +705,20 @@ macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
 }
 
 <*
- @require i < self.rows() && j < self.cols() : "Index out of range"
+ @param i : "Row index"
+ @param j : "Column index"
+ @require i < self.cols() && j < self.rows() : "Index out of range"
  @require self.rows() > 1 && self.cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
  @require $typeof(self).kindof == POINTER
  *>
-macro minor(&self, i, j)
+macro minor(&self, usz i, usz j)
 {
 	@pool()
 	{
-		Matrix{self.rows(),self.cols()-1, $typefrom(self.type())}* tmp1 = allocator::new(tmem, Matrix{self.rows(),self.cols()-1, $typefrom(self.type())});
-		matrix::col_slice(tmp1, self, i);
+		Matrix{self.rows()-1,self.cols(), $typefrom(self.type())}* tmp1 = allocator::new(tmem, Matrix{self.rows()-1,self.cols(), $typefrom(self.type())});
+		matrix::row_slice(tmp1, self, i);
 		Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())}* tmp2 = allocator::new(tmem, Matrix{self.rows()-1,self.cols()-1, $typefrom(self.type())});
-		matrix::row_slice(tmp2, tmp1, j);
+		matrix::col_slice(tmp2, tmp1, j);
 		return tmp2.determinant();
 	};
 }

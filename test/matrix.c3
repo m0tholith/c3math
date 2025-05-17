@@ -84,17 +84,17 @@ fn void determinant()
 }
 fn void minor()
 {
-	@assert_print(matrix::minor(&mat1, 1, 2), -90);
+	@assert_print(matrix::minor(&mat1, 2, 1), -90);
 }
 fn void cofactor()
 {
-	@assert_print(mat1.cofactor(1, 2), 90);
+	@assert_print(mat1.cofactor(2, 1), 90);
 }
 fn void comatrix()
 {
 	Matrix3x3 co;
 	co.comatrix_assign(&mat1);
-	@assert_print(co, (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
+	@assert_print(co, (Matrix3x3){{ -400, -248, 115, 264, 490, 332,	-118, 90, -272 }});
 }
 fn void adjugate_matrix()
 {
@@ -104,9 +104,9 @@ fn void adjugate_matrix()
 	matrix::adjugate(&adj3, &mat1);
 	Matrix4x4 adj4;
 	matrix::adjugate(&adj4, &mat7);
-	@assert_print(adj2, (Matrix2x2){{ -2, -5, -3, 1 }});
-	@assert_print(adj3, (Matrix3x3){{ -400, -248, 115, 264, 490, 332, -118, 90, -272 }});
-	@assert_print(adj4, (Matrix4x4){{ -2436, 960, -150, 1377, -315, 130, -15, 170, 3816, -1485, 240, -2142, -11934, 4675, -765, 6698 }});
+	@assert_print(adj2, (Matrix2x2){{ -2, -3, -5, 1 }});
+	@assert_print(adj3, (Matrix3x3){{ -400, 264, -118, -248, 490, 90, 115, 332, -272 }});
+	@assert_print(adj4, (Matrix4x4){{ -2436, -315, 3816, -11934, 960, 130, -1485, 4675, -150, -15, 240, -765, 1377, 170, -2142, 6698 }});
 }
 fn void trace()
 {
@@ -252,7 +252,9 @@ fn void inverted()
 	matrix::inverse(&source, &mat5)!!;
 	round_matrix(&source);
 	Matrix3x3 result = {{
-		-1.0/7.0, -1.0, 4.0/7.0, 13.0/49.0, 4.0/7.0, -17.0/49.0, -1.0/49.0, 4.0/7.0, -10.0/49.0
+		-1.0/7.0  ,13.0/49.0 ,-1.0/49.0 ,
+		-1.0      ,4.0/7.0   ,4.0/7.0   ,
+		4.0/7.0   ,-17.0/49.0,-10.0/49.0,
 	}};
 	round_matrix(&result);
 	@assert_print(source, result);
