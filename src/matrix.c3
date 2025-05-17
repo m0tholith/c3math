@@ -604,9 +604,16 @@ macro apply(&mat, vec) @private
 }
 
 <*
- @require s.cols() == s.rows(): "Can't do Strassen multiplication on non-square matrix"
- @require o.cols() == o.rows() : "Can't do Strassen multiplication on non-square matrix"
- @require s.cols() == o.cols() : "Can't do Strassen multiplication non-equal sized matrices"
+ @param r : "Result matrix from multiplying `s` and `o`"
+ @param s : "Left-side matrix to multiply"
+ @param o : "Right-side matrix to multiply"
+
+ @require $typeof(r).kindof == POINTER
+ @require $typeof(s).kindof == POINTER
+ @require $typeof(o).kindof == POINTER
+
+ @require $defined(*s = *o) : "Incompatible multiplication"
+ @require $defined(*r = *s) : "Incompatible multiplication"
  @require @is_pow_2(s.cols()) : "Can't do Strassen multiplication on matrix whose sides aren't a power of 2"
  *>
 macro strassen_mul(r, s, o)
