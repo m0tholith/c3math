@@ -586,11 +586,21 @@ macro apply(&mat, vec) @private
  *>
 macro strassen_mul(r, s, o)
 {
-	$if s.cols() == 1:
-	r.m[0][0] = s.m[0][0] * o.m[0][0];
+	var $EntryType = $typefrom(s.type());
+	$if s.cols() == 2:
+	$EntryType _m1 = (s.m[0][0] + s.m[1][1]) * (o.m[0][0] + o.m[1][1]);
+	$EntryType _m2 = (s.m[0][1] + s.m[1][1]) * o.m[0][0];
+	$EntryType _m3 = s.m[0][0] * (o.m[1][0] - o.m[1][1]);
+	$EntryType _m4 = s.m[1][1] * (o.m[0][1] - o.m[0][0]);
+	$EntryType _m5 = (s.m[0][0] + s.m[1][0]) * o.m[1][1];
+	$EntryType _m6 = (s.m[0][1] - s.m[0][0]) * (o.m[0][0] + o.m[1][0]);
+	$EntryType _m7 = (s.m[1][0] - s.m[1][1]) * (o.m[0][1] + o.m[1][1]);
+	r.val = {
+		[0] = _m1 + _m4 - _m5 + _m7, [1] = _m3 + _m5,
+		[2] = _m2 + _m4,             [3] = _m1 - _m2 + _m3 + _m6,
+	}; // transposed from the actual definition
 	$else
 	const HALF_SIZE = s.cols() / 2;
-	var $EntryType = $typefrom(s.type());
 	var $MatType = Matrix{HALF_SIZE,HALF_SIZE, $EntryType};
 	var $OriginalType = $typeof(r);
 	var lambda = fn void($OriginalType result, $OriginalType self, $OriginalType other) => @pool() {
