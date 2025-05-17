@@ -380,9 +380,13 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 
 faultdef PIVOT_IS_ZERO;
 <*
+ Decomposes `self` into lower and upper matrices, without pivoting.
+ `lower` and `upper` may be the same matrix.
+
  @param [&inout] lower : "Pointer to lower triangluar matrix"
  @param [&inout] upper : "Pointer to upper triangluar matrix"
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
+ @require lower != self && upper != self
  *>
 macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 {
@@ -418,10 +422,16 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 }
 
 <*
+ Decomposes `self` into lower and upper matrices, populating the pivot matrix.
+ `lower` and `upper` may *not* be the same matrix.
+
  @param [&inout] lower : "Pointer to lower triangluar matrix"
  @param [&inout] upper : "Pointer to upper triangluar matrix"
  @param [&inout] p : "Pointer to permutation matrix"
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
+ @require lower != upper : "Lower and upper matrix pointers may not be the same"
+ @require lower != self && upper != self
+ @require p != lower && p != upper && p != self
  *>
 macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
 {
