@@ -731,6 +731,16 @@ macro @is_pow_2($n) @private @const
 	$endfor
 	return false;
 }
+<*
+ @param mat : "Bigger, main matrix to copy into"
+ @param sub : "Smaller, sub matrix to copy from"
+
+ @require $typeof(mat).kindof == POINTER
+ @require $typeof(sub).kindof == POINTER
+
+ @require row_offset + sub.cols() - 1 < mat.cols() : "Row index out of range"
+ @require col_offset + sub.rows() - 1 < mat.rows() : "Column index out of range"
+ *>
 macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
 {
 	@ij_loop(sub.rows(), sub.cols(); usz i, usz j)
