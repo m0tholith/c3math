@@ -23,7 +23,7 @@ macro @is_pow_2() @const
 }
 macro @use_vectors() @const => @is_pow_2() && !@is_big_matrix();
 
-union Matrix (Printable)
+union Matrix (Printable) @packed @align(Type.sizeof)
 {
 	Type[COLS * ROWS] val;
 	Type[<ROWS>][COLS] m @if(@use_vectors());
