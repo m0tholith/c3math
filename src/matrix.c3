@@ -27,7 +27,14 @@ union Matrix (Printable) @packed @align(Type.sizeof)
 }
 fn usz? Matrix.to_format(&self, Formatter* f) @dynamic
 {
-	return f.printf("%s", self.m);
+	usz result = f.printf("[")!;
+	result += f.printf("%s", (Type[ROWS])self.m[0])!;
+	for (usz i = 1; i < COLS; i++)
+	{
+		result += f.printf(", %s", (Type[ROWS])self.m[i])!;
+	}
+	result += f.printf("]")!;
+	return result;
 }
 macro usz Matrix.cols(#mat) @const @safemacro => COLS;
 macro usz Matrix.rows(#mat) @const @safemacro => ROWS;
