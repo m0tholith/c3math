@@ -729,7 +729,7 @@ macro mul(dest, mat1, mat2)
 	const COLS = mat2.cols();
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		dest.m[i][j] = @mat_mul_sum(mat1, mat2, i, j, N);
+		dest.m[j][i] = @mat_mul_sum(mat1, mat2, i, j, N);
 	};
 }
 <*
@@ -828,9 +828,9 @@ macro strassen_mul(r, s, o)
 	$EntryType _m6 = (s.m[0][1] - s.m[0][0]) * (o.m[0][0] + o.m[1][0]);
 	$EntryType _m7 = (s.m[1][0] - s.m[1][1]) * (o.m[0][1] + o.m[1][1]);
 	r.val = {
-		[0] = _m1 + _m4 - _m5 + _m7, [1] = _m3 + _m5,
-		[2] = _m2 + _m4,             [3] = _m1 - _m2 + _m3 + _m6,
-	}; // transposed from the actual definition
+		[0] = _m1 + _m4 - _m5 + _m7, [2] = _m3 + _m5,
+		[1] = _m2 + _m4,             [3] = _m1 - _m2 + _m3 + _m6,
+	};
 	$else
 	const HALF_SIZE = s.cols() / 2;
 	var $MatType = Matrix{HALF_SIZE,HALF_SIZE, $EntryType};
@@ -840,21 +840,21 @@ macro strassen_mul(r, s, o)
 	$MatType* tmp = allocator::new(tmem, $MatType);
 
 	$MatType* a11 = allocator::new(tmem, $MatType);
-	$MatType* a12 = allocator::new(tmem, $MatType);
 	$MatType* a21 = allocator::new(tmem, $MatType);
+	$MatType* a12 = allocator::new(tmem, $MatType);
 	$MatType* a22 = allocator::new(tmem, $MatType);
 	$MatType* b11 = allocator::new(tmem, $MatType);
-	$MatType* b12 = allocator::new(tmem, $MatType);
 	$MatType* b21 = allocator::new(tmem, $MatType);
+	$MatType* b12 = allocator::new(tmem, $MatType);
 	$MatType* b22 = allocator::new(tmem, $MatType);
 
 	@resize(self,  a11, HALF_SIZE,HALF_SIZE, 0        ,0        );
-	@resize(self,  a12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
 	@resize(self,  a21, HALF_SIZE,HALF_SIZE, HALF_SIZE,0        );
+	@resize(self,  a12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
 	@resize(self,  a22, HALF_SIZE,HALF_SIZE, HALF_SIZE,HALF_SIZE);
 	@resize(other, b11, HALF_SIZE,HALF_SIZE, 0        ,0        );
-	@resize(other, b12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
 	@resize(other, b21, HALF_SIZE,HALF_SIZE, HALF_SIZE,0        );
+	@resize(other, b12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
 	@resize(other, b22, HALF_SIZE,HALF_SIZE, HALF_SIZE,HALF_SIZE);
 
 	$MatType* m1 = allocator::new(tmem, $MatType);
@@ -907,11 +907,11 @@ macro strassen_mul(r, s, o)
 
 	*tmp = *m2;
 	tmp.add_assign(*m4);
-	set_submatrix(result, tmp, 0        ,HALF_SIZE);
-
-	*tmp = *m3;
-	tmp.add_assign(*m5);
 	set_submatrix(result, tmp, HALF_SIZE,0        );
+                                                  
+	*tmp = *m3;                                   
+	tmp.add_assign(*m5);                          
+	set_submatrix(result, tmp, 0        ,HALF_SIZE);
 
 	*tmp = *m1;
 	tmp.sub_assign(*m2);
