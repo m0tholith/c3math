@@ -207,7 +207,7 @@ macro Matrix Matrix.mul_inline(a, Matrix b) @operator(*) @if(IS_FAST_2X2)
  Regular mult + assign, no macro base `*=` operator is defined, as it would
  not offer any performance benefit.
 *>
-fn void Matrix.mul_assign(&a, Matrix b) @if(IS_FAST_2X2)
+fn void Matrix.mul_assign(&a, Matrix b) @operator(*=) @if(IS_FAST_2X2)
 {
 	a.val = mul2x2(a.val, b.val);
 }
