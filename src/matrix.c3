@@ -734,12 +734,10 @@ macro transpose_assign(&mat, source)
 	$if mat.rows() == 1 ||| mat.cols() == 1:
 	return;
 	$else
-	const ROWS = source.cols();
-	const COLS = source.rows();
-	@ij_loop(ROWS, COLS; usz i, usz j)
+	for (usz i = 0; i < source.cols(); i++)
 	{
-		mat.m[j][i] = source.m[i][j];
-	};
+		mat.@set_row(i, source.m[i]);
+	}
 	$endif
 }
 <*
