@@ -1,4 +1,4 @@
-module matrix;
+module c3math::matrix;
 
 import std::math;
 

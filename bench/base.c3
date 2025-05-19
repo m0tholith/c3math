@@ -1,5 +1,5 @@
-module matrix::benchmarks;
-import matrix::mat_type;
+module c3math::matrix::benchmarks;
+import c3math::matrix::mat_type;
 
 fn void initialize() @init
 {

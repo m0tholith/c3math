@@ -1,4 +1,4 @@
-module matrix;
+module c3math::matrix;
 
 alias Matrix1x1 = Matrix{1,1, double};
 alias Matrix1x1f = Matrix{1,1, float};

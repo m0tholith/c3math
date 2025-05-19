@@ -2,9 +2,9 @@
  @require types::is_int($typeof(ROWS)) && types::is_int($typeof(COLS)) : "Can't create non-integer-sized matrix"
  @require ROWS > 0 && COLS > 0 : "Can't create 0-row or 0-column matrix"
  *>
-module matrix::mat_type {ROWS,COLS, Type};
+module c3math::matrix::mat_type {ROWS,COLS, Type};
 
-import matrix @public;
+import c3math::matrix @public;
 
 import std::io;
 import std::core::mem;
@@ -704,7 +704,7 @@ macro Matrix.rotate_y(&self, theta) => self *= rotated_y(theta);
  *>
 macro Matrix.rotate_z(&self, theta) => self *= rotated_z(theta);
 
-module matrix;
+module c3math::matrix;
 
 macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 {

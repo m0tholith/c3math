@@ -1,5 +1,5 @@
-module matrix::benchmarks::matrix64x64 @benchmark @if($$BENCHMARKING &&& $feature(BENCHMARK_64));
-import matrix::mat_type;
+module c3math::matrix::benchmarks::matrix64x64 @benchmark @if($$BENCHMARKING &&& $feature(BENCHMARK_64));
+import c3math::matrix::mat_type;
 
 alias Matrix64x64 = Matrix{64,64, double};
 
@@ -122,7 +122,7 @@ fn void inverted()
 	matrix::inverse(&result64, &mat64_1)!!;
 }
 
-module matrix::benchmarks::matrix64x64 @if($feature(BENCHMARK_64));
+module c3math::matrix::benchmarks::matrix64x64 @if($feature(BENCHMARK_64));
 fn void init_mats() @init
 {
 	mat64_1 = benchmarks::@rand_mat(64);

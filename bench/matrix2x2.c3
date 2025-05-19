@@ -1,7 +1,7 @@
-module matrix::benchmarks::matrix2x2 @benchmark @if($$BENCHMARKING);
-import matrix::mat_type;
+module c3math::matrix::benchmarks::matrix2x2 @benchmark @if($$BENCHMARKING);
+import c3math::matrix::mat_type;
 import std;
-import matrix;
+import c3math::matrix;
 
 Matrix2x2 mat = {{ 3, 5, 5, 2}};
 Matrix2x2 mat2 = {{ 4, 7, 2, 8 }};

@@ -1,5 +1,5 @@
-module c3math @test;
-import matrix;
+module c3math::tests::matrices @test;
+import c3math::matrix;
 
 fn void test_mat2()
 {

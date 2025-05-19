@@ -1,6 +1,6 @@
-module tests::matrices @test;
-import matrix;
-import matrix::mat_type;
+module c3math::tests::matrices @test;
+import c3math::matrix;
+import c3math::matrix::mat_type;
 
 Matrix3x3 mat1 = {{ -20,  -7, -17,   4,  15,  20,  10,   8, -16, }};
 Matrix3x2 mat2 = {{  -6,  12,   6,  17,  -1,  5,                 }};

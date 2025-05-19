@@ -1,5 +1,5 @@
-module matrix::benchmarks::matrix16x16 @benchmark @if($$BENCHMARKING);
-import matrix::mat_type;
+module c3math::matrix::benchmarks::matrix16x16 @benchmark @if($$BENCHMARKING);
+import c3math::matrix::mat_type;
 
 alias Matrix16x16 = Matrix{16,16, double};
 
@@ -120,7 +120,7 @@ fn void inverted()
 	matrix::inverse(&result16x16, &mat1)!!;
 }
 
-module matrix::benchmarks::matrix16x16 @if($$BENCHMARKING);
+module c3math::matrix::benchmarks::matrix16x16 @if($$BENCHMARKING);
 fn void init_mats() @init
 {
 	mat1 = benchmarks::@rand_mat(16);

@@ -1,5 +1,5 @@
-module matrix::benchmarks::matrix4x4 @benchmark @if($$BENCHMARKING);
-import matrix::mat_type;
+module c3math::matrix::benchmarks::matrix4x4 @benchmark @if($$BENCHMARKING);
+import c3math::matrix::mat_type;
 
 Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -2, 2 }};
 Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
