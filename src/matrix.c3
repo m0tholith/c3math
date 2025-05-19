@@ -41,7 +41,7 @@ macro Matrix Matrix.add_inline(self, Matrix mat) @operator(+)
 	$if $defined(InnerType):
 		return { .val = (InnerType)self.val + (InnerType)mat.val };
 	$else
-		return self.add(scalar);
+		return self.add(mat);
 	$endif
 }
 
@@ -54,9 +54,9 @@ fn Matrix Matrix.add(&self, Matrix mat)
 		return { .val = (InnerType)self.val + (InnerType)mat.val };
 	$else
 		Matrix result @noinit;
-		foreach (i, element : *self.val)
+		foreach (i, element : self.val)
 		{
-			result.val[i] = element + mat[i];
+			result.val[i] = element + mat.val[i];
 		}
 		return result;
 	$endif
@@ -83,7 +83,7 @@ fn void Matrix.add_assign(&self, Matrix mat)
 	$if $defined(InnerType):
 		self.val = (InnerType)self.val + (InnerType)mat.val;
 	$else
-		foreach (i, &element : *self.val)
+		foreach (i, &element : self.val)
 		{
 			*element += mat.val[i];
 		}
@@ -98,7 +98,7 @@ macro Matrix Matrix.sub_inline(self, Matrix mat) @operator(-)
 	$if $defined(InnerType):
 		return { .val = (InnerType)self.val - (InnerType)mat.val };
 	$else
-		return self.sub(scalar);
+		return self.sub(mat);
 	$endif
 }
 
@@ -111,9 +111,9 @@ fn Matrix Matrix.sub(&self, Matrix mat)
 		return { .val = (InnerType)self.val - (InnerType)mat.val };
 	$else
 		Matrix result @noinit;
-		foreach (i, element : *self.val)
+		foreach (i, element : self.val)
 		{
-			result.val[i] = element - mat[i];
+			result.val[i] = element - mat.val[i];
 		}
 		return result;
 	$endif
@@ -140,7 +140,7 @@ fn void Matrix.sub_assign(&self, Matrix mat)
 	$if $defined(InnerType):
 		self.val = (InnerType)self.val - (InnerType)mat.val;
 	$else
-		foreach (i, &element : *self.val)
+		foreach (i, &element : self.val)
 		{
 			*element -= mat.val[i];
 		}
@@ -155,20 +155,20 @@ macro Matrix Matrix.negate_inline(self) @operator(-)
 	$if $defined(InnerType):
 		return { .val = -(InnerType)self.val };
 	$else
-		return self.negate(scalar);
+		return self.negate();
 	$endif
 }
 
 <*
  Matrix negate function
 *>
-fn Matrix Matrix.negate(&self, Matrix mat)
+fn Matrix Matrix.negate(&self)
 {
 	$if $defined(InnerType):
 		return { .val = -(InnerType)self.val };
 	$else
 		Matrix result @noinit;
-		foreach (i, element : *self.val)
+		foreach (i, element : self.val)
 		{
 			result.val[i] = -element;
 		}
@@ -227,7 +227,7 @@ fn Matrix Matrix.mul_scalar(&self, Type scalar)
 		return { .val = (InnerType)self.val * scalar };
 	$else
 		Matrix result @noinit;
-		foreach (i, &element : *self)
+		foreach (i, &element : self.val)
 		{
 			result.val[i] = *element * scalar;
 		}
@@ -256,7 +256,7 @@ fn void Matrix.mul_scalar_assign(&self, Type scalar)
 	$if $defined(InnerType):
 		self.val = (InnerType)self.val * scalar;
 	$else
-		foreach (i, &element : *self)
+		foreach (i, &element : self.val)
 		{
 			*element *= scalar;
 		}
@@ -284,7 +284,7 @@ fn Matrix Matrix.div_scalar(&self, Type scalar)
 		return { .val = (InnerType)self.val / scalar };
 	$else
 		Matrix result @noinit;
-		foreach (i, &element : *self)
+		foreach (i, &element : self.val)
 		{
 			result.val[i] = *element / scalar;
 		}
@@ -314,7 +314,7 @@ fn void Matrix.div_scalar_assign(&self, Type scalar)
 		self.val = (InnerType)self.val / scalar;
 	$else
 
-		foreach (i, &element : *self)
+		foreach (i, &element : self.val)
 		{
 			*element /= scalar;
 		}
