@@ -11,12 +11,17 @@ import std::core::mem;
 import std::math;
 import std::collections::tuple;
 
-macro @is_big_matrix() @const => ROWS * COLS > 65536;
+const usz ELEMENTS = COLS * ROWS;
+const bool IS_SQUARE = COLS == ROWS;
+const bool USES_PRIMITIVE_TYPES = Type.kindof == UNSIGNED_INT || Type.kindof == SIGNED_INT || Type.kindof == FLOAT;
+const MAX_VECTOR = 64;
+alias InnerType @if(USES_PRIMITIVE_TYPES && ELEMENTS <= MAX_VECTOR) = Type[<ELEMENTS>];
+macro @is_big_matrix() @const => ELEMENTS > 65536;
 macro @use_vectors() @const => matrix::@is_pow_2(ROWS) && !@is_big_matrix();
 
 union Matrix (Printable) @packed @align(Type.sizeof)
 {
-	Type[COLS * ROWS] val;
+	Type[ELEMENTS] val;
 	Type[<ROWS>][COLS] m @if(@use_vectors());
 	Type[ROWS][COLS] m @if(!@use_vectors());
 }
@@ -28,113 +33,291 @@ macro usz Matrix.cols(#mat) @const @safemacro => COLS;
 macro usz Matrix.rows(#mat) @const @safemacro => ROWS;
 macro Matrix.type(#mat) @const @safemacro => Type.typeid;
 
-fn Matrix Matrix.add(&self, Matrix mat) @operator(+)
+<*
+ Matrix for fast add for small matrices
+*>
+macro Matrix Matrix.add_inline(self, Matrix mat) @operator(+)
 {
-	$if !@is_big_matrix():
-	return { .val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val };
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val + (InnerType)mat.val };
 	$else
-	Matrix result = *self;
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		result.val[i] += mat.val[i];
-	}
-	return result;
+		return self.add(scalar);
 	$endif
 }
-fn void Matrix.add_assign(&self, Matrix mat) @operator(+=)
+
+<*
+ Matrix add function
+*>
+fn Matrix Matrix.add(&self, Matrix mat)
 {
-	$if !@is_big_matrix():
-	self.val = (Type[<COLS * ROWS>])self.val + (Type[<COLS * ROWS>])mat.val;
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val + (InnerType)mat.val };
 	$else
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		self.val[i] += mat.val[i];
-	}
+		Matrix result @noinit;
+		foreach (i, element : *self.val)
+		{
+			result.val[i] = element + mat[i];
+		}
+		return result;
 	$endif
 }
-fn Matrix Matrix.negate(&self) @operator(-)
+
+<*
+ Fast add inline.
+*>
+macro Matrix Matrix.add_assign_inline(&self, Matrix mat) @operator(+=)
 {
-	$if !@is_big_matrix():
-	return { .val = -(Type[<COLS * ROWS>])self.val };
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val + (InnerType)mat.val;
 	$else
-	Matrix result;
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		result.val[i] = -self.val[i];
-	}
-	return result;
+		self.add_assign(mat);
+	$endif
+	return *self;
+}
+
+<*
+ Regular add assign
+*>
+fn void Matrix.add_assign(&self, Matrix mat)
+{
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val + (InnerType)mat.val;
+	$else
+		foreach (i, &element : *self.val)
+		{
+			*element += mat.val[i];
+		}
 	$endif
 }
-fn Matrix Matrix.subtract(&self, Matrix mat) @operator(-)
+
+<*
+ Matrix for fast subtract for small matrices
+*>
+macro Matrix Matrix.sub_inline(self, Matrix mat) @operator(-)
 {
-	$if !@is_big_matrix():
-	return { .val = (Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val };
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val - (InnerType)mat.val };
 	$else
-	Matrix result = *self;
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		result.val[i] -= mat.val[i];
-	}
-	return result;
+		return self.sub(scalar);
 	$endif
 }
-fn void Matrix.subtract_assign(&self, Matrix mat) @operator(-=)
+
+<*
+ Matrix sub function
+*>
+fn Matrix Matrix.sub(&self, Matrix mat)
 {
-	$if !@is_big_matrix():
-	self.val = (Type[<COLS * ROWS>])self.val - (Type[<COLS * ROWS>])mat.val;
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val - (InnerType)mat.val };
 	$else
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		self.val[i] -= mat.val[i];
-	}
+		Matrix result @noinit;
+		foreach (i, element : *self.val)
+		{
+			result.val[i] = element - mat[i];
+		}
+		return result;
 	$endif
 }
-fn Matrix Matrix.mul_scalar(&self, Type scalar) @operator(*)
+
+<*
+ Fast sub assign
+*>
+macro Matrix Matrix.sub_assign_inline(&self, Matrix mat) @operator(-=)
 {
-	$if !@is_big_matrix():
-	return { .val = (Type[<COLS * ROWS>])self.val * scalar };
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val - (InnerType)mat.val;
 	$else
-	Matrix result = *self;
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		result.val[i] *= scalar;
-	}
-	return result;
+		self.sub_assign(mat);
+	$endif
+	return *self;
+}
+
+<*
+ Regular subtract assign
+*>
+fn void Matrix.sub_assign(&self, Matrix mat)
+{
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val - (InnerType)mat.val;
+	$else
+		foreach (i, &element : *self.val)
+		{
+			*element -= mat.val[i];
+		}
 	$endif
 }
-fn void Matrix.mul_scalar_assign(&self, Type scalar) @operator(*=)
+
+<*
+ Matrix for fast negate for small matrices
+*>
+macro Matrix Matrix.negate_inline(self) @operator(-)
 {
-	$if !@is_big_matrix():
-	self.val = (Type[<COLS * ROWS>])self.val * scalar;
+	$if $defined(InnerType):
+		return { .val = -(InnerType)self.val };
 	$else
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		self.val[i] *= scalar;
-	}
+		return self.negate(scalar);
 	$endif
 }
-fn Matrix Matrix.div_scalar(&self, Type scalar) @operator(/)
+
+<*
+ Matrix negate function
+*>
+fn Matrix Matrix.negate(&self, Matrix mat)
 {
-	$if !@is_big_matrix():
-	return { .val = (Type[<COLS * ROWS>])self.val / scalar };
+	$if $defined(InnerType):
+		return { .val = -(InnerType)self.val };
 	$else
-	Matrix result = *self;
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		result.val[i] /= scalar;
-	}
-	return result;
+		Matrix result @noinit;
+		foreach (i, element : *self.val)
+		{
+			result.val[i] = -element;
+		}
+		return result;
 	$endif
 }
-fn void Matrix.div_scalar_assign(&self, Type scalar) @operator(/=)
+
+const bool IS_FAST_2X2 = IS_SQUARE && ELEMENTS == 4 && USES_PRIMITIVE_TYPES;
+
+macro mul2x2(InnerType a, InnerType b) @local @if(IS_FAST_2X2) => a.xyxy * b.xxzz + a.zwzw * b.yyww;
+
+<*
+ Regular fast 2x2 multiplication
+*>
+fn Matrix Matrix.mul(&a, Matrix b) @if(IS_FAST_2X2)
 {
-	$if !@is_big_matrix():
-	self.val = (Type[<COLS * ROWS>])self.val / scalar;
+	return { .val = mul2x2(a.val, b.val) };
+}
+
+<*
+ Inline fast 2x2 multiplication.
+*>
+macro Matrix Matrix.mul_inline(a, Matrix b) @operator(*) @if(IS_FAST_2X2)
+{
+	return { .val = mul2x2(a.val, b.val) };
+}
+
+<*
+ Regular mult + assign, no macro base `*=` operator is defined, as it would
+ not offer any performance benefit.
+*>
+fn void Matrix.mul_assign(&a, Matrix b) @if(IS_FAST_2X2)
+{
+	a.val = mul2x2(a.val, b.val);
+}
+
+
+<*
+ Matrix for fast scalar multiplication for small matrices
+*>
+macro Matrix Matrix.mul_scalar_inline(self, Type scalar) @operator(*)
+{
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val * scalar };
 	$else
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		self.val[i] /= scalar;
-	}
+		return self.mul_scalar(scalar);
+	$endif
+}
+
+<*
+ Scalar multiplication function
+*>
+fn Matrix Matrix.mul_scalar(&self, Type scalar)
+{
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val * scalar };
+	$else
+		Matrix result @noinit;
+		foreach (i, &element : *self)
+		{
+			result.val[i] = *element * scalar;
+		}
+		return result;
+	$endif
+}
+
+<*
+ Fast scalar assign multiplication
+*>
+macro Matrix Matrix.mul_scalar_assign_inline(&self, Type scalar) @operator(*=)
+{
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val * scalar;
+	$else
+		self.mul_scalar_assign(scalar);
+	$endif
+	return *self;
+}
+
+<*
+ Regular scalar assign multiplication
+*>
+fn void Matrix.mul_scalar_assign(&self, Type scalar)
+{
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val * scalar;
+	$else
+		foreach (i, &element : *self)
+		{
+			*element *= scalar;
+		}
+	$endif
+}
+
+<*
+ Matrix for fast scalar div for small matrices
+*>
+macro Matrix Matrix.div_scalar_inline(self, Type scalar) @operator(/)
+{
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val / scalar };
+	$else
+		return self.div_scalar(scalar);
+	$endif
+}
+
+<*
+ Regular matrix divisition
+*>
+fn Matrix Matrix.div_scalar(&self, Type scalar)
+{
+	$if $defined(InnerType):
+		return { .val = (InnerType)self.val / scalar };
+	$else
+		Matrix result @noinit;
+		foreach (i, &element : *self)
+		{
+			result.val[i] = *element / scalar;
+		}
+		return result;
+	$endif
+}
+
+<*
+ Fast div assign for operator overloading
+*>
+macro Matrix Matrix.div_scalar_assign_inline(&self, Type scalar) @operator(/=)
+{
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val / scalar;
+	$else
+		self.div_scalar_assign(scalar);
+	$endif
+	return *self;
+}
+
+<*
+ Regular div assign
+*>
+fn void Matrix.div_scalar_assign(&self, Type scalar)
+{
+	$if $defined(InnerType):
+		self.val = (InnerType)self.val / scalar;
+	$else
+
+		foreach (i, &element : *self)
+		{
+			*element /= scalar;
+		}
 	$endif
 }
 
@@ -143,32 +326,44 @@ fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::
 fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] array) @operator(*)
 	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])array));
 
-fn bool Matrix.eq(&self, Matrix mat) @operator(==)
+macro bool Matrix.eq_inline(self, Matrix mat) @operator(==)
 {
-	$if !@is_big_matrix():
-	return (Type[<COLS * ROWS>])self.val == (Type[<COLS * ROWS>])mat.val;
+	$if $defined(InnerType):
+		return (InnerType)self.val == (InnerType)mat.val;
 	$else
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		if (self.val[i] != mat.val[i]) return false;
-	}
-	return true;
+		return self.eq(mat);
 	$endif
 }
-fn bool Matrix.neq(&self, Matrix mat) @operator(!=)
+
+fn bool Matrix.eq(&self, Matrix mat)
 {
-	$if !@is_big_matrix():
-	return (Type[<COLS * ROWS>])self.val != (Type[<COLS * ROWS>])mat.val;
+	$if $defined(InnerType):
+		return (InnerType)self.val == (InnerType)mat.val;
 	$else
-	for (usz i = 0; i < COLS * ROWS; i++)
-	{
-		if (self.val[i] != mat.val[i]) return true;
-	}
-	return false;
+		return self.val == mat.val;
 	$endif
 }
+
+macro bool Matrix.neq_inline(self, Matrix mat) @operator(!=)
+{
+	$if $defined(InnerType):
+		return (InnerType)self.val != (InnerType)mat.val;
+	$else
+		return self.neq(mat);
+	$endif
+}
+
+fn bool Matrix.neq(&self, Matrix mat)
+{
+	$if $defined(InnerType):
+		return (InnerType)self.val != (InnerType)mat.val;
+	$else
+		return self.val != mat.val;
+	$endif
+}
+
 <*
- @require ROWS == COLS : "Can't compute determinant of non-square matrix"
+ @require IS_SQUARE : "Can't compute determinant of non-square matrix"
  *>
 macro Type Matrix.determinant(&self)
 {
@@ -676,11 +871,11 @@ macro strassen_mul(r, s, o)
 	strassen_mul(m2, m2, b11);
 
 	*m3 = *b12;
-	m3.subtract_assign(*b22);
+	m3.sub_assign(*b22);
 	strassen_mul(m3, a11, m3);
 
 	*m4 = *b21;
-	m4.subtract_assign(*b11);
+	m4.sub_assign(*b11);
 	strassen_mul(m4, a22, m4);
 
 	*m5 = *a11;
@@ -688,20 +883,20 @@ macro strassen_mul(r, s, o)
 	strassen_mul(m5, m5, b22);
 
 	*m6 = *a21;
-	m6.subtract_assign(*a11);
+	m6.sub_assign(*a11);
 	*tmp = *b11;
 	tmp.add_assign(*b12);
 	strassen_mul(m6, m6, tmp);
 
 	*m7 = *a12;
-	m7.subtract_assign(*a22);
+	m7.sub_assign(*a22);
 	*tmp = *b21;
 	tmp.add_assign(*b22);
 	strassen_mul(m7, m7, tmp);
 
 	*tmp = *m1;
 	tmp.add_assign(*m4);
-	tmp.subtract_assign(*m5);
+	tmp.sub_assign(*m5);
 	tmp.add_assign(*m7);
 	set_submatrix(result, tmp, 0        ,0        );
 
@@ -714,7 +909,7 @@ macro strassen_mul(r, s, o)
 	set_submatrix(result, tmp, HALF_SIZE,0        );
 
 	*tmp = *m1;
-	tmp.subtract_assign(*m2);
+	tmp.sub_assign(*m2);
 	tmp.add_assign(*m3);
 	tmp.add_assign(*m6);
 	set_submatrix(result, tmp, HALF_SIZE,HALF_SIZE);
@@ -841,9 +1036,6 @@ macro inverse(&mat, source)
 	mat.div_scalar_assign(det);
 }
 
-<*
- @param [&out] result
- *>
 macro @resize(&mat, result, usz $new_rows, usz $new_cols, usz row_offset = 0, usz col_offset = 0)
 {
 	$if $new_cols == mat.cols() &&& $new_rows == mat.rows():
