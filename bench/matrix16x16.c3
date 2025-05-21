@@ -53,7 +53,7 @@ fn void list_mul()
 }
 fn void matrix_mul()
 {
-	matrix::mul(&result16x16, &mat1, &mat2);
+	matrix::mul_assign(&result16x16, &mat1, &mat2);
 }
 fn void determinant()
 {

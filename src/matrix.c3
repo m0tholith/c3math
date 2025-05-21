@@ -722,7 +722,7 @@ macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
  @require mat1.cols() == mat2.rows() : "Incompatible multiplication"
  @require mat1.type() == mat2.type() : "Incompatible multiplication"
  *>
-macro mul(dest, mat1, mat2)
+macro mul_assign(&dest, mat1, mat2)
 {
 	const N = mat1.cols();
 	const ROWS = mat1.rows();
