@@ -403,16 +403,15 @@ macro Type Matrix.determinant(&self)
 				   self.m[1][1] * (self.m[2][0] * self.m[3][2] - self.m[3][0] * self.m[2][2]) +
 				   self.m[1][2] * (self.m[2][0] * self.m[3][1] - self.m[3][0] * self.m[2][1]) );
 		$default:
-	Type result = 1;
 	@pool()
 	{
 		Matrix* l = allocator::new(tmem, Matrix);
 		Matrix* u = allocator::new(tmem, Matrix);
 		Matrix* p = allocator::new(tmem, Matrix);
-		self.lu_decomp_pivot(l, u, p)!!;
+		Type result = self.lu_decomp_pivot(l, u, p)!! % 2 == 0 ? 1 : -1;
 		for (usz i = 0; i < COLS; i++) result *= u.m[i][i];
+		return result;
 	};
-	return result;
 	$endswitch
 }
 <*
