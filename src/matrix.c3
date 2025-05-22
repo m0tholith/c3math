@@ -635,13 +635,16 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
  @param [&inout] lower : "Pointer to lower triangluar matrix"
  @param [&inout] upper : "Pointer to upper triangluar matrix"
  @param [&inout] p : "Pointer to permutation matrix"
+ @return "Number of row swaps"
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  @require lower != upper : "Lower and upper matrix pointers may not be the same"
  @require lower != self && upper != self
  @require p != lower && p != upper && p != self
  *>
-macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
+macro usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
 {
+	usz num_swaps;
+
 	matrix::identity_assign(p);
 	mem::copy(lower, p, $typeof(lower.val).sizeof);
 	mem::copy(upper, self, $typeof(upper.val).sizeof);
@@ -652,9 +655,10 @@ macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* 
 	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
 	{
 		Tuple{usz, Type} maximum = upper.col_max(i, i);
-		if (maximum.second == 0) return;
+		if (maximum.second == 0) break;
 		p.swap_row(maximum.first, i);
 		upper.swap_row(maximum.first, i);
+		if (maximum.first != i) num_swaps++;
 	}
 		
 	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
@@ -677,6 +681,8 @@ macro void? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* 
 			}
 		}
 	}
+
+	return num_swaps;
 }
 macro Tuple{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
 {
