@@ -435,6 +435,7 @@ macro void Matrix.comatrix_assign(&self, Matrix* source)
 		[0] = source.m[1][1], [2] = -source.m[0][1],
 		[1] = -source.m[1][0], [3] = source.m[0][0],
 	};
+	return;
 			$case 3:
 	self.val = {
 		source.m[1][1] * source.m[2][2] - source.m[2][1] * source.m[1][2],
@@ -447,65 +448,67 @@ macro void Matrix.comatrix_assign(&self, Matrix* source)
 		source.m[1][0] * source.m[0][2] - source.m[0][0] * source.m[1][2],
 		source.m[0][0] * source.m[1][1] - source.m[1][0] * source.m[0][1],
 	};
+	return;
 			$case 4:
 	self.val = {
 		(source.m[1][1] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
 		 source.m[2][1] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) +
 		 source.m[3][1] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2])),
-		-(source.m[0][1] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
-		  source.m[2][1] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
-		  source.m[3][1] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2])),
-		(source.m[0][1] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) -
-		 source.m[1][1] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
-		 source.m[3][1] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
-		-(source.m[0][1] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2]) -
-		  source.m[1][1] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2]) +
-		  source.m[2][1] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
-			
 		-(source.m[1][0] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
 		  source.m[2][0] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) +
 		  source.m[3][0] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2])),
-		(source.m[0][0] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
-		 source.m[2][0] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
-		 source.m[3][0] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2])),
-		-(source.m[0][0] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) -
-		  source.m[1][0] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
-		  source.m[3][0] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
-		(source.m[0][0] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2]) -
-		 source.m[1][0] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2]) +
-		 source.m[2][0] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
-			
 		(source.m[1][0] * (source.m[2][1] * source.m[3][3] - source.m[2][3] * source.m[3][1]) -
 		 source.m[2][0] * (source.m[1][1] * source.m[3][3] - source.m[1][3] * source.m[3][1]) +
 		 source.m[3][0] * (source.m[1][1] * source.m[2][3] - source.m[1][3] * source.m[2][1])),
-		-(source.m[0][0] * (source.m[2][1] * source.m[3][3] - source.m[2][3] * source.m[3][1]) -
-		  source.m[2][0] * (source.m[0][1] * source.m[3][3] - source.m[0][3] * source.m[3][1]) +
-		  source.m[3][0] * (source.m[0][1] * source.m[2][3] - source.m[0][3] * source.m[2][1])),
-		(source.m[0][0] * (source.m[1][1] * source.m[3][3] - source.m[1][3] * source.m[3][1]) -
-		 source.m[1][0] * (source.m[0][1] * source.m[3][3] - source.m[0][3] * source.m[3][1]) +
-		 source.m[3][0] * (source.m[0][1] * source.m[1][3] - source.m[0][3] * source.m[1][1])),
-		-(source.m[0][0] * (source.m[1][1] * source.m[2][3] - source.m[1][3] * source.m[2][1]) -
-		  source.m[1][0] * (source.m[0][1] * source.m[2][3] - source.m[0][3] * source.m[2][1]) +
-		  source.m[2][0] * (source.m[0][1] * source.m[1][3] - source.m[0][3] * source.m[1][1])),
-			
 		-(source.m[1][0] * (source.m[2][1] * source.m[3][2] - source.m[2][2] * source.m[3][1]) -
 		  source.m[2][0] * (source.m[1][1] * source.m[3][2] - source.m[1][2] * source.m[3][1]) +
 		  source.m[3][0] * (source.m[1][1] * source.m[2][2] - source.m[1][2] * source.m[2][1])),
+			
+		-(source.m[0][1] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
+		  source.m[2][1] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		  source.m[3][1] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2])),
+		(source.m[0][0] * (source.m[2][2] * source.m[3][3] - source.m[2][3] * source.m[3][2]) -
+		 source.m[2][0] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		 source.m[3][0] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2])),
+		-(source.m[0][0] * (source.m[2][1] * source.m[3][3] - source.m[2][3] * source.m[3][1]) -
+		  source.m[2][0] * (source.m[0][1] * source.m[3][3] - source.m[0][3] * source.m[3][1]) +
+		  source.m[3][0] * (source.m[0][1] * source.m[2][3] - source.m[0][3] * source.m[2][1])),
 		(source.m[0][0] * (source.m[2][1] * source.m[3][2] - source.m[2][2] * source.m[3][1]) -
 		 source.m[2][0] * (source.m[0][1] * source.m[3][2] - source.m[0][2] * source.m[3][1]) +
 		 source.m[3][0] * (source.m[0][1] * source.m[2][2] - source.m[0][2] * source.m[2][1])),
+			
+		(source.m[0][1] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) -
+		 source.m[1][1] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		 source.m[3][1] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
+		-(source.m[0][0] * (source.m[1][2] * source.m[3][3] - source.m[1][3] * source.m[3][2]) -
+		  source.m[1][0] * (source.m[0][2] * source.m[3][3] - source.m[0][3] * source.m[3][2]) +
+		  source.m[3][0] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
+		(source.m[0][0] * (source.m[1][1] * source.m[3][3] - source.m[1][3] * source.m[3][1]) -
+		 source.m[1][0] * (source.m[0][1] * source.m[3][3] - source.m[0][3] * source.m[3][1]) +
+		 source.m[3][0] * (source.m[0][1] * source.m[1][3] - source.m[0][3] * source.m[1][1])),
 		-(source.m[0][0] * (source.m[1][1] * source.m[3][2] - source.m[1][2] * source.m[3][1]) -
 		  source.m[1][0] * (source.m[0][1] * source.m[3][2] - source.m[0][2] * source.m[3][1]) +
 		  source.m[3][0] * (source.m[0][1] * source.m[1][2] - source.m[0][2] * source.m[1][1])),
+			
+		-(source.m[0][1] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2]) -
+		  source.m[1][1] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2]) +
+		  source.m[2][1] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
+		(source.m[0][0] * (source.m[1][2] * source.m[2][3] - source.m[1][3] * source.m[2][2]) -
+		 source.m[1][0] * (source.m[0][2] * source.m[2][3] - source.m[0][3] * source.m[2][2]) +
+		 source.m[2][0] * (source.m[0][2] * source.m[1][3] - source.m[0][3] * source.m[1][2])),
+		-(source.m[0][0] * (source.m[1][1] * source.m[2][3] - source.m[1][3] * source.m[2][1]) -
+		  source.m[1][0] * (source.m[0][1] * source.m[2][3] - source.m[0][3] * source.m[2][1]) +
+		  source.m[2][0] * (source.m[0][1] * source.m[1][3] - source.m[0][3] * source.m[1][1])),
 		(source.m[0][0] * (source.m[1][1] * source.m[2][2] - source.m[1][2] * source.m[2][1]) -
 		 source.m[1][0] * (source.m[0][1] * source.m[2][2] - source.m[0][2] * source.m[2][1]) +
 		 source.m[2][0] * (source.m[0][1] * source.m[1][2] - source.m[0][2] * source.m[1][1])),
 	};
+	return;
 		$endswitch
 	$endif
 	matrix::@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		self.m[i][j] = source.cofactor(i, j);
+		self.m[j][i] = source.cofactor(i, j);
 	};
 }
 <*
