@@ -328,10 +328,10 @@ fn void Matrix.div_scalar_assign(&self, Type scalar)
 	$endif
 }
 
-fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<ROWS>] vec) @operator(*) => matrix::apply(self, vec);
+fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<COLS>] vec) @operator(*) => matrix::apply(self, vec);
 
-fn Type[ROWS] Matrix.mul_array(&self, Type[ROWS] array) @operator(*)
-	=> (Type[ROWS])matrix::apply(self, ((Type[<ROWS>])array));
+fn Type[ROWS] Matrix.mul_array(&self, Type[COLS] array) @operator(*)
+	=> (Type[ROWS])matrix::apply(self, ((Type[<COLS>])array));
 
 macro bool Matrix.eq_inline(self, Matrix mat) @operator(==)
 {
@@ -797,9 +797,13 @@ macro col_slice(&mat, source, usz idx)
 }
 macro apply(&mat, vec) @private
 {
-	$typeof(vec) result;
-	for (usz i = 0; i < vec.len; i++) result[i] =
-		(($typefrom(mat.type())[<mat.rows()>])mat.m[i] * ($typefrom(mat.type())[<mat.rows()>])vec).sum();
+	$typefrom($typeof(vec).inner)[<mat.rows()>] result;
+	$typeof(vec) row;
+	for (usz i = 0; i < result.len; i++)
+	{
+		mat.@get_row(i, row);
+		result[i] = (row * vec).sum();
+	}
 	return result;
 }
 
