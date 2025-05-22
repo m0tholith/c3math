@@ -536,7 +536,7 @@ macro void Matrix.@get_row(&self, usz row_index, #row_output)
 	$if ROWS == 1:
 	#row_output[..] = self.val[..];
 	$else
-	for (usz i = 0; i < ROWS; i++)
+	for (usz i = 0; i < COLS; i++)
 	{
 		#row_output[i] = self.m[i][row_index];
 	}
@@ -552,7 +552,7 @@ macro void Matrix.@set_row(&self, usz row_index, #new_row)
 	$if ROWS == 1:
 	self.val[..] = #new_row[..];
 	$else
-	for (usz i = 0; i < ROWS; i++)
+	for (usz i = 0; i < COLS; i++)
 	{
 		self.m[i][row_index] = #new_row[i];
 	}
