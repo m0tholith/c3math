@@ -406,9 +406,11 @@ macro Type Matrix.determinant(&self)
 	Type result = 1;
 	@pool()
 	{
-		Matrix* lu = allocator::new(tmem, Matrix);
-		self.lu_decomp(lu, lu)!!;
-		for (usz i = 0; i < COLS; i++) result *= lu.m[i][i];
+		Matrix* l = allocator::new(tmem, Matrix);
+		Matrix* u = allocator::new(tmem, Matrix);
+		Matrix* p = allocator::new(tmem, Matrix);
+		self.lu_decomp_pivot(l, u, p)!!;
+		for (usz i = 0; i < COLS; i++) result *= u.m[i][i];
 	};
 	return result;
 	$endswitch
