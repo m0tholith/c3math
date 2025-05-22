@@ -596,9 +596,6 @@ faultdef PIVOT_IS_ZERO;
  *>
 macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 {
-	matrix::transpose(self);
-	defer matrix::transpose(self);
-
 	matrix::identity_assign(lower);
 	mem::copy(upper, self, $typeof(upper.val).sizeof);
 
