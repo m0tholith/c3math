@@ -691,25 +691,43 @@ macro Tuple{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
 }
 
 <*
- @require translate_vec.len == self.cols() : "Incompatible translation vector"
+ @require translate_vec.len == self.rows() - 1 : "Incompatible translation vector"
  *>
-macro Matrix.translate(&self, translate_vec) => self *= translated(scale_vec);
+macro Matrix.translate(&self, translate_vec)
+{
+	for (usz i = 0; i < ROWS - 1; i++)
+	{
+		self.m[^1][i] += translate_vec[i];
+	}
+}
 <*
  @param theta : "Rotation degree in radians"
+ @require ROWS == 2 && COLS == 2 : "Applying 2D rotation requires a 2x2 matrix"
  *>
-macro Matrix.rotate_2d(&self, theta) => self *= rotated_2d(scale_vec);
+macro Matrix.rotate_2d(&self, theta)
+{
+	double c = math::cos(theta);
+	double s = math::sin(theta);
+	self.val = {
+		[0] = self.m[0][0] * c - self.m[0][1] * s, [2] = self.m[1][0] * c - self.m[1][1] * s,
+		[1] = self.m[0][0] * s + self.m[0][1] * c, [3] = self.m[1][0] * s + self.m[1][1] * c,
+	};
+}
 <*
  @param theta : "Rotation degree in radians"
+ @require ROWS == 3 && COLS == 3 : "Applying 3D rotation requires a 2x2 matrix"
  *>
-macro Matrix.rotate_x(&self, theta) => self *= rotated_x(theta);
+macro Matrix.rotate_x(&self, theta) => self.mul_assign(rotated_x(theta));
 <*
  @param theta : "Rotation degree in radians"
+ @require ROWS == 3 && COLS == 3 : "Applying 3D rotation requires a 2x2 matrix"
  *>
-macro Matrix.rotate_y(&self, theta) => self *= rotated_y(theta);
+macro Matrix.rotate_y(&self, theta) => self.mul_assign(rotated_y(theta));
 <*
  @param theta : "Rotation degree in radians"
+ @require ROWS == 3 && COLS == 3 : "Applying 3D rotation requires a 2x2 matrix"
  *>
-macro Matrix.rotate_z(&self, theta) => self *= rotated_z(theta);
+macro Matrix.rotate_z(&self, theta) => self.mul_assign(rotated_z(theta));
 
 module c3math::matrix;
 
