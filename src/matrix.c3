@@ -533,7 +533,7 @@ macro Type Matrix.trace(&self)
 <*
  @param #row_output : "Output array, vector, slice, list, etc."
  @require #row_output.len >= COLS
- @require row_index < self.cols() : "Index out of bounds"
+ @require row_index < self.rows() : "Index out of bounds"
  *>
 macro void Matrix.@get_row(&self, usz row_index, #row_output)
 {
@@ -549,7 +549,7 @@ macro void Matrix.@get_row(&self, usz row_index, #row_output)
 <*
  @param #new_row : "Input array, vector, slice, list, etc."
  @require #new_row.len >= COLS
- @require row_index < self.cols() : "Index out of bounds"
+ @require row_index < self.rows() : "Index out of bounds"
  *>
 macro void Matrix.@set_row(&self, usz row_index, #new_row)
 {
