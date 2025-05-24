@@ -1072,21 +1072,6 @@ macro inverse(&mat, source)
 
 macro @resize(&mat, result, usz $new_rows, usz $new_cols, usz row_offset = 0, usz col_offset = 0)
 {
-	$if $new_cols == mat.cols() &&& $new_rows == mat.rows():
-	*result = *mat;
-	return;
-	$endif
-
-	$if $new_rows == mat.rows():
-		$if $new_cols < mat.cols():
-	*result = { .m = mat.m[col_offset:$new_cols] };
-	return;
-		$else
-	result.val[col_offset:mat.cols() * mat.rows()] = mat.val[..];
-	return;
-		$endif
-	$endif
-
 	$if $new_cols < mat.cols():
 	for (usz i = 0; i < $new_cols; i++)
 	{
