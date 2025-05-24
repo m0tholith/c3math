@@ -702,32 +702,40 @@ macro Matrix.translate(&self, translate_vec)
 }
 <*
  @param theta : "Rotation degree in radians"
- @require ROWS == 2 && COLS == 2 : "Applying 2D rotation requires a 2x2 matrix"
+ @require ROWS == COLS : "Cannot apply 2D rotation to non-square matrix"
+ @require ROWS >= 2 : "Cannot apply 2D rotation to matrix less than 2x2"
  *>
 macro Matrix.rotate_2d(&self, theta)
 {
+	$if ROWS == 2:
 	double c = math::cos(theta);
 	double s = math::sin(theta);
 	self.val = {
 		[0] = self.m[0][0] * c - self.m[0][1] * s, [2] = self.m[1][0] * c - self.m[1][1] * s,
 		[1] = self.m[0][0] * s + self.m[0][1] * c, [3] = self.m[1][0] * s + self.m[1][1] * c,
 	};
+	$else
+	*self = matrix::rotated_2d(theta, Type, ROWS).mul(*self);
+	$endif
 }
 <*
  @param theta : "Rotation degree in radians"
- @require ROWS == 3 && COLS == 3 : "Applying 3D rotation requires a 2x2 matrix"
+ @require ROWS == COLS : "Cannot apply 3D rotation to non-square matrix"
+ @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
-macro Matrix.rotate_x(&self, theta) => self.mul_assign(rotated_x(theta));
+macro Matrix.rotate_x(&self, theta) => *self = matrix::rotated_x(theta, Type, ROWS).mul(*self);
 <*
  @param theta : "Rotation degree in radians"
- @require ROWS == 3 && COLS == 3 : "Applying 3D rotation requires a 2x2 matrix"
+ @require ROWS == COLS : "Cannot apply 3D rotation to non-square matrix"
+ @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
-macro Matrix.rotate_y(&self, theta) => self.mul_assign(rotated_y(theta));
+macro Matrix.rotate_y(&self, theta) => *self = matrix::rotated_y(theta, Type, ROWS).mul(*self);
 <*
  @param theta : "Rotation degree in radians"
- @require ROWS == 3 && COLS == 3 : "Applying 3D rotation requires a 2x2 matrix"
+ @require ROWS == COLS : "Cannot apply 3D rotation to non-square matrix"
+ @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
-macro Matrix.rotate_z(&self, theta) => self.mul_assign(rotated_z(theta));
+macro Matrix.rotate_z(&self, theta) => *self = matrix::rotated_z(theta, Type, ROWS).mul(*self);
 
 module c3math::matrix;
 

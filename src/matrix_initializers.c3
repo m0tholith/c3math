@@ -16,29 +16,77 @@ macro translated(translate_vec)
 	result.m[^1][:N] = translate_vec[..];
 	return result;
 }
-macro rotated_2d(theta, $Type = double)
-	=> (Matrix{2,2, $Type}){{
-		[0] = math::cos(theta), [2] = -math::sin(theta),
-		[1] = math::sin(theta), [3] = math::cos(theta),
+macro rotated_2d(theta, $Type = double, $size = 2)
+{
+	double c = math::cos(theta);
+	double s = math::sin(theta);
+	Matrix{2,2, $Type} r = {{
+		[0] = c, [2] = -s,
+		[1] = s, [3] = c,
 	}};
-macro rotated_x(theta, $Type = double)
-	=> (Matrix{3,3, $Type}){{
-		[0] = 1, [3] = 0,                [6] = 0,
-		[1] = 0, [4] = math::cos(theta), [7] = -math::sin(theta),
-		[2] = 0, [5] = math::sin(theta), [8] = math::cos(theta),
+	$if $size == 2:
+	return r;
+	$else
+	Matrix{$size,$size, $Type} result;
+	matrix::identity_assign(&result);
+	matrix::@resize(&r, &result, 2,2);
+	return result;
+	$endif
+}
+macro rotated_x(theta, $Type = double, $size = 3)
+{
+	double c = math::cos(theta);
+	double s = math::sin(theta);
+	Matrix{3,3, $Type} r = {{
+		[0] = 1, [3] = 0, [6] = 0,
+		[1] = 0, [4] = c, [7] = -s,
+		[2] = 0, [5] = s, [8] = c,
 	}};
-macro rotated_y(theta, $Type = double)
-	=> (Matrix{3,3, $Type}){{
-		[0] = math::cos(theta),  [3] = 0, [6] = math::sin(theta),
-		[1] = 0,                 [4] = 1, [7] = 0,
-		[2] = -math::sin(theta), [5] = 0, [8] = math::cos(theta),
+	$if $size == 3:
+	return r;
+	$else
+	Matrix{$size,$size, $Type} result;
+	matrix::identity_assign(&result);
+	matrix::@resize(&r, &result, 3,3);
+	return result;
+	$endif
+}
+macro rotated_y(theta, $Type = double, $size = 3)
+{
+	double c = math::cos(theta);
+	double s = math::sin(theta);
+	Matrix{3,3, $Type} r = {{
+		[0] = c,  [3] = 0, [6] = s,
+		[1] = 0,  [4] = 1, [7] = 0,
+		[2] = -s, [5] = 0, [8] = c,
 	}};
-macro rotated_z(theta, $Type = double)
-	=> (Matrix{3,3, $Type}){{
-		[0] = math::cos(theta),  [3] = -math::sin(theta), [6] = 0,
-		[1] = math::sin(theta),  [4] = math::cos(theta),  [7] = 0,
-		[2] = 0,                 [5] = 0,                 [8] = 1,
+	$if $size == 3:
+	return r;
+	$else
+	Matrix{$size,$size, $Type} result;
+	matrix::identity_assign(&result);
+	matrix::@resize(&r, &result, 3,3);
+	return result;
+	$endif
+}
+macro rotated_z(theta, $Type = double, $size = 3)
+{
+	double c = math::cos(theta);
+	double s = math::sin(theta);
+	Matrix{3,3, $Type} r = {{
+		[0] = c,  [3] = -s, [6] = 0,
+		[1] = s,  [4] = c,  [7] = 0,
+		[2] = 0,  [5] = 0,  [8] = 1,
 	}};
+	$if $size == 3:
+	return r;
+	$else
+	Matrix{$size,$size, $Type} result;
+	matrix::identity_assign(&result);
+	matrix::@resize(&r, &result, 3,3);
+	return result;
+	$endif
+}
 
 macro ortho(left, right, top, bottom, near, far, $Type = double)
 {
