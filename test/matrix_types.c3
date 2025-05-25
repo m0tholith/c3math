@@ -1,36 +1,76 @@
 module c3math::tests::matrices @test;
 import c3math::matrix;
 
-fn void test_mat2()
+fn void mul_ops()
 {
-		Matrix2x2 mat = {{ 3, 5, 5, 2}};
-		Matrix2x2 mat2 = {{ 4, 7, 2, 8 }};
-		Matrix2x2 calc = mat.mul(mat2);
-		Matrix2x2 value = {{ 47, 34, 46, 26 }};
-
-		test::eq(calc.m, value.m);
+	@assert_print((Matrix1x1){{ 2 }} * (Matrix1x1){{ 3 }},
+		(Matrix1x1){{ 2 }}.mul((Matrix1x1){{ 3 }}),
+		"1x1 mul_op not equal",
+	);
+	@assert_print(mat2x2_1 * mat2x2_2,
+		mat2x2_1.mul(mat2x2_2),
+		"2x2 mul_op not equal",
+	);
+	@assert_print(mat2x3 * mat3x2,
+		mat2x3.mul(mat3x2),
+		"2x3,3x2 mul_op not equal",
+	);
+	@assert_print(mat3x3_1 * mat3x3_2,
+		mat3x3_1.mul(mat3x3_2),
+		"3x3 mul_op not equal",
+	);
+	@assert_print(mat3x2 * mat2x3,
+		mat3x2.mul(mat2x3),
+		"3x2,2x3 mul_op not equal",
+	);
+	@assert_print(mat4x4_1 * mat4x4_2,
+		mat4x4_1.mul(mat4x4_2),
+		"4x4 mul_op not equal",
+	);
 }
-
-fn void matric_scalar_mul()
+fn void mul_assign_ops()
 {
-	Matrix2x2 mat = {{ 3, 5, 5, 2}};
-	Matrix2x2 calc = mat * 2;
-	Matrix2x2 value = {{ 6, 10, 10, 4 }};
-	test::eq(calc.m, value.m);
-
-	calc = mat *= 2;
-    test::eq(calc.m, value.m);
-    test::eq(mat.m, value.m);
+	Matrix1x1 m1 = (Matrix1x1){{ 2 }};
+	m1 *= (Matrix1x1){{ 3 }};
+	@assert_print(m1,
+		(Matrix1x1){{ 2 }}.mul((Matrix1x1){{ 3 }}),
+		"1x1 mul_assign_op not equal",
+	);
+	Matrix2x2 m2 = mat2x2_1;
+	m2 *= mat2x2_2;
+	@assert_print(m2,
+		mat2x2_1.mul(mat2x2_2),
+		"2x2 mul_assign_op not equal",
+	);
+	Matrix3x3 m3 = mat3x3_1;
+	m3 *= mat3x3_2;
+	@assert_print(m3,
+		mat3x3_1.mul(mat3x3_2),
+		"3x3 mul_assign_op not equal",
+	);
+	Matrix4x4 m4 = mat4x4_1;
+	m4 *= mat4x4_2;
+	@assert_print(m4,
+		mat4x4_1.mul(mat4x4_2),
+		"4x4 mul_assign_op not equal",
+	);
 }
-
-fn void matric_scalar_div()
+fn void transposed()
 {
-	Matrix2x2 mat = {{ 3, 5, 5, 2}};
-	Matrix2x2 calc = mat / 2;
-	Matrix2x2 value = {{ 1.5, 2.5, 2.5, 1 }};
-	test::eq(calc.m, value.m);
-
-	calc = mat /= 2;
-    test::eq(calc.m, value.m);
-    test::eq(mat.m, value.m);
+	@assert_print((Matrix1x1){{ 2 }}.transposed(),
+		(Matrix1x1){{ 2 }},
+		"1x1 transposed not equal",
+	);
+	@assert_print(mat2x2_1.transposed(),
+		(Matrix2x2){{ 1, -3, 4, 3 }},
+		"2x2 transposed not equal",
+	);
+	@assert_print(mat3x3_1.transposed(),
+		(Matrix3x3){{ 1, 3, -2, 2, -2, 4, -1, 1, 5 }},
+		"3x3 transposed not equal",
+	);
+	@assert_print(mat4x4_1.transposed(),
+		(Matrix4x4){{ 0, 9, 2, -7, 3, -3, 2, 7, 4, -5, 8, 5, 1, 2, -8, 4 }},
+		"4x4 transposed not equal",
+	);
 }
