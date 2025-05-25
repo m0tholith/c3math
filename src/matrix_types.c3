@@ -40,7 +40,6 @@ alias Matrix4x1f = Matrix{4,1, float};
 fn Matrix1x1 Matrix1x1.mul(&a, Matrix1x1 b) @operator(*) => {{ a.val[0] * b.val[0] }};
 fn void Matrix1x1.mul_assign(&a, Matrix1x1 b) @operator(*=) => a.val[0] *= b.val[0];
 
-
 fn Matrix3x3 Matrix3x3.mul(&a, Matrix3x3 b) @operator(*) => {{
 	((double[<3>])b.m[0]).dot((double[<3>]){ a.m[0][0], a.m[1][0], a.m[2][0] }),
 	((double[<3>])b.m[0]).dot((double[<3>]){ a.m[0][1], a.m[1][1], a.m[2][1] }),
