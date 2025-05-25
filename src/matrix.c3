@@ -973,21 +973,21 @@ macro strassen_mul(r, s, o)
 	tmp.add_assign(*m4);
 	tmp.sub_assign(*m5);
 	tmp.add_assign(*m7);
-	set_submatrix(result, tmp, 0        ,0        );
+	@upsize(tmp, result, 0        ,0        );
 
 	*tmp = *m2;
 	tmp.add_assign(*m4);
-	set_submatrix(result, tmp, HALF_SIZE,0        );
+	@upsize(tmp, result, HALF_SIZE,0        );
                                                   
 	*tmp = *m3;                                   
 	tmp.add_assign(*m5);                          
-	set_submatrix(result, tmp, 0        ,HALF_SIZE);
+	@upsize(tmp, result, 0        ,HALF_SIZE);
 
 	*tmp = *m1;
 	tmp.sub_assign(*m2);
 	tmp.add_assign(*m3);
 	tmp.add_assign(*m6);
-	set_submatrix(result, tmp, HALF_SIZE,HALF_SIZE);
+	@upsize(tmp, result, HALF_SIZE,HALF_SIZE);
 	};
 	lambda(r, s, o);
 	$endif
@@ -1000,23 +1000,6 @@ macro @is_pow_2($n) @private @const
 		$endif
 	$endfor
 	return false;
-}
-<*
- @param mat : "Bigger, main matrix to copy into"
- @param sub : "Smaller, sub matrix to copy from"
-
- @require $typeof(mat).kindof == POINTER
- @require $typeof(sub).kindof == POINTER
-
- @require row_offset + sub.cols() - 1 < mat.cols() : "Row index out of range"
- @require col_offset + sub.rows() - 1 < mat.rows() : "Column index out of range"
- *>
-macro set_submatrix(mat, sub, usz row_offset, usz col_offset)
-{
-	@ij_loop(sub.rows(), sub.cols(); usz i, usz j)
-	{
-		mat.m[col_offset + i][row_offset + j] = sub.m[i][j];
-	};
 }
 
 <*

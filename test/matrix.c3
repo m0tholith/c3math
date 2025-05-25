@@ -1222,65 +1222,6 @@ fn void strassen_mul()
 		"8x8 strassen_mul not equal",
 	);
 }
-fn void set_submatrix()
-{
-	/// "cleared" matrix is matrix set to all 10's
-	Matrix4x4 m4;
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 0,0);
-	@assert_print(m4,
-		(Matrix4x4){{ 1, 4, 10, 10, -3, 3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 }},
-		"4x4 0,0 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 1,0);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 1, 4, 10, 10, -3, 3, 10, 10, 10, 10, 10, 10, 10, 10, 10 }},
-		"4x4 1,0 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 2,0);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 1, 4, 10, 10, -3, 3, 10, 10, 10, 10, 10, 10, 10, 10 }},
-		"4x4 2,0 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 0,1);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 10, 10, 1, 4, 10, 10, -3, 3, 10, 10, 10, 10, 10, 10 }},
-		"4x4 0,1 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 1,1);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 10, 10, 10, 1, 4, 10, 10, -3, 3, 10, 10, 10, 10, 10 }},
-		"4x4 1,1 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 2,1);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 10, 10, 10, 10, 1, 4, 10, 10, -3, 3, 10, 10, 10, 10 }},
-		"4x4 2,1 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 0,2);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 10, 10, 10, 10, 10, 10, 1, 4, 10, 10, -3, 3, 10, 10 }},
-		"4x4 0,2 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 1,2);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 4, 10, 10, -3, 3, 10 }},
-		"4x4 1,2 set_submatrix not equal",
-	);
-	foreach (i, &val : m4.val) *val = 10;
-	matrix::set_submatrix(&m4, &mat2x2_1, 2,2);
-	@assert_print(m4,
-		(Matrix4x4){{ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 4, 10, 10, -3, 3 }},
-		"4x4 2,2 set_submatrix not equal",
-	);
-}
 fn void minor()
 {
 	@assert_print(matrix::minor(&mat2x2_1, 1,0),
