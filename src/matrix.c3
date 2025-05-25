@@ -1070,7 +1070,7 @@ macro @identity($size, $Type = double)
 	$endswitch
 	Matrix{$size,$size, $Type} result;
 	$for var $x = 0; $x < $size; $x++:
-		result.m[$x][$x] = 1;
+		result.val[$x + $size * $x] = 1;
 	$endfor
 	return result;
 }
