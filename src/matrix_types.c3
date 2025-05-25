@@ -346,35 +346,3 @@ fn Matrix4x1f Matrix1x4f.transposed(&self) => { self.val };
 fn Matrix1x2f Matrix2x1f.transposed(&self) => { self.val };
 fn Matrix1x3f Matrix3x1f.transposed(&self) => { self.val };
 fn Matrix1x4f Matrix4x1f.transposed(&self) => { self.val };
-
-fn void Matrix2x2.adjugate(&self, Matrix2x2* source)
-{
-	self.comatrix_assign(source);
-	self.transpose();
-}
-fn void Matrix3x3.adjugate(&self, Matrix3x3* source)
-{
-	self.comatrix_assign(source);
-	self.transpose();
-}
-fn void Matrix4x4.adjugate(&self, Matrix4x4* source)
-{
-	self.comatrix_assign(source);
-	self.transpose();
-}
-
-fn void Matrix2x2f.adjugate(&self, Matrix2x2f* source)
-{
-	self.comatrix_assign(source);
-	self.transpose();
-}
-fn void Matrix3x3f.adjugate(&self, Matrix3x3f* source)
-{
-	self.comatrix_assign(source);
-	self.transpose();
-}
-fn void Matrix4x4f.adjugate(&self, Matrix4x4f* source)
-{
-	self.comatrix_assign(source);
-	self.transpose();
-}

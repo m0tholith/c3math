@@ -567,6 +567,15 @@ macro void Matrix.transpose(&self)
 }
 
 <*
+ @require COLS == source.rows() && ROWS == source.cols()
+ *>
+macro Matrix.adjugate_assign(&mat, Matrix* source)
+{
+	mat.comatrix_assign(source);
+	mat.transpose();
+}
+
+<*
  @param #row_output : "Output array, vector, slice, list, etc."
  @require #row_output.len >= COLS
  @require row_index < self.rows() : "Index out of bounds"
@@ -1074,16 +1083,6 @@ macro identity_assign(&self)
 	for (usz x = 0; x < self.cols(); x++) self.m[x][x] = 1;
 }
 
-<*
- @require $typeof(source).kindof == POINTER
- @require mat.cols() == source.rows() && mat.rows() == source.cols()
- *>
-macro adjugate(&mat, source)
-{
-	mat.comatrix_assign(source);
-	mat.transpose();
-}
-
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
 <*
  @require mat.rows() == mat.cols() : "Can't invert a non-square matrix"
@@ -1094,11 +1093,7 @@ macro inverse(&mat, source)
 {
 	$typefrom(source.type()) det = source.determinant();
 	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
-	$if $defined(mat.adjugate):
-	mat.adjugate(source);
-	$else
-	adjugate(mat, source);
-	$endif
+	mat.adjugate_assign(source);
 	mat.div_scalar_assign(det);
 }
 
