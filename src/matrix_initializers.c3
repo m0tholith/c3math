@@ -29,7 +29,7 @@ macro rotated_2d(theta, $Type = double, $size = 2)
 	$else
 	Matrix{$size,$size, $Type} result;
 	matrix::identity_assign(&result);
-	matrix::@resize(&r, &result, 2,2);
+	matrix::@upsize(&r, &result);
 	return result;
 	$endif
 }
@@ -47,7 +47,7 @@ macro rotated_x(theta, $Type = double, $size = 3)
 	$else
 	Matrix{$size,$size, $Type} result;
 	matrix::identity_assign(&result);
-	matrix::@resize(&r, &result, 3,3);
+	matrix::@upsize(&r, &result);
 	return result;
 	$endif
 }
@@ -65,7 +65,7 @@ macro rotated_y(theta, $Type = double, $size = 3)
 	$else
 	Matrix{$size,$size, $Type} result;
 	matrix::identity_assign(&result);
-	matrix::@resize(&r, &result, 3,3);
+	matrix::@upsize(&r, &result);
 	return result;
 	$endif
 }
@@ -83,7 +83,7 @@ macro rotated_z(theta, $Type = double, $size = 3)
 	$else
 	Matrix{$size,$size, $Type} result;
 	matrix::identity_assign(&result);
-	matrix::@resize(&r, &result, 3,3);
+	matrix::@upsize(&r, &result);
 	return result;
 	$endif
 }

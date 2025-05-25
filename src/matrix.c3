@@ -918,14 +918,14 @@ macro strassen_mul(r, s, o)
 	$MatType* b12 = allocator::new(tmem, $MatType);
 	$MatType* b22 = allocator::new(tmem, $MatType);
 
-	@resize(self,  a11, HALF_SIZE,HALF_SIZE, 0        ,0        );
-	@resize(self,  a21, HALF_SIZE,HALF_SIZE, HALF_SIZE,0        );
-	@resize(self,  a12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
-	@resize(self,  a22, HALF_SIZE,HALF_SIZE, HALF_SIZE,HALF_SIZE);
-	@resize(other, b11, HALF_SIZE,HALF_SIZE, 0        ,0        );
-	@resize(other, b21, HALF_SIZE,HALF_SIZE, HALF_SIZE,0        );
-	@resize(other, b12, HALF_SIZE,HALF_SIZE, 0        ,HALF_SIZE);
-	@resize(other, b22, HALF_SIZE,HALF_SIZE, HALF_SIZE,HALF_SIZE);
+	@downsize(self,  a11, 0        ,0        );
+	@downsize(self,  a21, HALF_SIZE,0        );
+	@downsize(self,  a12, 0        ,HALF_SIZE);
+	@downsize(self,  a22, HALF_SIZE,HALF_SIZE);
+	@downsize(other, b11, 0        ,0        );
+	@downsize(other, b21, HALF_SIZE,0        );
+	@downsize(other, b12, 0        ,HALF_SIZE);
+	@downsize(other, b22, HALF_SIZE,HALF_SIZE);
 
 	$MatType* m1 = allocator::new(tmem, $MatType);
 	$MatType* m2 = allocator::new(tmem, $MatType);
@@ -1097,25 +1097,27 @@ macro inverse(&mat, source)
 	mat.div_scalar_assign(det);
 }
 
-macro @resize(&mat, result, usz $new_rows, usz $new_cols, usz row_offset = 0, usz col_offset = 0)
+<*
+ @require result.rows() <= mat.rows() && result.cols() <= mat.cols() : "Resized matrix won't fit result matrix"
+ @require row_offset <= mat.rows() - result.rows() : "Row offset is out of bounds for source matrix"
+ @require col_offset <= mat.cols() - result.cols() : "col offset is out of bounds for source matrix"
+ *>
+macro @downsize(&mat, result, usz row_offset = 0, usz col_offset = 0)
 {
-	$if $new_cols < mat.cols():
-	for (usz i = 0; i < $new_cols; i++)
+	for (usz i = 0; i < result.cols(); i++)
 	{
-		$if $new_rows < mat.rows():
-		result.m[i][..] = mat.m[col_offset + i][row_offset:$new_rows];
-		$else
-		result.m[i][row_offset:mat.rows()] = mat.m[col_offset + i][..];
-		$endif
+		result.m[i][..] = mat.m[i + col_offset][row_offset:result.rows()];
 	}
-	$else
+}
+<*
+ @require mat.rows() <= result.rows() && mat.cols() <= result.cols() : "Resized matrix won't fit result matrix"
+ @require row_offset <= result.rows() - mat.rows() : "Row offset is out of bounds for source matrix"
+ @require col_offset <= result.cols() - mat.cols() : "col offset is out of bounds for source matrix"
+ *>
+macro @upsize(&mat, result, usz row_offset = 0, usz col_offset = 0)
+{
 	for (usz i = 0; i < mat.cols(); i++)
 	{
-		$if $new_rows < mat.rows():
-		result.m[col_offset + i][..] = mat.m[i][row_offset:$new_rows];
-		$else
-		result.m[col_offset + i][row_offset:mat.rows()] = mat.m[i][..];
-		$endif
+		result.m[i + col_offset][row_offset:mat.rows()] = mat.m[i][..];
 	}
-	$endif
 }
