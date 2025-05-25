@@ -18,7 +18,7 @@ macro translated(translate_vec)
 	result.val[^1] = 1;
 	return result;
 }
-macro rotated_2d(theta, $Type = double, $size = 2)
+macro rotated_2d(double theta, $size = 2, $Type = double)
 {
 	double c = math::cos(theta);
 	double s = math::sin(theta);
@@ -35,7 +35,7 @@ macro rotated_2d(theta, $Type = double, $size = 2)
 	return result;
 	$endif
 }
-macro rotated_x(theta, $Type = double, $size = 3)
+macro rotated_x(double theta, $Type = double, $size = 3)
 {
 	double c = math::cos(theta);
 	double s = math::sin(theta);
@@ -53,7 +53,7 @@ macro rotated_x(theta, $Type = double, $size = 3)
 	return result;
 	$endif
 }
-macro rotated_y(theta, $Type = double, $size = 3)
+macro rotated_y(double theta, $Type = double, $size = 3)
 {
 	double c = math::cos(theta);
 	double s = math::sin(theta);
@@ -71,7 +71,7 @@ macro rotated_y(theta, $Type = double, $size = 3)
 	return result;
 	$endif
 }
-macro rotated_z(theta, $Type = double, $size = 3)
+macro rotated_z(double theta, $Type = double, $size = 3)
 {
 	double c = math::cos(theta);
 	double s = math::sin(theta);

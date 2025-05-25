@@ -760,7 +760,7 @@ macro Matrix.rotate_2d(&self, theta)
 		[1] = self.m[0][0] * s + self.m[0][1] * c, [3] = self.m[1][0] * s + self.m[1][1] * c,
 	};
 	$else
-	*self = matrix::rotated_2d(theta, Type, ROWS).mul(*self);
+	*self = matrix::rotated_2d(theta, ROWS, Type).mul(*self);
 	$endif
 }
 <*
