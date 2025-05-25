@@ -42,7 +42,7 @@ macro Matrix.type(#mat) @const @safemacro => Type.typeid;
 
 <*
  Matrix for fast add for small matrices
-*>
+ *>
 macro Matrix Matrix.add_inline(self, Matrix mat) @operator(+)
 {
 	$if $defined(InnerType):
@@ -54,7 +54,7 @@ macro Matrix Matrix.add_inline(self, Matrix mat) @operator(+)
 
 <*
  Matrix add function
-*>
+ *>
 fn Matrix Matrix.add(&self, Matrix mat)
 {
 	$if $defined(InnerType):
@@ -71,7 +71,7 @@ fn Matrix Matrix.add(&self, Matrix mat)
 
 <*
  Fast add inline.
-*>
+ *>
 macro Matrix Matrix.add_assign_inline(&self, Matrix mat) @operator(+=)
 {
 	$if $defined(InnerType):
@@ -84,7 +84,7 @@ macro Matrix Matrix.add_assign_inline(&self, Matrix mat) @operator(+=)
 
 <*
  Regular add assign
-*>
+ *>
 fn void Matrix.add_assign(&self, Matrix mat)
 {
 	$if $defined(InnerType):
@@ -99,7 +99,7 @@ fn void Matrix.add_assign(&self, Matrix mat)
 
 <*
  Matrix for fast subtract for small matrices
-*>
+ *>
 macro Matrix Matrix.sub_inline(self, Matrix mat) @operator(-)
 {
 	$if $defined(InnerType):
@@ -111,7 +111,7 @@ macro Matrix Matrix.sub_inline(self, Matrix mat) @operator(-)
 
 <*
  Matrix sub function
-*>
+ *>
 fn Matrix Matrix.sub(&self, Matrix mat)
 {
 	$if $defined(InnerType):
@@ -128,7 +128,7 @@ fn Matrix Matrix.sub(&self, Matrix mat)
 
 <*
  Fast sub assign
-*>
+ *>
 macro Matrix Matrix.sub_assign_inline(&self, Matrix mat) @operator(-=)
 {
 	$if $defined(InnerType):
@@ -141,7 +141,7 @@ macro Matrix Matrix.sub_assign_inline(&self, Matrix mat) @operator(-=)
 
 <*
  Regular subtract assign
-*>
+ *>
 fn void Matrix.sub_assign(&self, Matrix mat)
 {
 	$if $defined(InnerType):
@@ -156,7 +156,7 @@ fn void Matrix.sub_assign(&self, Matrix mat)
 
 <*
  Matrix for fast negate for small matrices
-*>
+ *>
 macro Matrix Matrix.negate_inline(self) @operator(-)
 {
 	$if $defined(InnerType):
@@ -168,7 +168,7 @@ macro Matrix Matrix.negate_inline(self) @operator(-)
 
 <*
  Matrix negate function
-*>
+ *>
 fn Matrix Matrix.negate(&self)
 {
 	$if $defined(InnerType):
@@ -189,7 +189,7 @@ macro mul2x2(InnerType a, InnerType b) @local @if(IS_FAST_2X2) => a.xyxy * b.xxz
 
 <*
  Regular fast 2x2 multiplication
-*>
+ *>
 fn Matrix Matrix.mul(&a, Matrix b) @if(IS_FAST_2X2)
 {
 	return { .val = mul2x2(a.val, b.val) };
@@ -197,7 +197,7 @@ fn Matrix Matrix.mul(&a, Matrix b) @if(IS_FAST_2X2)
 
 <*
  Inline fast 2x2 multiplication.
-*>
+ *>
 macro Matrix Matrix.mul_inline(a, Matrix b) @operator(*) @if(IS_FAST_2X2)
 {
 	return { .val = mul2x2(a.val, b.val) };
@@ -206,7 +206,7 @@ macro Matrix Matrix.mul_inline(a, Matrix b) @operator(*) @if(IS_FAST_2X2)
 <*
  Regular mult + assign, no macro base `*=` operator is defined, as it would
  not offer any performance benefit.
-*>
+ *>
 fn void Matrix.mul_assign(&a, Matrix b) @operator(*=) @if(IS_FAST_2X2)
 {
 	a.val = mul2x2(a.val, b.val);
@@ -215,7 +215,7 @@ fn void Matrix.mul_assign(&a, Matrix b) @operator(*=) @if(IS_FAST_2X2)
 
 <*
  Matrix for fast scalar multiplication for small matrices
-*>
+ *>
 macro Matrix Matrix.mul_scalar_inline(self, Type scalar) @operator(*)
 {
 	$if $defined(InnerType):
@@ -227,7 +227,7 @@ macro Matrix Matrix.mul_scalar_inline(self, Type scalar) @operator(*)
 
 <*
  Scalar multiplication function
-*>
+ *>
 fn Matrix Matrix.mul_scalar(&self, Type scalar)
 {
 	$if $defined(InnerType):
@@ -244,7 +244,7 @@ fn Matrix Matrix.mul_scalar(&self, Type scalar)
 
 <*
  Fast scalar assign multiplication
-*>
+ *>
 macro Matrix Matrix.mul_scalar_assign_inline(&self, Type scalar) @operator(*=)
 {
 	$if $defined(InnerType):
@@ -257,7 +257,7 @@ macro Matrix Matrix.mul_scalar_assign_inline(&self, Type scalar) @operator(*=)
 
 <*
  Regular scalar assign multiplication
-*>
+ *>
 fn void Matrix.mul_scalar_assign(&self, Type scalar)
 {
 	$if $defined(InnerType):
@@ -272,7 +272,7 @@ fn void Matrix.mul_scalar_assign(&self, Type scalar)
 
 <*
  Matrix for fast scalar div for small matrices
-*>
+ *>
 macro Matrix Matrix.div_scalar_inline(self, Type scalar) @operator(/)
 {
 	$if $defined(InnerType):
@@ -284,7 +284,7 @@ macro Matrix Matrix.div_scalar_inline(self, Type scalar) @operator(/)
 
 <*
  Regular matrix divisition
-*>
+ *>
 fn Matrix Matrix.div_scalar(&self, Type scalar)
 {
 	$if $defined(InnerType):
@@ -301,7 +301,7 @@ fn Matrix Matrix.div_scalar(&self, Type scalar)
 
 <*
  Fast div assign for operator overloading
-*>
+ *>
 macro Matrix Matrix.div_scalar_assign_inline(&self, Type scalar) @operator(/=)
 {
 	$if $defined(InnerType):
@@ -314,7 +314,7 @@ macro Matrix Matrix.div_scalar_assign_inline(&self, Type scalar) @operator(/=)
 
 <*
  Regular div assign
-*>
+ *>
 fn void Matrix.div_scalar_assign(&self, Type scalar)
 {
 	$if $defined(InnerType):
@@ -328,11 +328,23 @@ fn void Matrix.div_scalar_assign(&self, Type scalar)
 	$endif
 }
 
+<*
+ Pre-multiply matrix by 1xn vector
+ @return "Result of multiplication: mx1 vector"
+ *>
 fn Type[<ROWS>] Matrix.mul_vec(&self, Type[<COLS>] vec) @operator(*) => matrix::apply(self, vec);
 
+<*
+ Pre-multiply matrix by 1xn array
+ @return "Result of multiplication: mx1 array"
+ *>
 fn Type[ROWS] Matrix.mul_array(&self, Type[COLS] array) @operator(*)
 	=> (Type[ROWS])matrix::apply(self, ((Type[<COLS>])array));
 
+<*
+ Fast equality check for operator overloading
+ @return "`true` if `self` == `mat`, `false` otherwise"
+ *>
 macro bool Matrix.eq_inline(self, Matrix mat) @operator(==)
 {
 	$if $defined(InnerType):
@@ -342,6 +354,10 @@ macro bool Matrix.eq_inline(self, Matrix mat) @operator(==)
 	$endif
 }
 
+<*
+ Regular equality check
+ @return "`true` if `self` == `mat`, false otherwise"
+ *>
 fn bool Matrix.eq(&self, Matrix mat)
 {
 	$if $defined(InnerType):
@@ -351,6 +367,10 @@ fn bool Matrix.eq(&self, Matrix mat)
 	$endif
 }
 
+<*
+ Fast non-equality check for operator overloading
+ @return "`true` if `self` != `mat`, false otherwise"
+ *>
 macro bool Matrix.neq_inline(self, Matrix mat) @operator(!=)
 {
 	$if $defined(InnerType):
@@ -360,6 +380,10 @@ macro bool Matrix.neq_inline(self, Matrix mat) @operator(!=)
 	$endif
 }
 
+<*
+ Regular non-equality check
+ @return "`true` if `self` != `mat`, `false` otherwise"
+ *>
 fn bool Matrix.neq(&self, Matrix mat)
 {
 	$if $defined(InnerType):
@@ -370,6 +394,9 @@ fn bool Matrix.neq(&self, Matrix mat)
 }
 
 <*
+ Determinant function with optimizations for 1x1-4x4 matrices
+
+ @return "Determinant of matrix"
  @require IS_SQUARE : "Can't compute determinant of non-square matrix"
  *>
 macro Type Matrix.determinant(&self)
@@ -415,13 +442,18 @@ macro Type Matrix.determinant(&self)
 	$endswitch
 }
 <*
- @param i : "Row index"
- @param j : "Column index"
+ @return "Cofactor of matrix"
+ @param i "Row index"
+ @param j "Column index"
  *>
 macro Type Matrix.cofactor(&self, usz i, usz j)
 	=> (Type)(math::pow(-1, (int)(i + j)) * matrix::minor(self, i, j));
 
 <*
+ Assigns cofactors of source matrix to self.
+ Operation is optimized for 1x1-4x4 square matrices
+
+ @param source "Source matrix to calculate comatrices"
  @require ROWS > 1 && COLS > 1 : "Comatrix of a one-row or one-column matrix is invalid"
  @require source != null && source != self
  *>
@@ -511,6 +543,9 @@ macro void Matrix.comatrix_assign(&self, Matrix* source)
 	};
 }
 <*
+ Trace function that is optimized for 1x1-4x4 matrices
+
+ @return "Sum of matrix diagonal values"
  @require ROWS == COLS : "Trace of a non-square matrix is undefined"
  *>
 macro Type Matrix.trace(&self)
@@ -567,6 +602,9 @@ macro void Matrix.transpose(&self)
 }
 
 <*
+ Computes comatrix of source matrix into self, then transposes
+
+ @param source "Source matrix to calculate comatrices"
  @require COLS == source.rows() && ROWS == source.cols()
  *>
 macro Matrix.adjugate_assign(&mat, Matrix* source)
@@ -576,7 +614,9 @@ macro Matrix.adjugate_assign(&mat, Matrix* source)
 }
 
 <*
- @param #row_output : "Output array, vector, slice, list, etc."
+ Sets values in `#row_output` to matrix row values at `row_index`
+
+ @param #row_output "Output array, vector, slice, list, etc."
  @require #row_output.len >= COLS
  @require row_index < self.rows() : "Index out of bounds"
  *>
@@ -592,7 +632,9 @@ macro void Matrix.@get_row(&self, usz row_index, #row_output)
 	$endif
 }
 <*
- @param #new_row : "Input array, vector, slice, list, etc."
+ Sets matrix row values at `row_index` to each corresponding value in `#new_row`
+
+ @param #new_row "Input array, vector, slice, list, etc."
  @require #new_row.len >= COLS
  @require row_index < self.rows() : "Index out of bounds"
  *>
@@ -609,6 +651,9 @@ macro void Matrix.@set_row(&self, usz row_index, #new_row)
 }
 
 <*
+ Swaps columns in-place.
+ Does nothing if `col1` and `col2` are the same
+
  @require col1 < COLS && col2 < COLS : "Index out of range"
  *>
 fn void Matrix.swap_col(&self, usz col1, usz col2)
@@ -619,6 +664,9 @@ fn void Matrix.swap_col(&self, usz col1, usz col2)
 	}
 }
 <*
+ Swaps rows value-by-value.
+ Does nothing if `row1` and `row2` are the same
+
  @require row1 < ROWS && row2 < ROWS : "Index out of range"
  *>
 fn void Matrix.swap_row(&self, usz row1, usz row2)
@@ -634,8 +682,8 @@ faultdef PIVOT_IS_ZERO;
  Decomposes `self` into lower and upper matrices, without pivoting.
  `lower` and `upper` may be the same matrix.
 
- @param [&inout] lower : "Pointer to lower triangluar matrix"
- @param [&inout] upper : "Pointer to upper triangluar matrix"
+ @param [&inout] lower "Pointer to lower triangluar matrix"
+ @param [&inout] upper "Pointer to upper triangluar matrix"
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  @require lower != self && upper != self
  *>
@@ -673,9 +721,9 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
  Decomposes `self` into lower and upper matrices, populating the pivot matrix.
  `lower` and `upper` may *not* be the same matrix.
 
- @param [&inout] lower : "Pointer to lower triangluar matrix"
- @param [&inout] upper : "Pointer to upper triangluar matrix"
- @param [&inout] p : "Pointer to permutation matrix"
+ @param [&inout] lower "Pointer to lower triangluar matrix"
+ @param [&inout] upper "Pointer to upper triangluar matrix"
+ @param [&inout] p "Pointer to permutation matrix"
  @return "Number of row swaps"
  @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  @require lower != upper : "Lower and upper matrix pointers may not be the same"
@@ -736,6 +784,10 @@ macro Tuple{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
 }
 
 <*
+ Applies transformation into matrix from vector or array
+
+ @param translate_vec "Array/vector to translate matrix by"
+ @require $defined(translate_vec[0]) : "Parameter `translate_vec` is not indexable (not an array/vector)"
  @require translate_vec.len == self.rows() - 1 : "Incompatible translation vector"
  *>
 macro Matrix.translate(&self, translate_vec)
@@ -746,11 +798,14 @@ macro Matrix.translate(&self, translate_vec)
 	}
 }
 <*
- @param theta : "Rotation degree in radians"
+ Applies 2D rotation of degree `theta` to matrix.
+ Operation is optimized for 2x2 matrices
+
+ @param theta "Rotation degree in radians"
  @require ROWS == COLS : "Cannot apply 2D rotation to non-square matrix"
  @require ROWS >= 2 : "Cannot apply 2D rotation to matrix less than 2x2"
  *>
-macro Matrix.rotate_2d(&self, theta)
+macro Matrix.rotate_2d(&self, double theta)
 {
 	$if ROWS == 2:
 	double c = math::cos(theta);
@@ -764,23 +819,29 @@ macro Matrix.rotate_2d(&self, theta)
 	$endif
 }
 <*
- @param theta : "Rotation degree in radians"
+ Applies 3D rotation on the X axis to matrix
+
+ @param theta "Rotation degree in radians"
  @require ROWS == COLS : "Cannot apply 3D rotation to non-square matrix"
  @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
-macro Matrix.rotate_x(&self, theta) => *self = matrix::rotated_x(theta, Type, ROWS).mul(*self);
+macro Matrix.rotate_x(&self, double theta) => *self = matrix::rotated_x(theta, Type, ROWS).mul(*self);
 <*
- @param theta : "Rotation degree in radians"
+ Applies 3D rotation on the Y axis to matrix
+
+ @param theta "Rotation degree in radians"
  @require ROWS == COLS : "Cannot apply 3D rotation to non-square matrix"
  @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
-macro Matrix.rotate_y(&self, theta) => *self = matrix::rotated_y(theta, Type, ROWS).mul(*self);
+macro Matrix.rotate_y(&self, double theta) => *self = matrix::rotated_y(theta, Type, ROWS).mul(*self);
 <*
- @param theta : "Rotation degree in radians"
+ Applies 3D rotation on the Z axis to matrix
+
+ @param theta "Rotation degree in radians"
  @require ROWS == COLS : "Cannot apply 3D rotation to non-square matrix"
  @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
-macro Matrix.rotate_z(&self, theta) => *self = matrix::rotated_z(theta, Type, ROWS).mul(*self);
+macro Matrix.rotate_z(&self, double theta) => *self = matrix::rotated_z(theta, Type, ROWS).mul(*self);
 
 module c3math::matrix;
 
@@ -796,7 +857,11 @@ macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
 	return row.dot(col);
 }
 <*
- @require $typeof(mat1).kindof == POINTER && $typeof(mat2).kindof == POINTER
+ Sets result of multiplication of mxn and nxk matrices.
+ Uses traditional `mat1.row * mat2.col` algorithm
+
+ @require $typeof(dest).typeid == $typeof(mat1).typeid : "Type mismatch"
+ @require $typeof(dest).typeid == $typeof(mat2).typeid : "Type mismatch"
  @require mat1.cols() == mat2.rows() : "Incompatible multiplication"
  @require mat1.type() == mat2.type() : "Incompatible multiplication"
  *>
@@ -811,6 +876,8 @@ macro mul_assign(&dest, mat1, mat2)
 	};
 }
 <*
+ Sets matrix to transpose of source.
+
  @require $typeof(source).kindof == POINTER
  @require mat.cols() == source.rows() && mat.rows() == source.cols()
  *>
@@ -826,8 +893,10 @@ macro transpose_assign(&mat, source)
 	$endif
 }
 <*
+ Sets matrix to source matrix, skipping the specified row
+
  @require $typeof(source).kindof == POINTER
- @require mat.rows() == source.rows() - 1 && mat.cols() == source.cols()
+ @require mat.rows() == source.rows() - 1 && mat.cols() == source.cols() : "Incompatible sizes"
  *>
 macro row_slice(&mat, source, usz idx)
 {
@@ -847,8 +916,10 @@ macro row_slice(&mat, source, usz idx)
 	}
 }
 <*
+ Sets matrix to source matrix, skipping the specified column
+
  @require $typeof(source).kindof == POINTER
- @require mat.cols() == source.cols() - 1 && mat.rows() == source.rows()
+ @require mat.cols() == source.cols() - 1 && mat.rows() == source.rows() : "Incompatible sizes"
  *>
 macro col_slice(&mat, source, usz idx)
 {
@@ -874,9 +945,12 @@ macro apply(&mat, vec) @private
 }
 
 <*
- @param r : "Result matrix from multiplying `s` and `o`"
- @param s : "Left-side matrix to multiply"
- @param o : "Right-side matrix to multiply"
+ Sets result of multiplication of two nxn matrices.
+ Uses Strassen multiplication algorithm
+
+ @param r "Result matrix from multiplying `s` and `o`"
+ @param s "Left-side matrix to multiply"
+ @param o "Right-side matrix to multiply"
 
  @require $typeof(r).kindof == POINTER
  @require $typeof(s).kindof == POINTER
@@ -1003,8 +1077,9 @@ macro @is_pow_2($n) @private @const
 }
 
 <*
- @param i : "Row index"
- @param j : "Column index"
+ @param i "Row index"
+ @param j "Column index"
+ @return "Minor of matrix at index i,j"
  @require i < self.cols() && j < self.rows() : "Index out of range"
  @require self.rows() > 1 && self.cols() > 1 : "Slicing a one-row or one-column matrix is invalid"
  @require $typeof(self).kindof == POINTER
@@ -1022,6 +1097,9 @@ macro minor(&self, usz i, usz j)
 }
 
 <*
+ Identity generator.
+ Function is constant for 1x1-4x4 matrices
+
  @require $typeof($size).kindof.is_int() : "Cannot generate non-integer-sized matrix"
  @require $size > 0 : "Cannot generate matrix with size less than 1"
  *>
@@ -1058,6 +1136,8 @@ macro @identity($size, $Type = double)
 	return result;
 }
 <*
+ Clears matrix and sets diagonal values to 1
+
  @require self.cols() == self.rows() : "Cannot create non-square identity matrix"
  *>
 macro identity_assign(&self)
@@ -1068,6 +1148,8 @@ macro identity_assign(&self)
 
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
 <*
+ Sets matrix to the inverse of source matrix
+
  @require mat.rows() == mat.cols() : "Can't invert a non-square matrix"
  @require $typeof(source).kindof == POINTER
  @require mat.cols() == source.rows() && mat.rows() == source.cols()
@@ -1081,6 +1163,11 @@ macro inverse(&mat, source)
 }
 
 <*
+ Sets `result` matrix to submatrix of `mat`
+
+ @param [&in] result "Result matrix"
+ @param row_offset "Starting row to set matrix to"
+ @param col_offset "Starting column to set matrix to"
  @require result.rows() <= mat.rows() && result.cols() <= mat.cols() : "Resized matrix won't fit result matrix"
  @require row_offset <= mat.rows() - result.rows() : "Row offset is out of bounds for source matrix"
  @require col_offset <= mat.cols() - result.cols() : "col offset is out of bounds for source matrix"
@@ -1093,6 +1180,11 @@ macro @downsize(&mat, result, usz row_offset = 0, usz col_offset = 0)
 	}
 }
 <*
+ Sets submatrix of `result` matrix to `mat`
+
+ @param [&in] result "Result matrix"
+ @param row_offset "Starting row to set result matrix to"
+ @param col_offset "Starting column to set result matrix to"
  @require mat.rows() <= result.rows() && mat.cols() <= result.cols() : "Resized matrix won't fit result matrix"
  @require row_offset <= result.rows() - mat.rows() : "Row offset is out of bounds for source matrix"
  @require col_offset <= result.cols() - mat.cols() : "col offset is out of bounds for source matrix"
