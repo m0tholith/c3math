@@ -531,6 +531,42 @@ macro Type Matrix.trace(&self)
 }
 
 <*
+ Transposes matrix in-place.
+
+ @require ROWS == COLS
+ *>
+macro void Matrix.transpose(&self)
+{
+	$switch ROWS:
+		$case 1:
+	return;
+		$case 2:
+	self.val = {
+		[0] = self.val[0], [2] = self.val[1],
+		[1] = self.val[2], [3] = self.val[3],
+	};
+		$case 3:
+	self.val = {
+		[0] = self.val[0], [3] = self.val[1], [6] = self.val[2],
+		[1] = self.val[3], [4] = self.val[4], [7] = self.val[5],
+		[2] = self.val[6], [5] = self.val[7], [8] = self.val[8],
+	};
+		$case 4:
+	self.val = {
+		[0] = self.val[0],  [4] = self.val[1],  [8]  = self.val[2],  [12] = self.val[3],
+		[1] = self.val[4],  [5] = self.val[5],  [9]  = self.val[6],  [13] = self.val[7],
+		[2] = self.val[8],  [6] = self.val[9],  [10] = self.val[10], [14] = self.val[11],
+		[3] = self.val[12], [7] = self.val[13], [11] = self.val[14], [15] = self.val[15],
+	};
+		$default:
+	for (usz i = 0; i < self.cols(); i++)
+	{
+		for (usz j = 0; j < i; j++) @swap(self.m[i][j], self.m[j][i]);
+	}
+	$endswitch
+}
+
+<*
  @param #row_output : "Output array, vector, slice, list, etc."
  @require #row_output.len >= COLS
  @require row_index < self.rows() : "Index out of bounds"
@@ -779,18 +815,6 @@ macro transpose_assign(&mat, source)
 		mat.@set_row(i, source.m[i]);
 	}
 	$endif
-}
-<*
- Transposes matrix in-place.
-
- @require mat.cols() == mat.rows()
- *>
-macro transpose(&mat)
-{
-	for (usz i = 0; i < mat.cols(); i++)
-	{
-		for (usz j = 0; j < i; j++) @swap(mat.m[i][j], mat.m[j][i]);
-	}
 }
 <*
  @require $typeof(source).kindof == POINTER
@@ -1057,7 +1081,7 @@ macro identity_assign(&self)
 macro adjugate(&mat, source)
 {
 	mat.comatrix_assign(source);
-	matrix::transpose(mat);
+	mat.transpose();
 }
 
 faultdef MATRIX_INVERSE_DOESNT_EXIST;
