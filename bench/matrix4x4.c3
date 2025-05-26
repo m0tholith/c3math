@@ -1,116 +1,238 @@
 module c3math::matrix::benchmarks::matrix4x4 @benchmark @if($$BENCHMARKING);
 import c3math::matrix::mat_type;
+import std;
+import c3math::matrix;
 
-Matrix4x4 mat7 = {{ -10, 7, -9, -1, -6, -8, -17, -4, -12, -18, 19, 9, -15, 16, -2, 2 }};
-Matrix4x4 mat8 = {{ -19, -6, 17, -1, -3, -9, 3, 6, 5, 1, 19, 4, -20, 18, 11, 13 }};
+Matrix4x4 l4;
+Matrix4x4 u4;
+Matrix4x4 p4;
+Matrix4x4 m4;
+Matrix2x2 m2;
+Matrix{3,4, double} m3x4;
+Matrix{4,3, double} m4x3;
+double[3] v3 = { 1, 3, -2 };
+double[3] a3 = { 1, 3, -2 };
+double[4] v4 = { 1, 3, 0, -2 };
+double[4] a4 = { 1, 3, 0, -2 };
+Matrix4x4 mat4x4_1 = {{ 3, 1, 2, 9,10, 1, 5, 5, 0, 1, -4, 5, -2, 1,  8, -4 }};
+Matrix4x4 mat4x4_2 = {{ 4, 7, 2, 8, 0, 1, -4, 5, 9, 8, 10, 1, -4, -2, 1, 1 }};
 
-Matrix4x4 result4x4;
-Matrix3x3 result3x3;
-
-import std::io;
-import std::collections::tuple;
-
-fn void equality()
+fn void cols() => mat4x4_1.cols();
+fn void rows() => mat4x4_1.rows();
+fn void type() => mat4x4_1.type();
+fn void add_inline()
 {
-	mat7 == mat8;
+	mat4x4_1.add_inline(mat4x4_2);
 }
-fn void unequality()
+fn void add()
 {
-	mat7 != mat8;
+	mat4x4_1.add(mat4x4_2);
 }
-fn void addition()
+fn void add_assign_inline()
 {
-	mat7 + mat8;
+	mat4x4_1.add_assign_inline(mat4x4_2);
 }
-fn void negation()
+fn void add_assign()
 {
-	-mat7;
+	mat4x4_1.add_assign(mat4x4_2);
 }
-fn void subtraction()
+fn void sub_inline()
 {
-	mat7 - mat8;
+	mat4x4_1.sub_inline(mat4x4_2);
 }
-fn void scalar_mul()
+fn void sub()
 {
-	mat7 * 2;
+	mat4x4_1.sub(mat4x4_2);
 }
-fn void scalar_div()
+fn void sub_assign_inline()
 {
-	mat7 / 2;
+	mat4x4_1.sub_assign_inline(mat4x4_2);
 }
-fn void vector_mul()
+fn void sub_assign()
 {
-	mat7 * (double[<4>]){ 2, 3, 4, 5 };
+	mat4x4_1.sub_assign(mat4x4_2);
 }
-fn void list_mul()
+fn void negate_inline()
 {
-	mat7 * (double[4]){ 2, 3, 4, 5 };
+	mat4x4_1.negate_inline();
 }
-fn void matrix_mul()
+fn void negate()
 {
-	mat7 * mat8;
+	mat4x4_1.negate();
+}
+fn void mul()
+{
+	mat4x4_1.mul(mat4x4_2);
+}
+fn void mul_inline()
+{
+	mat4x4_1.mul_inline(mat4x4_2);
+}
+fn void mul_assign()
+{
+	mat4x4_1.mul_assign(mat4x4_2);
+}
+fn void mul_scalar_inline()
+{
+	mat4x4_1.mul_scalar_inline(2);
+}
+fn void mul_scalar()
+{
+	mat4x4_1.mul_scalar(2);
+}
+fn void mul_scalar_assign_inline()
+{
+	mat4x4_1.mul_scalar_assign_inline(2);
+}
+fn void mul_scalar_assign()
+{
+	mat4x4_1.mul_scalar_assign(2);
+}
+fn void div_scalar_inline()
+{
+	mat4x4_1.div_scalar_inline(0.5);
+}
+fn void div_scalar()
+{
+	mat4x4_1.div_scalar(0.5);
+}
+fn void div_scalar_assign_inline()
+{
+	mat4x4_1.div_scalar_assign_inline(0.5);
+}
+fn void div_scalar_assign()
+{
+	mat4x4_1.div_scalar_assign(0.5);
+}
+fn void mul_vec()
+{
+	mat4x4_1.mul_vec(v4);
+}
+fn void mul_array()
+{
+	mat4x4_1.mul_array(a4);
+}
+fn void eq_inline()
+{
+	mat4x4_1.eq_inline(mat4x4_2);
+}
+fn void eq()
+{
+	mat4x4_1.eq(mat4x4_2);
+}
+fn void neq_inline()
+{
+	mat4x4_1.neq_inline(mat4x4_2);
+}
+fn void neq()
+{
+	mat4x4_1.neq(mat4x4_2);
 }
 fn void determinant()
 {
-	mat7.determinant();
-}
-fn void minor()
-{
-	matrix::minor(&mat7, 1, 2);
+	mat4x4_1.determinant();
 }
 fn void cofactor()
 {
-	mat7.cofactor(1, 2);
+	mat4x4_1.cofactor(1, 0);
 }
-fn void comatrix()
+fn void comatrix_assign()
 {
-	result4x4.comatrix_assign(&mat7);
-}
-fn void adjugate()
-{
-	result4x4.adjugate(&mat7);
+	m4.comatrix_assign(&mat4x4_1);
 }
 fn void trace()
 {
-	mat7.trace();
+	mat4x4_1.trace();
+}
+fn void get_row()
+{
+	mat4x4_1.@get_row(0, a4);
+}
+fn void set_row()
+{
+	m4.@set_row(0, a4);
 }
 fn void swap_col()
 {
-	result4x4.swap_col(0, 1);
+	mat4x4_1.swap_col(0, 1);
 }
 fn void swap_row()
 {
-	result4x4.swap_row(0, 1);
+	mat4x4_1.swap_row(0, 1);
 }
 fn void lu_decomp()
 {
-	mat8.lu_decomp(&result4x4, &result4x4)!!;
+	mat4x4_1.lu_decomp(&l4, &u4)!!;
 }
-fn void resize()
+fn void lu_decomp_pivot()
 {
-	matrix::@resize(&mat7, &result3x3, 3,3);
+	mat4x4_1.lu_decomp_pivot(&l4, &u4, &p4)!!;
+}
+fn void translate()
+{
+	mat4x4_1.translate(v3);
+}
+fn void rotate_2d()
+{
+	m4.rotate_2d(math::PI);
+}
+fn void rotate_x()
+{
+	mat4x4_1.rotate_x(math::PI);
+}
+fn void rotate_y()
+{
+	mat4x4_1.rotate_y(math::PI);
+}
+fn void rotate_z()
+{
+	mat4x4_1.rotate_z(math::PI);
+}
+fn void transpose_assign()
+{
+	matrix::transpose_assign(&m4, &mat4x4_1);
 }
 fn void transpose()
 {
-	mat7.transpose();
+	mat4x4_1.transpose();
 }
-fn void row_slice() => @pool()
+fn void row_slice()
 {
-	Matrix{3,4, double}* tmp = allocator::new_aligned(tmem, Matrix{3,4, double})!!;
-	matrix::row_slice(tmp, &mat7, 0);
-	allocator::free_aligned(tmem, tmp);
+	matrix::row_slice(&m3x4, &mat4x4_1, 0);
 }
-fn void col_slice() => @pool()
+fn void col_slice()
 {
-	Matrix{4,3, double}* tmp = allocator::new_aligned(tmem, Matrix{4,3, double})!!;
-	matrix::col_slice(tmp, &mat7, 0);
-	allocator::free_aligned(tmem, tmp);
+	matrix::col_slice(&m4x3, &mat4x4_1, 0);
+}
+fn void strassen_mul()
+{
+	matrix::strassen_mul(&m4, &mat4x4_1, &mat4x4_2);
+}
+fn void minor()
+{
+	matrix::minor(&mat4x4_1, 1,0);
 }
 fn void identity()
 {
 	matrix::@identity(4);
 }
-fn void inverted()
+fn void identity_assign()
 {
-	matrix::inverse(&result4x4, &mat7)!!;
+	matrix::identity_assign(&m4);
+}
+fn void adjugate_assign()
+{
+	m4.adjugate_assign(&mat4x4_1);
+}
+fn void inverse()
+{
+	matrix::inverse(&m4, &mat4x4_1)!!;
+}
+fn void downsize()
+{
+	matrix::@downsize(&mat4x4_1, &m2, 0,0);
+}
+fn void upsize()
+{
+	matrix::@upsize(&m2, &m4, 0,0);
 }
