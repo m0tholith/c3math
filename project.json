@@ -10,9 +10,9 @@
   "output": "build",
   "targets": {
     "maths": {
-      "type": "executable",
-    },
+      "type": "executable"
+    }
   },
   "cpu": "generic",
-  "opt": "O3",
+  "opt": "O3"
 }
