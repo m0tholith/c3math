@@ -62,15 +62,17 @@ fn void negate()
 }
 fn void mul()
 {
-	mat4x4_1.mul(mat4x4_2);
+	Matrix4x4 x;
+	@volatile_store(x, mat4x4_1.mul(mat4x4_2));
 }
+
 fn void mul_inline()
 {
 	mat4x4_1.mul_inline(mat4x4_2);
 }
 fn void mul_assign()
 {
-	mat4x4_1.mul_assign(mat4x4_2);
+	mat4x4_1 *= mat4x4_2;
 }
 fn void mul_scalar_inline()
 {

@@ -67,7 +67,7 @@ fn void mul_inline()
 }
 fn void mul_assign()
 {
-	mat2x2_1.mul_assign(mat2x2_2);
+	mat2x2_1 *= mat2x2_2;
 }
 fn void mul_scalar_inline()
 {

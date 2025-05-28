@@ -3,7 +3,7 @@ module c3math::matrix;
 import std::math;
 
 <*
- @param scale_vec "Scaling array/vector"
+ @param scale_vec : "Scaling array/vector"
  @return "Affine scaling matrix"
 *>
 macro scaled(scale_vec)
@@ -15,7 +15,7 @@ macro scaled(scale_vec)
 	return result;
 }
 <*
- @param translate_vec "Translation array/vector"
+ @param translate_vec : "Translation array/vector"
  @return "Affine translation matrix"
  *>
 macro translated(translate_vec)
@@ -27,8 +27,8 @@ macro translated(translate_vec)
 	return result;
 }
 <*
- @param $size "Size of matrix (default: 2)"
- @param $Type "Type of matrix (default: double)"
+ @param $size : "Size of matrix (default: 2)"
+ @param $Type : "Type of matrix (default: double)"
  @return "2D rotation matrix of specified size"
  *>
 macro rotated_2d(double theta, $size = 2, $Type = double)
@@ -49,8 +49,8 @@ macro rotated_2d(double theta, $size = 2, $Type = double)
 	$endif
 }
 <*
- @param $size "Size of matrix (default: 3)"
- @param $Type "Type of matrix (default: double)"
+ @param $size : "Size of matrix (default: 3)"
+ @param $Type : "Type of matrix (default: double)"
  @return "3D X-axis rotation matrix of specified size"
  *>
 macro rotated_x(double theta, $Type = double, $size = 3)
@@ -72,8 +72,8 @@ macro rotated_x(double theta, $Type = double, $size = 3)
 	$endif
 }
 <*
- @param $size "Size of matrix (default: 3)"
- @param $Type "Type of matrix (default: double)"
+ @param $size : "Size of matrix (default: 3)"
+ @param $Type : "Type of matrix (default: double)"
  @return "3D Y-axis rotation matrix of specified size"
  *>
 macro rotated_y(double theta, $Type = double, $size = 3)
@@ -95,8 +95,8 @@ macro rotated_y(double theta, $Type = double, $size = 3)
 	$endif
 }
 <*
- @param $size "Size of matrix (default: 3)"
- @param $Type "Type of matrix (default: double)"
+ @param $size : "Size of matrix (default: 3)"
+ @param $Type : "Type of matrix (default: double)"
  @return "3D Z-axis rotation matrix of specified size"
  *>
 macro rotated_z(double theta, $Type = double, $size = 3)
@@ -119,13 +119,13 @@ macro rotated_z(double theta, $Type = double, $size = 3)
 }
 
 <*
- @param left "Left plane"
- @param right "Right plane"
- @param top "Top plane"
- @param bottom "Bottom plane"
- @param near "Near plane"
- @param far "Far plane"
- @param $Type "Type of matrix (default: double)"
+ @param left : "Left plane"
+ @param right : "Right plane"
+ @param top : "Top plane"
+ @param bottom : "Bottom plane"
+ @param near : "Near plane"
+ @param far : "Far plane"
+ @param $Type : "Type of matrix (default: double)"
  @return "4x4 orthographic projection matrix"
  *>
 macro ortho(left, right, top, bottom, near, far, $Type = double)
@@ -142,11 +142,11 @@ macro ortho(left, right, top, bottom, near, far, $Type = double)
 	}};
 }
 <*
- @param fov "Field of view"
- @param aspect_ratio "Aspect ratio (width / height)"
- @param near "Near plane"
- @param far "Far plane"
- @param $Type "Type of matrix (default: double)"
+ @param fov : "Field of view"
+ @param aspect_ratio : "Aspect ratio (width / height)"
+ @param near : "Near plane"
+ @param far : "Far plane"
+ @param $Type : "Type of matrix (default: double)"
  @return "4x4 perspective projection matrix"
  *>
 macro perspective(fov, aspect_ratio, near, far, $Type = double)
@@ -162,10 +162,10 @@ macro perspective(fov, aspect_ratio, near, far, $Type = double)
 	}};
 }
 <*
- @param eye "Eye 3D position, array/vector"
- @param forward "3D array/vector pointing where eye is looking"
- @param world_up "3D array/vector pointing to world-space \"up\""
- @param $Type "Type of matrix (default: double)"
+ @param eye : "Eye 3D position, array/vector"
+ @param forward : "3D array/vector pointing where eye is looking"
+ @param world_up : "3D array/vector pointing to world-space \"up\""
+ @param $Type : "Type of matrix (default: double)"
  @return "4x4 look matrix"
  @require eye.len == 3
  @require forward.len == 3
@@ -184,10 +184,10 @@ macro look(eye, forward, world_up, $Type = double)
 	}};
 }
 <*
- @param eye "Eye 3D position, array/vector"
- @param target "Target 3D position, array/vector"
- @param world_up "3D array/vector pointing to world-space \"up\""
- @param $Type "Type of matrix (default: double)"
+ @param eye : "Eye 3D position, array/vector"
+ @param target : "Target 3D position, array/vector"
+ @param world_up : "3D array/vector pointing to world-space \"up\""
+ @param $Type : "Type of matrix (default: double)"
  @return "4x4 look-at matrix"
  @require eye.len == 3
  @require target.len == 3
