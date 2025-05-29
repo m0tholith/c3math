@@ -294,21 +294,21 @@ fn void mul_inline()
 fn void mul_assign()
 {
 	Matrix2x2 m2 = mat2x2_1;
-	m2.mul_assign(mat2x2_2);
+	m2 *= mat2x2_2;
 	@assert_print(m2,
 		(Matrix2x2){{ -8, -2, -3, 3 }},
 		"2x2 mul_assign not equal",
 	);
 
 	Matrix3x3 m3 = mat3x3_1;
-	m3.mul_assign(mat3x3_2);
+	m3 *= mat3x3_2;
 	@assert_print(m3,
 		(Matrix3x3){{ 19, -10, -9, -4, -8, 11, 26, 4, 12 }},
 		"3x3 mul_assign not equal",
 	);
 
 	Matrix4x4 m4 = mat4x4_1;
-	m4.mul_assign(mat4x4_2);
+	m4 *= mat4x4_2;
 	@assert_print(m4,
 		(Matrix4x4){{ 17, 20, -49, 95, 77, -3, 19, -10, 68, -92, -156, 72, 79, -115, -161, 32 }},
 		"4x4 mul_assign not equal",
