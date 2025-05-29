@@ -285,9 +285,7 @@ macro Matrix{ROWS, ROWS, Type} Matrix.mul_inline(&a, Matrix{COLS, ROWS, Type} b)
 				$for var $j = 0; $j < ROWS; $j++:
 				{
 					Type[<COLS>] val @noinit;
-                	$for var $k = 0; $k < COLS; $k++:
-                		val[$k] = a.m[$k][$j];
-                	$endfor
+					a.@get_row($j, val);
 					m.m[$i][$j] = val.dot(b.m[$i]);
 				}
 				$endfor
@@ -874,13 +872,6 @@ macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 {
 	for (usz i = 0; i < rows; i++) for (usz j = 0; j < cols; j++) @body(i, j);
 }
-macro @mat_mul_sum(mat1, mat2, i, j, $n) @private
-{
-	$typefrom(mat1.type())[<$n>] row;
-	var col = mat2.m[j];
-	mat1.@get_row(i, row);
-	return row.dot(col);
-}
 <*
  Sets result of multiplication of mxn and nxk matrices.
  Uses traditional `mat1.row * mat2.col` algorithm
@@ -895,9 +886,13 @@ macro mul_assign(&dest, mat1, mat2)
 	const N = mat1.cols();
 	const ROWS = mat1.rows();
 	const COLS = mat2.cols();
+	$typefrom(mat1.type())[<N>] row @noinit;
+	$typefrom(mat1.type())[<N>] col @noinit;
 	@ij_loop(ROWS, COLS; usz i, usz j)
 	{
-		dest.m[j][i] = @mat_mul_sum(mat1, mat2, i, j, N);
+		col = mat2.m[j];
+		mat1.@get_row(i, row);
+		dest.m[j][i] = row.dot(col);
 	};
 }
 <*
