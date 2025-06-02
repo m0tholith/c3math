@@ -700,7 +700,6 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 	}
 }
 
-faultdef PIVOT_IS_ZERO;
 <*
  Decomposes `self` into lower and upper matrices, without pivoting.
  `lower` and `upper` may be the same matrix.
@@ -723,7 +722,7 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
 		upper.@get_row(i, temp_row_i);
 
 		Type diagonal = upper.m[i][i];
-		if (diagonal == 0) return PIVOT_IS_ZERO?;
+		if (diagonal == 0) return matrix::PIVOT_IS_ZERO?;
 		for (usz j = i + 1; j < ROWS; j++) // row wise
 		{
 			Type coefficient = upper.m[i][j] / diagonal;
@@ -778,7 +777,7 @@ macro usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p
 		upper.@get_row(i, temp_row_i);
 
 		Type diagonal = upper.m[i][i];
-		if (diagonal == 0) return PIVOT_IS_ZERO?;
+		if (diagonal == 0) return matrix::PIVOT_IS_ZERO?;
 		for (usz j = i + 1; j < ROWS; j++) // row wise
 		{
 			Type coefficient = upper.m[i][j] / diagonal;
@@ -867,6 +866,8 @@ macro Matrix.rotate_y(&self, double theta) => *self = matrix::rotated_y(theta, T
 macro Matrix.rotate_z(&self, double theta) => *self = matrix::rotated_z(theta, Type, ROWS).mul(*self);
 
 module c3math::matrix;
+
+faultdef PIVOT_IS_ZERO;
 
 macro @ij_loop(rows, cols; @body(usz i, usz j)) @private
 {
