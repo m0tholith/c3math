@@ -7,7 +7,4 @@ This library houses my custom implementations of math functions and structs, whi
 ## Testing
 Run `c3c test` to test virtually (and hopefully) ALL features in this library.
 ## Benchmarking
-Run `c3c bench` to benchmark every function as well.
-### Known issues:
-- Benchmarking broken
-- Codegen takes too long
+Run `c3c benchmark` to benchmark every function as well.
