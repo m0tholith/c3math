@@ -733,9 +733,17 @@ fn void trace()
 		4,
 		"2x2 trace not equal",
 	);
+	@assert_print(mat2x3.trace(),
+		8,
+		"2x3 trace not equal",
+	);
 	@assert_print(mat3x3_1.trace(),
 		4,
 		"3x3 trace not equal",
+	);
+	@assert_print(mat3x2.trace(),
+		6,
+		"3x2 trace not equal",
 	);
 	@assert_print(mat4x4_1.trace(),
 		9,

@@ -569,11 +569,10 @@ macro void Matrix.comatrix_assign(&self, Matrix* source)
  Trace function that is optimized for 1x1-4x4 matrices
 
  @return "Sum of matrix diagonal values"
- @require ROWS == COLS : "Trace of a non-square matrix is undefined"
  *>
 macro Type Matrix.trace(&self)
 {
-	$switch ROWS:
+	$switch ROWS < COLS ? ROWS : COLS:
 		$case 1:
 	return self.val[0];
 		$case 2:
@@ -584,7 +583,11 @@ macro Type Matrix.trace(&self)
 	return self.m[0][0] + self.m[1][1] + self.m[2][2] + self.m[3][3];
 	$endswitch
 	Type result;
+	$if ROWS < COLS:
 	for (usz i = 0; i < ROWS; i++) result += self.m[i][i];
+	$else
+	for (usz i = 0; i < COLS; i++) result += self.m[i][i];
+	$endif
 	return result;
 }
 
