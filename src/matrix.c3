@@ -410,7 +410,7 @@ fn bool Matrix.neq(&self, Matrix mat)
 
  @return "Determinant of matrix"
  *>
-macro Type Matrix.determinant(&self) @if(IS_SQUARE)
+fn Type Matrix.determinant(&self) @if(IS_SQUARE)
 {
 	$switch COLS:
 		$case 1:
