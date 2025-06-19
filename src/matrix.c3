@@ -709,10 +709,9 @@ fn void Matrix.swap_row(&self, usz row1, usz row2)
 
  @param [&inout] lower : "Pointer to lower triangluar matrix"
  @param [&inout] upper : "Pointer to upper triangluar matrix"
- @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  @require lower != self && upper != self
  *>
-macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
+fn void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) @if(IS_SQUARE) => @pool()
 {
 	matrix::identity_assign(lower);
 	mem::copy(upper, self, $typeof(upper.val).sizeof);
@@ -750,12 +749,11 @@ macro void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) => @pool()
  @param [&inout] upper : "Pointer to upper triangluar matrix"
  @param [&inout] p : "Pointer to permutation matrix"
  @return "Number of row swaps"
- @require COLS == ROWS : "Can't perform LU decomp on non-square matrix"
  @require lower != upper : "Lower and upper matrix pointers may not be the same"
  @require lower != self && upper != self
  @require p != lower && p != upper && p != self
  *>
-macro usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) => @pool()
+fn usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) @if(IS_SQUARE) => @pool()
 {
 	usz num_swaps;
 
