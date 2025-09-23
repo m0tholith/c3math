@@ -7,8 +7,8 @@ import c3math::matrix::mat_type;
 import c3math::matrix @public;
 import std::io;
 import std::core::mem;
-import std::math;
-import std::collections::tuple;
+import std::math @norecurse;
+import std::collections::pair;
 
 const usz ELEMENTS = COLS * ROWS;
 const bool IS_SQUARE = COLS == ROWS;
@@ -766,7 +766,7 @@ fn usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) @
 
 	for (usz i = 0; i + 1 < ROWS; i++) // diagonal wise
 	{
-		Tuple{usz, Type} maximum = upper.col_max(i, i);
+		Pair{usz, Type} maximum = upper.col_max(i, i);
 		if (maximum.second == 0) break;
 		p.swap_row(maximum.first, i);
 		upper.swap_row(maximum.first, i);
@@ -796,9 +796,9 @@ fn usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) @
 
 	return num_swaps;
 }
-macro Tuple{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
+macro Pair{usz, Type} Matrix.col_max(&self, usz col, usz row = 0) @private
 {
-	Tuple{usz, Type} result = { row, self.m[col][row] };
+	Pair{usz, Type} result = { row, self.m[col][row] };
 	for (usz i = row + 1; i < ROWS; i++)
 	{
 		if (math::abs(result.second) < math::abs(self.m[col][i])) result = { i, self.m[col][i] };

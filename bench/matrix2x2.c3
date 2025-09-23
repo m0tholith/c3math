@@ -1,6 +1,6 @@
 module c3math::matrix::benchmarks::matrix2x2 @benchmark @if($$BENCHMARKING);
 import c3math::matrix::mat_type;
-import std;
+import std::math @norecurse;
 import c3math::matrix;
 
 Matrix2x2 l2;
