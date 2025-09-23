@@ -2,8 +2,7 @@ module c3math::tests::matrices @test;
 import c3math::matrix;
 import c3math::matrix::mat_type;
 
-import std::math;
-import std::math::matrix;
+import std::math @norecurse;
 
 fn void scaled()
 {

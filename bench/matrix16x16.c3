@@ -1,6 +1,6 @@
 module c3math::matrix::benchmarks::matrix16x16 @benchmark @if($$BENCHMARKING);
 import c3math::matrix::mat_type;
-import std;
+import std::math @norecurse;
 import c3math::matrix;
 
 alias Matrix16x16 = Matrix{16,16, double};

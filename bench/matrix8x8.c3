@@ -1,6 +1,6 @@
 module c3math::matrix::benchmarks::matrix8x8 @benchmark @if($$BENCHMARKING);
 import c3math::matrix::mat_type;
-import std;
+import std::math @norecurse;
 import c3math::matrix;
 
 alias Matrix8x8 = Matrix{8,8, double};

@@ -1,6 +1,6 @@
 module c3math::matrix;
 
-import std::math;
+import std::math @norecurse;
 
 <*
  @param scale_vec : "Scaling array/vector"
