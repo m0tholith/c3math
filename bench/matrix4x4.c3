@@ -190,6 +190,10 @@ fn void rotate_z()
 {
 	mat4x4_1.rotate_z(math::PI);
 }
+fn void rotate_axis()
+{
+	mat4x4_1.rotate_axis(math::PI, v3);
+}
 fn void transpose_assign()
 {
 	matrix::transpose_assign(&m4, &mat4x4_1);

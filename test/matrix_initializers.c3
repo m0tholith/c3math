@@ -39,19 +39,26 @@ fn void rotated_x()
 		(Matrix3x3){{ 1, 0, 0, 0, 0, 1, 0, -1, 0 }},
 		"rotated_x not equal",
 	);
-}                         
+}
 fn void rotated_y()
-{                         
+{
 	@assert_print(rounded(matrix::rotated_y(math::PI / 2)),
 		(Matrix3x3){{ 0, 0, -1, 0, 1, 0, 1, 0, 0 }},
 		"rotated_y not equal",
 	);
-}                         
+}
 fn void rotated_z()
-{                         
+{
 	@assert_print(rounded(matrix::rotated_z(math::PI / 2)),
 		(Matrix3x3){{ 0, 1, 0, -1, 0, 0, 0, 0, 1 }},
 		"rotated_z not equal",
+	);
+}
+fn void rotated_axis()
+{
+	@assert_print(rounded(matrix::rotated_axis(math::PI / 2, vec3)),
+		(Matrix3x3){{ 0.037037, -0.999287, -0.007265, 0.925213, 0.037037, -0.377635, 0.377635, 0.007265, 0.925926 }},
+		"rotated_axis not equal",
 	);
 }
 fn void ortho()
