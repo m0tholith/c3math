@@ -865,6 +865,15 @@ macro Matrix.rotate_y(&self, double theta) => *self = matrix::rotated_y(theta, T
  @require ROWS >= 3 : "Cannot apply 3D rotation to matrix less than 3x3"
  *>
 macro Matrix.rotate_z(&self, double theta) => *self = matrix::rotated_z(theta, Type, ROWS).mul(*self);
+<*
+ Applies a 3D rotation about an arbitrary axis using Rodrigues' rotation formula
+
+ @param theta : "Rotation angle in radians"
+ @param rotate_vec : "Rotation axis"
+ @require ROWS == COLS : "Cannot apply 3D axis rotation to non-square matrix"
+ @require ROWS >= 3 : "Cannot apply 3D axis rotation to matrix less than 3x3"
+ *>
+macro Matrix.rotate_axis(&self, double theta, rotate_vec) => *self = matrix::rotated_axis(theta, rotate_vec, Type, ROWS).mul(*self);
 
 module c3math::matrix;
 

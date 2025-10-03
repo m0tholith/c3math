@@ -1059,6 +1059,24 @@ fn void rotate_z()
 		"4x4 rotate_z not equal",
 	);
 }
+fn void rotate_axis()
+{
+	Matrix3x3 m3 = matrix::@identity(3);
+	m3.rotate_axis(math::PI / 2.0, vec3);
+	round(&m3);
+	@assert_print(m3,
+		(Matrix3x3){{ 0.037037, -0.999287, -0.007265, 0.925213, 0.037037, -0.377635, 0.377635, 0.007265, 0.925926 }},
+		"3x3 rotate_axis not equal",
+	);
+
+	Matrix4x4 m4 = matrix::@identity(4);
+	m4.rotate_axis(math::PI / 2.0, vec3);
+	round(&m4);
+	@assert_print(m4,
+		(Matrix4x4){{ 0.037037, -0.999287, -0.007265, 0.000000, 0.925213, 0.037037, -0.377635, 0.000000, 0.377635, 0.007265, 0.925926, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000 }},
+		"4x4 rotate_axis not equal",
+	);
+}
 fn void transpose_assign()
 {
 	Matrix2x2 m2;

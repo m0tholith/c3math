@@ -117,6 +117,36 @@ macro rotated_z(double theta, $Type = double, $size = 3)
 	return result;
 	$endif
 }
+<*
+ @param $size : "Size of matrix (default: 3)"
+ @param $Type : "Type of matrix (default: double)"
+ @return "3D axis rotation matrix of specified size"
+ *>
+macro rotated_axis(double theta, rotate_vec, $Type = double, $size = 3)
+{
+	double len = math::sqrt(rotate_vec[0]*rotate_vec[0] + rotate_vec[1]*rotate_vec[1] + rotate_vec[2]*rotate_vec[2]);
+	double x = rotate_vec[0] / len;
+	double y = rotate_vec[1] / len;
+	double z = rotate_vec[2] / len;
+
+	double s = math::sin(theta);
+	double c = math::cos(theta);
+	double k = 1.0 - c;
+
+	Matrix{3,3, $Type} r = {{
+		[0] = x*x*k + c,    [3] = x*y*k + z*s,  [6] = x*z*k - y*s,
+		[1] = y*x*k - z*s,  [4] = y*y*k + c,    [7] = y*z*k + x*s,
+		[2] = z*x*k + y*s,  [5] = z*y*k - x*s,  [8] = z*z*k + c,
+	}};
+	$if $size == 3:
+	return r;
+	$else
+	Matrix{$size,$size, $Type} result @noinit;
+	matrix::identity_assign(&result);
+	matrix::@upsize(&r, &result);
+	return result;
+	$endif
+}
 
 <*
  @param left : "Left plane"
