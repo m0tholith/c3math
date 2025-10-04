@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1759433255,
-        "narHash": "sha256-/XcYg/wDZuc4yOogNjXRKp4auv74xxviNF1AMRxr/iI=",
+        "lastModified": 1759571363,
+        "narHash": "sha256-/X1gT+A3JocuTz/HPhYag+Pjsk2xImXkXXKQ2EWjDnA=",
         "owner": "c3lang",
         "repo": "c3c",
-        "rev": "e0fbe31f004d47f5177e10373b1b39c3285042e3",
+        "rev": "b5ae2485a7c61bf15a12ebd8db7df4645d9fe77a",
         "type": "github"
       },
       "original": {
