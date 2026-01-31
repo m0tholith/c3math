@@ -2,7 +2,7 @@
  @require types::is_int($typeof(ROWS)) && types::is_int($typeof(COLS)) : "Can't create non-integer-sized matrix"
  @require ROWS > 0 && COLS > 0 : "Can't create 0-row or 0-column matrix"
 *>
-module c3math::matrix::mat_type { ROWS, COLS, Type };
+module c3math::matrix::mat_type <ROWS, COLS, Type>;
 import c3math::matrix @public;
 import std::io;
 import std::core::mem;
@@ -17,6 +17,10 @@ alias InnerType @if(USES_PRIMITIVE_TYPES && ELEMENTS <= MAX_VECTOR) = Type[<ELEM
 macro @is_big_matrix() @const => ELEMENTS > 16;
 macro @use_vectors() @const => matrix::@is_pow_2(ROWS) && !@is_big_matrix();
 
+<*
+ @require types::is_int($typeof(ROWS)) && types::is_int($typeof(COLS)) : "Can't create non-integer-sized matrix"
+ @require ROWS > 0 && COLS > 0 : "Can't create 0-row or 0-column matrix"
+*>
 union Matrix (Printable)
 {
 	Type[ELEMENTS] val;
@@ -723,7 +727,7 @@ fn void? Matrix.lu_decomp(&self, Matrix* lower, Matrix* upper) @if(IS_SQUARE) =>
 		upper.@get_row(i, temp_row_i);
 
 		Type diagonal = upper.m[i][i];
-		if (diagonal == 0) return matrix::PIVOT_IS_ZERO?;
+		if (diagonal == 0) return matrix::PIVOT_IS_ZERO~;
 		for (usz j = i + 1; j < ROWS; j++) // row wise
 		{
 			Type coefficient = upper.m[i][j] / diagonal;
@@ -777,7 +781,7 @@ fn usz? Matrix.lu_decomp_pivot(&self, Matrix* lower, Matrix* upper, Matrix* p) @
 		upper.@get_row(i, temp_row_i);
 
 		Type diagonal = upper.m[i][i];
-		if (diagonal == 0) return matrix::PIVOT_IS_ZERO?;
+		if (diagonal == 0) return matrix::PIVOT_IS_ZERO~;
 		for (usz j = i + 1; j < ROWS; j++) // row wise
 		{
 			Type coefficient = upper.m[i][j] / diagonal;
@@ -1187,7 +1191,7 @@ faultdef MATRIX_INVERSE_DOESNT_EXIST;
 macro inverse(mat, source)
 {
 	$typefrom(source.type()) det = source.determinant();
-	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST?;
+	if (det == 0) return MATRIX_INVERSE_DOESNT_EXIST~;
 	mat.adjugate_assign(source);
 	mat.div_scalar_assign(det);
 }
