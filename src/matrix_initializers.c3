@@ -23,7 +23,7 @@ macro translated(translate_vec)
 	const N = translate_vec.len;
 	Matrix{N+1,N+1, $typefrom($typeof(translate_vec).inner)} result
 		= matrix::@identity(N+1, $typefrom($typeof(translate_vec).inner));
-	foreach (i, component : translate_vec) result.m[i][^1] = component;
+	foreach (i, component : translate_vec) result.m[^1][i] = component;
 	return result;
 }
 <*
